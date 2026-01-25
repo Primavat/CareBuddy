@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CareBuddy Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<!-- TOP NAVBAR -->
+<nav class="navbar">
+    <div class="nav-left">
+        <h2>Hello Buddy, Welcome to <span class="brand">CareBuddy</span></h2>
+    </div>
+    <div class="nav-right">
+        <a href="#">About Us</a>
+        <div class="settings">
+    <img src="https://cdn-icons-png.flaticon.com/512/2099/2099058.png">
+    <div class="dropdown">
+        <a href="#">Notification Settings</a>
+        <a href="#">Privacy</a>
+        <a href="#">Theme</a>
+    </div>
+</div>
+        <div class="profile-menu">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile">
+            <div class="dropdown">
+                <a href="#">Change Name</a>
+                <a href="#">Change Password</a>
+                <a href="#">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- MAIN LAYOUT -->
+<div class="dashboard">
+
+    <!-- LEFT PANEL -->
+    <aside class="sidebar">
+        <button onclick="showProfile()">👤 Profile</button>
+        <button onclick="showChatbot()">🤖 Chatbot</button>
+        <button >💊 Medications</button>
+        <button >💧 Hydration</button>
+        <button >📅 Reminders</button>
+        <button >🧠 Mental Health</button>
+    </aside>
+
+    <!-- RIGHT CONTENT -->
+    <main class="content">
+
+    <!-- PROFILE SECTION -->
+    <div id="profileSection">
+
+        <h2>🏠 Family Profiles</h2>
+
+        <form id="familyForm">
+            <div class="form-row">
+                <input type="text" id="name" placeholder="Full Name" required>
+                <select id="gender">
+                    <option value="">Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <input type="date" id="birthdate" required>
+                <input type="text" id="relation" placeholder="Relation (e.g. Mother)">
+            </div>
+
+            <textarea id="health" placeholder="Health Data (conditions, allergies, etc.)"></textarea>
+
+            <button type="submit">➕ Add Family Member</button>
+        </form>
+
+        <div class="member_list" id="memberList"></div>
+    </div>
+
+    <!-- CHATBOT SECTION -->
+    <div id="chatbotSection" style="display:none;">
+
+        <h2>CareBuddy Chatbot 🤖</h2>
+
+        <div class="chat-container">
+            <div id="chatMessages" class="chat-messages">
+                <div class="bot-msg">
+                    Hello 👋 I’m CareBuddy. How can I help you today?
+                </div>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type your message...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+</div>
+
+
+<script src="dashboard.js"></script>
+</body>
+</html>
