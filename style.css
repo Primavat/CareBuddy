@@ -1,0 +1,108 @@
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ffffff, #f4f9f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+}
+
+.container {
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.brand {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.brand h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.brand span {
+    color: #2ecc71;
+}
+
+.chat-box {
+    margin-top: 20px;
+}
+
+.bot-message {
+    background: #f1f1f1;
+    padding: 14px 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+    margin-bottom: 15px;
+}
+
+input:focus {
+    border-color: #2ecc71;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    background: #2ecc71;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #27ae60;
+}
+
+.hidden {
+    display: none;
+}
+
+.privacy {
+    margin-top: 18px;
+    font-size: 12px;
+    text-align: center;
+    color: #444;
+}
+
+.privacy span {
+    color: #2ecc71;
+    font-weight: 600;
+}
+
+.otp-note {
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.footer {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+}

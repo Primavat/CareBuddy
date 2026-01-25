@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CareBuddy - AI Health Chatbot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="brand">
+        <h1>Care<span>Buddy</span></h1>
+        <p>Your AI Health Companion</p>
+    </div>
+
+    <div class="chat-box">
+        <div id="step1">
+            <div class="bot-message">
+                🤖 Hi, I’m your <b>CareBuddy</b>. I help track your health.<br>
+                What should I call you?
+            </div>
+            <input type="text" id="username" placeholder="Enter your name">
+            <button onclick="goToStep2()">Continue</button>
+        </div>
+
+        <div id="step2" class="hidden">
+            <div class="bot-message">
+                Nice to meet you! 😊<br>
+                Please enter your phone number or email to continue.
+            </div>
+            <input type="text" id="contact" placeholder="Phone number or Email">
+            <button onclick="goToStep3()">Send OTP</button>
+        </div>
+
+        <div id="step3" class="hidden">
+            <div class="bot-message">
+                🔐 Verification time!<br>
+                Enter the 6-digit OTP sent to you.
+            </div>
+            <p class="otp-note">(For demo: OTP is <b>123456</b>)</p>
+            <input type="text" id="otp" placeholder="Enter OTP">
+            <button onclick="verifyOTP()">Verify & Login</button>
+        </div>
+
+        <div id="success" class="hidden">
+            <div class="bot-message">
+                ✅ You're all set!<br>
+                Welcome to CareBuddy. I'm here whenever you need care 💚
+            </div>
+            <button onclick="alert('Redirecting to dashboard...')">
+                Go to Dashboard
+            </button>
+        </div>
+
+    </div>
+
+    <div class="privacy">
+        🔒 Your health data is <span>secure</span> and never shared.
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
