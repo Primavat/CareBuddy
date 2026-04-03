@@ -6,20 +6,21 @@
 body {
     margin: 0;
     height: 100vh;
-    background: linear-gradient(135deg, #ffffff, #f4f9f6);
+    background: linear-gradient(135deg, #0a0e0b, #112218); /* warm black/green soothing theme */
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #000;
+    color: #e0e0e0;
 }
 
 .container {
     width: 100%;
     max-width: 420px;
-    background: #ffffff;
+    background: #181d1a;
     border-radius: 16px;
     padding: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    transition: opacity 0.5s ease;
 }
 
 .brand {
@@ -41,7 +42,8 @@ body {
 }
 
 .bot-message {
-    background: #f1f1f1;
+    background: #232b26;
+    color: #e0e0e0;
     padding: 14px 16px;
     border-radius: 12px;
     margin-bottom: 16px;
@@ -54,9 +56,15 @@ input {
     padding: 14px;
     font-size: 15px;
     border-radius: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #334038;
+    background: #0f1311;
+    color: #e0e0e0;
     outline: none;
     margin-bottom: 15px;
+}
+
+input::placeholder {
+    color: #77847c;
 }
 
 input:focus {
@@ -104,5 +112,37 @@ button:hover {
     margin-top: 25px;
     text-align: center;
     font-size: 12px;
-    color: #666;
+    color: #88948d;
+}
+
+/* Showcase Page Styles */
+.showcase-container {
+    text-align: center;
+    animation: fadeInOut 2s ease-in-out;
+}
+
+.showcase-title {
+    margin: 0;
+    font-size: 42px;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+.showcase-title span {
+    color: #2ecc71;
+}
+
+.showcase-tagline {
+    font-size: 18px;
+    color: #a3b8ad;
+    margin-top: 15px;
+    font-style: italic;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: scale(0.95); }
+    30% { opacity: 1; transform: scale(1); }
+    80% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; }
 }
