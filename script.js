@@ -16,7 +16,7 @@ window.addEventListener("load", function() {
         }, 50);
         
     }, 2400); // wait for showcase animation to nearly finish
-};
+});
 
 function goToStep3() {
     const contact = document.getElementById("contact").value.trim();
@@ -56,13 +56,20 @@ async function loginWithGoogle() {
   }
 }
 async function checkUser() {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user;
+  const path = window.location.pathname;
 
-  if (!user) {
-    window.location.href = "index.html"
-  } else {
-    console.log("User:", user)
+  // Check if we are on the home/login page
+  const isLoginPage = path === "/" || path.includes("index.html");
+  const isDashboard = path.includes("dashboard.html");
+
+  if (user && isLoginPage) {
+    window.location.href = "dashboard.html";
+  } 
+  
+  if (!user && isDashboard) {
+    window.location.href = "index.html";
   }
 }
-
 checkUser()
