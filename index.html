@@ -8,7 +8,12 @@
 </head>
 <body>
 
-<div class="container">
+<div id="showcase-page" class="showcase-container">
+    <h1 class="showcase-title">Care<span>Buddy</span></h1>
+    <p class="showcase-tagline">Your personal healthcare companion</p>
+</div>
+
+<div class="container hidden" id="login-container">
 
     <div class="brand">
         <h1>Care<span>Buddy</span></h1>
@@ -16,19 +21,10 @@
     </div>
 
     <div class="chat-box">
-        <div id="step1">
+        <div id="step2">
             <div class="bot-message">
-                🤖 Hi, I’m your <b>CareBuddy</b>. I help track your health.<br>
-                What should I call you?
-            </div>
-            <input type="text" id="username" placeholder="Enter your name">
-            <button onclick="goToStep2()">Continue</button>
-        </div>
-
-        <div id="step2" class="hidden">
-            <div class="bot-message">
-                Nice to meet you! 😊<br>
-                Please enter your phone number or email to continue.
+                Welcome to CareBuddy. 😊<br>
+                Please enter your phone number or email to login.
             </div>
             <input type="text" id="contact" placeholder="Phone number or Email">
             <button onclick="goToStep3()">Send OTP</button>
