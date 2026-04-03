@@ -55,37 +55,46 @@ async function loginWithGoogle() {
     document.body.style.cursor = "default";
   }
 }
-async function checkUser() {
-  // 1. Get the current session
-  const { data: { session }, error } = await supabase.auth.getSession();
-  const user = session?.user;
-  const path = window.location.pathname;
-
-  // 2. Define our pages (more robust path checking)
-  const isLoginPage = path === "/" || path.includes("index.html") || path === "";
-  const isDashboard = path.includes("dashboard.html");
-
-  // 3. LOGIC:
-  if (user) {
-    // If logged in and on login page -> Go to dashboard
-    if (isLoginPage) {
-      window.location.href = "dashboard.html";
-    }
-  } else {
-    // If NOT logged in and on dashboard -> Go to login
-    // BUT: only redirect if we aren't currently in the middle of an auth change
-    if (isDashboard) {
-       window.location.href = "index.html";
-    }
-  }
-}
-
-// 4. THE SECRET SAUCE: Listen for state changes
-// This catches the moment the Google login finishes
+// 1. THIS LISTENER IS THE KEY
+// It handles the "Magic" moment when Google sends the token back
 supabase.auth.onAuthStateChange((event, session) => {
-  console.log("Auth State Changed:", event);
-  if (event === "SIGNED_IN") {
-    window.location.href = "dashboard.html";
-  }
+    console.log("Auth Event:", event);
+    
+    if (event === "SIGNED_IN" || event === "USER_UPDATED") {
+        console.log("User signed in, moving to dashboard...");
+        window.location.href = "dashboard.html";
+    }
+    
+    if (event === "SIGNED_OUT") {
+        console.log("User signed out, moving to login...");
+        if (!window.location.pathname.includes("index.html") && window.location.pathname !== "/") {
+            window.location.href = "index.html";
+        }
+    }
 });
-checkUser()
+
+// 2. THIS ONLY RUNS ONCE ON LOAD
+async function initialCheck() {
+    const { data: { session } } = await supabase.auth.getSession();
+    const path = window.location.pathname;
+    const isDashboard = path.includes("dashboard.html");
+    const isLoginPage = path.includes("index.html") || path === "/";
+
+    // NEW: Check if the URL contains the Supabase recovery/access token
+    // If it does, STOP the redirect and let onAuthStateChange handle it.
+    if (window.location.hash.includes("access_token") || window.location.hash.includes("type=recovery")) {
+        console.log("Detecting auth token in URL, waiting for exchange...");
+        return; 
+    }
+
+    if (!session && isDashboard) {
+        console.log("No session found, redirecting to login...");
+        window.location.href = "index.html";
+    }
+    
+    if (session && isLoginPage) {
+        console.log("Session found, redirecting to dashboard...");
+        window.location.href = "dashboard.html";
+    }
+}
+initialCheck();
