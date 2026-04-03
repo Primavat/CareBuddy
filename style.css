@@ -131,7 +131,7 @@ button:hover {
 .showcase-container {
     text-align: center;
     position: absolute;
-    top: 50%;
+    top: 42%; /* Uplifted just a little bit */
     left: 50%;
     transform: translate(-50%, -50%);
     animation: showcaseFadeInOut 2.5s forwards ease-in-out;
@@ -139,13 +139,13 @@ button:hover {
 }
 
 .showcase-logo {
-    width: 140px; /* Reduced size */
+    width: 100px; /* Reduced size by ~30% */
     height: auto;
     margin-bottom: 15px;
-    opacity: 0.9;
-    /* Smooth radial mask to blend edges smoothly into our dark background */
-    -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 80%);
-    mask-image: radial-gradient(circle, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 80%);
+    opacity: 0.95;
+    /* Magic CSS hack: Invert white to black, restore colors, and use screen blend to make black transparent! */
+    filter: invert(1) hue-rotate(180deg) brightness(1.3) contrast(1.2);
+    mix-blend-mode: screen;
     animation: pulseLogo 3s infinite ease-in-out alternate;
 }
 
@@ -174,10 +174,10 @@ button:hover {
 }
 
 @keyframes showcaseFadeInOut {
-    0% { opacity: 0; transform: translate(-50%, -45%); }
-    20% { opacity: 1; transform: translate(-50%, -50%); }
-    80% { opacity: 1; transform: translate(-50%, -50%); }
-    100% { opacity: 0; transform: translate(-50%, -55%); }
+    0% { opacity: 0; transform: translate(-50%, -40%); }
+    20% { opacity: 1; transform: translate(-50%, -45%); }
+    80% { opacity: 1; transform: translate(-50%, -45%); }
+    100% { opacity: 0; transform: translate(-50%, -50%); }
 }
 
 /* Background Emojis */
