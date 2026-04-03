@@ -178,8 +178,11 @@ button:hover {
 
 .emoji {
     position: absolute;
-    opacity: 0.04;
-    animation: floatEmoji 6s infinite ease-in-out alternate;
+    opacity: 0.20; /* Made much more visible per user instructions */
+    font-size: 2.8rem;
+    animation: floatEmoji 5s infinite ease-in-out alternate;
+    /* This filter makes default emojis look light green */
+    filter: sepia(100%) hue-rotate(85deg) saturate(300%) brightness(1.2);
 }
 
 @keyframes floatEmoji {
