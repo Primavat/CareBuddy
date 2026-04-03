@@ -55,46 +55,51 @@ async function loginWithGoogle() {
     document.body.style.cursor = "default";
   }
 }
-// 1. THIS LISTENER IS THE KEY
-// It handles the "Magic" moment when Google sends the token back
+// 1. THE LISTENER
 supabase.auth.onAuthStateChange((event, session) => {
-    console.log("Auth Event:", event);
+    console.log("Auth Event:", event, "Session exists:", !!session);
     
-    if (event === "SIGNED_IN" || event === "USER_UPDATED") {
-        console.log("User signed in, moving to dashboard...");
+    // If we just signed in, or a session was recovered from the URL
+    if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+    // If we have a session, always move away from login page
+    if (window.location.pathname.includes("index.html") || window.location.pathname === "/") {
         window.location.href = "dashboard.html";
     }
-    
+}
+
+// Added: If the session finishes loading and there's a user, move them
+if (event === "INITIAL_SESSION" && session) {
+    if (window.location.pathname.includes("index.html") || window.location.pathname === "/") {
+        window.location.href = "dashboard.html";
+    }
+}
+
+    // If the user signed out
     if (event === "SIGNED_OUT") {
-        console.log("User signed out, moving to login...");
-        if (!window.location.pathname.includes("index.html") && window.location.pathname !== "/") {
+        if (window.location.pathname.includes("dashboard.html")) {
             window.location.href = "index.html";
         }
     }
 });
 
-// 2. THIS ONLY RUNS ONCE ON LOAD
+// 2. THE INITIAL CHECK (With a "Pause" for Login tokens)
 async function initialCheck() {
+    // Check if the URL has a Supabase hash (this happens right after Google login)
+    // If it does, we STOP and let onAuthStateChange handle the exchange.
+    if (window.location.hash.includes("access_token") || window.location.hash.includes("error")) {
+        console.log("Login token detected in URL. Waiting for Supabase...");
+        return; 
+    }
+
     const { data: { session } } = await supabase.auth.getSession();
     const path = window.location.pathname;
     const isDashboard = path.includes("dashboard.html");
     const isLoginPage = path.includes("index.html") || path === "/";
 
-    // NEW: Check if the URL contains the Supabase recovery/access token
-    // If it does, STOP the redirect and let onAuthStateChange handle it.
-    if (window.location.hash.includes("access_token") || window.location.hash.includes("type=recovery")) {
-        console.log("Detecting auth token in URL, waiting for exchange...");
-        return; 
-    }
-
-    if (!session && isDashboard) {
-        console.log("No session found, redirecting to login...");
-        window.location.href = "index.html";
-    }
-    
     if (session && isLoginPage) {
-        console.log("Session found, redirecting to dashboard...");
         window.location.href = "dashboard.html";
+    } else if (!session && isDashboard) {
+        window.location.href = "index.html";
     }
 }
 initialCheck();
