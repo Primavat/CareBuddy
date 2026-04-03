@@ -5,43 +5,13 @@
     <title>CareBuddy Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="dashboard.css">
+    <style>
+        /* Initial state to prevent flicker before auth check */
+        body { background-color: #0b1a13; color: white; display: none; }
+    </style>
 </head>
-<body style="display:none;">
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+<body>
 
-const supabase = createClient(
-  'https://idbratjfnpkzmbfzcehr.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkYnJhdGpmbnBrem1iZnpjZWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMTYyMzMsImV4cCI6MjA5MDc5MjIzM30._SHhi4Q7MTDE12L4tsl6yaLKAWvxZoVmmLZB5wdV59g'
-)
-
-// ✅ Make logout globally accessible
-window.logout = async function () {
-  await supabase.auth.signOut()
-  window.location.href = "index.html"
-}
-
-async function checkUser() {
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    window.location.href = "index.html"
-  } else {
-    console.log("Logged in user:", user)
-
-    // Show user email
-    const el = document.getElementById("user-email")
-    if (el) el.textContent = user.email
-
-    // ✅ Show page after auth check
-    document.body.style.display = "block"
-  }
-}
-
-// Run after DOM loads
-window.addEventListener("DOMContentLoaded", checkUser)
-</script>
-<!-- TOP NAVBAR -->
 <nav class="navbar">
     <div class="nav-left">
         <h2>Hello Buddy, Welcome to <span class="brand">CareBuddy</span></h2>
@@ -50,13 +20,13 @@ window.addEventListener("DOMContentLoaded", checkUser)
     <div class="nav-right">
         <a href="#">About Us</a>
         <div class="settings">
-    <img src="https://cdn-icons-png.flaticon.com/512/2099/2099058.png">
-    <div class="dropdown">
-        <a href="#">Notification Settings</a>
-        <a href="#">Privacy</a>
-        <a href="#">Theme</a>
-    </div>
-</div>
+            <img src="https://cdn-icons-png.flaticon.com/512/2099/2099058.png">
+            <div class="dropdown">
+                <a href="#">Notification Settings</a>
+                <a href="#">Privacy</a>
+                <a href="#">Theme</a>
+            </div>
+        </div>
         <div class="profile-menu">
             <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile">
             <div class="dropdown">
@@ -68,75 +38,62 @@ window.addEventListener("DOMContentLoaded", checkUser)
     </div>
 </nav>
 
-<!-- MAIN LAYOUT -->
 <div class="dashboard">
 
-    <!-- LEFT PANEL -->
     <aside class="sidebar">
-        <button onclick="showProfile()">👤 Profile</button>
+        <button onclick="showProfile()" class="active">👤 Profile</button>
         <button onclick="showChatbot()">🤖 Chatbot</button>
-        <button >💊 Medications</button>
-        <button >💧 Hydration</button>
-        <button >📅 Reminders</button>
-        <button >🧠 Mental Health</button>
+        <button>💊 Medications</button>
+        <button>💧 Hydration</button>
+        <button>📅 Reminders</button>
+        <button>🧠 Mental Health</button>
     </aside>
 
-    <!-- RIGHT CONTENT -->
     <main class="content">
 
-    <!-- PROFILE SECTION -->
-    <div id="profileSection">
+        <div id="profileSection">
+            <h2>🏠 Family Profiles</h2>
+            <form id="familyForm">
+                <div class="form-row">
+                    <input type="text" id="name" placeholder="Full Name" required>
+                    <select id="gender">
+                        <option value="">Gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
 
-        <h2>🏠 Family Profiles</h2>
+                <div class="form-row">
+                    <input type="date" id="birthdate" required>
+                    <input type="text" id="relation" placeholder="Relation (e.g. Mother)">
+                </div>
 
-        <form id="familyForm">
-            <div class="form-row">
-                <input type="text" id="name" placeholder="Full Name" required>
-                <select id="gender">
-                    <option value="">Gender</option>
-                    <option>Male</option>
-                    <option>Female</option>
-                    <option>Other</option>
-                </select>
-            </div>
+                <textarea id="health" placeholder="Health Data (conditions, allergies, etc.)"></textarea>
+                <button type="submit">➕ Add Family Member</button>
+            </form>
+            <div class="member_list" id="memberList"></div>
+        </div>
 
-            <div class="form-row">
-                <input type="date" id="birthdate" required>
-                <input type="text" id="relation" placeholder="Relation (e.g. Mother)">
-            </div>
-
-            <textarea id="health" placeholder="Health Data (conditions, allergies, etc.)"></textarea>
-
-            <button type="submit">➕ Add Family Member</button>
-        </form>
-
-        <div class="member_list" id="memberList"></div>
-    </div>
-
-    <!-- CHATBOT SECTION -->
-    <div id="chatbotSection" style="display:none;">
-
-        <h2>CareBuddy Chatbot 🤖</h2>
-
-        <div class="chat-container">
-            <div id="chatMessages" class="chat-messages">
-                <div class="bot-msg">
-                    Hello 👋 I’m CareBuddy. How can I help you today?
+        <div id="chatbotSection" style="display:none;">
+            <h2>CareBuddy Chatbot 🤖</h2>
+            <div class="chat-container">
+                <div id="chatMessages" class="chat-messages">
+                    <div class="bot-msg">
+                        Hello 👋 I’m CareBuddy. How can I help you today?
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="Type your message...">
+                    <button onclick="sendMessage()">Send</button>
                 </div>
             </div>
-
-            <div class="chat-input">
-                <input type="text" id="chatInput" placeholder="Type your message...">
-                <button onclick="sendMessage()">Send</button>
-            </div>
         </div>
-    </div>
 
-</main>
-
+    </main>
 </div>
 
+<script src="dashboard.js" type="module"></script>
 
-<script src="dashboard.js"></script>
 </body>
 </html>
