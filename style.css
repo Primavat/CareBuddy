@@ -139,14 +139,10 @@ button:hover {
 }
 
 .showcase-logo {
-    width: 100px; /* Reduced size by ~30% */
+    width: 100px;
     height: auto;
     margin-bottom: 15px;
     opacity: 0.95;
-    /* Magic CSS hack: Invert white to black, restore colors, and use screen blend to make black transparent! */
-    filter: invert(1) hue-rotate(180deg) brightness(1.3) contrast(1.2);
-    mix-blend-mode: screen;
-    animation: pulseLogo 3s infinite ease-in-out alternate;
 }
 
 @keyframes pulseLogo {
