@@ -63,6 +63,14 @@
             </div>
             <input type="text" id="contact" placeholder="Phone number or Email">
             <button onclick="goToStep3()">Send OTP</button>
+            <div class="divider">
+  <hr><span>OR</span><hr>
+</div>
+
+<button onclick="window.location.href='dashboard.html'">
+  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+  Continue with Google
+</button>
         </div>
 
         <div id="step3" class="hidden">
@@ -93,7 +101,7 @@
 
 </div>
 
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
