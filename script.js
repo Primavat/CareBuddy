@@ -1,8 +1,15 @@
 window.onload = function() {
     setTimeout(function() {
         document.getElementById("showcase-page").classList.add("hidden");
-        document.getElementById("login-container").classList.remove("hidden");
-    }, 2000); // 2 seconds showcase
+        const loginContainer = document.getElementById("login-container");
+        loginContainer.classList.remove("hidden");
+        
+        // Small delay to allow CSS to register the block display before fading in
+        setTimeout(function() {
+            loginContainer.classList.add("fade-in-active");
+        }, 50);
+        
+    }, 2400); // wait for showcase animation to nearly finish
 };
 
 function goToStep3() {
