@@ -53,20 +53,18 @@ supabase.auth.onAuthStateChange((event, session) => {
 
 // 3. Navigation & Auth Functions
 async function loginWithGoogle() {
-    try {
-        document.body.style.cursor = "wait";
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: 'https://care-buddy-pi.vercel.app/dashboard.html'
-            }
-        });
-        if (error) throw error;
-    } catch (err) {
-        alert("Error: " + err.message);
-    } finally {
-        document.body.style.cursor = "default";
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'https://care-buddy-pi.vercel.app/dashboard.html',
+      skipBrowserRedirect: false // Ensure this is false so Supabase handles the move
     }
+  });
+
+  if (error) {
+    console.error("Supabase Auth Error:", error.message);
+    alert("Auth Error: " + error.message);
+  }
 }
 
 function goToStep3() {
