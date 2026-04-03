@@ -1,12 +1,9 @@
-function goToStep2() {
-    const name = document.getElementById("username").value.trim();
-    if (name === "") {
-        alert("Please enter your name");
-        return;
-    }
-    document.getElementById("step1").classList.add("hidden");
-    document.getElementById("step2").classList.remove("hidden");
-}
+window.onload = function() {
+    setTimeout(function() {
+        document.getElementById("showcase-page").classList.add("hidden");
+        document.getElementById("login-container").classList.remove("hidden");
+    }, 2000); // 2 seconds showcase
+};
 
 function goToStep3() {
     const contact = document.getElementById("contact").value.trim();
