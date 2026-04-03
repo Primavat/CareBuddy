@@ -4,19 +4,70 @@ const supabase = createClient(
   'https://idbratjfnpkzmbfzcehr.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkYnJhdGpmbnBrem1iZnpjZWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMTYyMzMsImV4cCI6MjA5MDc5MjIzM30._SHhi4Q7MTDE12L4tsl6yaLKAWvxZoVmmLZB5wdV59g'
 )
+
+// 1. UI Loading Logic
 window.addEventListener("load", function() {
     setTimeout(function() {
-        document.getElementById("showcase-page").classList.add("hidden");
+        const showcase = document.getElementById("showcase-page");
         const loginContainer = document.getElementById("login-container");
-        loginContainer.classList.remove("hidden");
         
-        // Small delay to allow CSS to register the block display before fading in
-        setTimeout(function() {
-            loginContainer.classList.add("fade-in-active");
-        }, 50);
-        
+        if (showcase) showcase.classList.add("hidden");
+        if (loginContainer) {
+            loginContainer.classList.remove("hidden");
+            // Small delay to allow CSS to register the block display before fading in
+            setTimeout(function() {
+                loginContainer.classList.add("fade-in-active");
+            }, 50);
+        }
     }, 2400); // wait for showcase animation to nearly finish
 });
+
+// 2. Auth State Listener
+supabase.auth.onAuthStateChange((event, session) => {
+    console.log("Auth Event:", event, "Session exists:", !!session);
+    
+    const path = window.location.pathname;
+    const isLoginPage = path.includes("index.html") || path === "/" || path === "";
+
+    // Handle Sign In or Token Recovery
+    if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        if (isLoginPage) {
+            window.location.href = "dashboard.html";
+        }
+    }
+
+    // Handle Initial Session if user is already logged in
+    if (event === "INITIAL_SESSION" && session) {
+        if (isLoginPage) {
+            window.location.href = "dashboard.html";
+        }
+    }
+
+    // Handle Sign Out
+    if (event === "SIGNED_OUT") {
+        if (path.includes("dashboard.html")) {
+            window.location.href = "index.html";
+        }
+    }
+});
+
+// 3. Navigation & Auth Functions
+async function loginWithGoogle() {
+    try {
+        document.body.style.cursor = "wait";
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: 'https://care-buddy-pi.vercel.app/dashboard.html'
+            }
+        });
+        if (error) throw error;
+    } catch (err) {
+        alert("Error: " + err.message);
+    } finally {
+        document.body.style.cursor = "default";
+    }
+}
 
 function goToStep3() {
     const contact = document.getElementById("contact").value.trim();
@@ -36,56 +87,10 @@ function verifyOTP() {
         alert("Invalid OTP. Please try again.");
     }
 }
-async function loginWithGoogle() {
-  try {
-    document.body.style.cursor = "wait";
 
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: 'https://care-buddy-pi.vercel.app/dashboard.html'
-      }
-    })
-
-    if (error) throw error;
-
-  } catch (err) {
-    alert("Error: " + err.message)
-  } finally {
-    document.body.style.cursor = "default";
-  }
-}
-// 1. THE LISTENER
-supabase.auth.onAuthStateChange((event, session) => {
-    console.log("Auth Event:", event, "Session exists:", !!session);
-    
-    // If we just signed in, or a session was recovered from the URL
-    if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
-    // If we have a session, always move away from login page
-    if (window.location.pathname.includes("index.html") || window.location.pathname === "/") {
-        window.location.href = "dashboard.html";
-    }
-}
-
-// Added: If the session finishes loading and there's a user, move them
-if (event === "INITIAL_SESSION" && session) {
-    if (window.location.pathname.includes("index.html") || window.location.pathname === "/") {
-        window.location.href = "dashboard.html";
-    }
-}
-
-    // If the user signed out
-    if (event === "SIGNED_OUT") {
-        if (window.location.pathname.includes("dashboard.html")) {
-            window.location.href = "index.html";
-        }
-    }
-});
-
-// 2. THE INITIAL CHECK (With a "Pause" for Login tokens)
+// 4. Initial Page Load Check
 async function initialCheck() {
-    // Check if the URL has a Supabase hash (this happens right after Google login)
-    // If it does, we STOP and let onAuthStateChange handle the exchange.
+    // If URL has a hash (token), stop and let the listener handle it
     if (window.location.hash.includes("access_token") || window.location.hash.includes("error")) {
         console.log("Login token detected in URL. Waiting for Supabase...");
         return; 
@@ -94,7 +99,7 @@ async function initialCheck() {
     const { data: { session } } = await supabase.auth.getSession();
     const path = window.location.pathname;
     const isDashboard = path.includes("dashboard.html");
-    const isLoginPage = path.includes("index.html") || path === "/";
+    const isLoginPage = path.includes("index.html") || path === "/" || path === "";
 
     if (session && isLoginPage) {
         window.location.href = "dashboard.html";
@@ -102,4 +107,5 @@ async function initialCheck() {
         window.location.href = "index.html";
     }
 }
+
 initialCheck();
