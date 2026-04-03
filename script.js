@@ -29,25 +29,15 @@ supabase.auth.onAuthStateChange((event, session) => {
     const path = window.location.pathname;
     const isLoginPage = path.includes("index.html") || path === "/" || path === "";
 
-    // Handle Sign In or Token Recovery
-    if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
-        if (isLoginPage) {
-            window.location.href = "dashboard.html";
-        }
+    // If we have a session, move to dashboard
+    if (session && isLoginPage) {
+        console.log("Session confirmed, redirecting to dashboard...");
+        window.location.href = "dashboard.html";
     }
 
-    // Handle Initial Session if user is already logged in
-    if (event === "INITIAL_SESSION" && session) {
-        if (isLoginPage) {
-            window.location.href = "dashboard.html";
-        }
-    }
-
-    // Handle Sign Out
-    if (event === "SIGNED_OUT") {
-        if (path.includes("dashboard.html")) {
-            window.location.href = "index.html";
-        }
+    // If the user explicitly signs out, then and ONLY then move to login
+    if (event === "SIGNED_OUT" && path.includes("dashboard.html")) {
+        window.location.href = "index.html";
     }
 });
 
@@ -88,21 +78,30 @@ function verifyOTP() {
 
 // 4. Initial Page Load Check
 async function initialCheck() {
-    // If URL has a hash (token), stop and let the listener handle it
-    if (window.location.hash.includes("access_token") || window.location.hash.includes("error")) {
-        console.log("Login token detected in URL. Waiting for Supabase...");
-        return; 
+    // Check for tokens in the URL (Google redirect)
+    const hasHash = window.location.hash.includes("access_token");
+    const hasError = window.location.hash.includes("error");
+
+    if (hasHash || hasError) {
+        console.log("Hash detected. Stopping all redirects to allow processing...");
+        return; // EXIT. Do not run any redirects if we are in the middle of a login.
     }
 
     const { data: { session } } = await supabase.auth.getSession();
     const path = window.location.pathname;
     const isDashboard = path.includes("dashboard.html");
-    const isLoginPage = path.includes("index.html") || path === "/" || path === "";
 
-    if (session && isLoginPage) {
-        window.location.href = "dashboard.html";
-    } else if (!session && isDashboard) {
-        window.location.href = "index.html";
+    // Only redirect to login if we are on the dashboard AND we are 100% sure there's no session
+    if (!session && isDashboard) {
+        // Add a tiny delay to be absolutely sure the session isn't just loading
+        setTimeout(() => {
+            supabase.auth.getSession().then(({ data }) => {
+                if (!data.session) {
+                    console.log("Still no session after delay. Redirecting to login...");
+                    window.location.href = "index.html";
+                }
+            });
+        }, 500); 
     }
 }
 
