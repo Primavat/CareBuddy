@@ -56,20 +56,36 @@ async function loginWithGoogle() {
   }
 }
 async function checkUser() {
-  const { data: { session } } = await supabase.auth.getSession();
+  // 1. Get the current session
+  const { data: { session }, error } = await supabase.auth.getSession();
   const user = session?.user;
   const path = window.location.pathname;
 
-  // Check if we are on the home/login page
-  const isLoginPage = path === "/" || path.includes("index.html");
+  // 2. Define our pages (more robust path checking)
+  const isLoginPage = path === "/" || path.includes("index.html") || path === "";
   const isDashboard = path.includes("dashboard.html");
 
-  if (user && isLoginPage) {
-    window.location.href = "dashboard.html";
-  } 
-  
-  if (!user && isDashboard) {
-    window.location.href = "index.html";
+  // 3. LOGIC:
+  if (user) {
+    // If logged in and on login page -> Go to dashboard
+    if (isLoginPage) {
+      window.location.href = "dashboard.html";
+    }
+  } else {
+    // If NOT logged in and on dashboard -> Go to login
+    // BUT: only redirect if we aren't currently in the middle of an auth change
+    if (isDashboard) {
+       window.location.href = "index.html";
+    }
   }
 }
+
+// 4. THE SECRET SAUCE: Listen for state changes
+// This catches the moment the Google login finishes
+supabase.auth.onAuthStateChange((event, session) => {
+  console.log("Auth State Changed:", event);
+  if (event === "SIGNED_IN") {
+    window.location.href = "dashboard.html";
+  }
+});
 checkUser()
