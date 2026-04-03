@@ -6,12 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="dashboard.css">
 </head>
-<body>
+<body style="display:none;">
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
+const supabase = createClient(
+  'https://idbratjfnpkzmbfzcehr.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkYnJhdGpmbnBrem1iZnpjZWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMTYyMzMsImV4cCI6MjA5MDc5MjIzM30._SHhi4Q7MTDE12L4tsl6yaLKAWvxZoVmmLZB5wdV59g'
+)
+
+// ✅ Make logout globally accessible
+window.logout = async function () {
+  await supabase.auth.signOut()
+  window.location.href = "index.html"
+}
+
+async function checkUser() {
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    window.location.href = "index.html"
+  } else {
+    console.log("Logged in user:", user)
+
+    // Show user email
+    const el = document.getElementById("user-email")
+    if (el) el.textContent = user.email
+
+    // ✅ Show page after auth check
+    document.body.style.display = "block"
+  }
+}
+
+// Run after DOM loads
+window.addEventListener("DOMContentLoaded", checkUser)
+</script>
 <!-- TOP NAVBAR -->
 <nav class="navbar">
     <div class="nav-left">
         <h2>Hello Buddy, Welcome to <span class="brand">CareBuddy</span></h2>
+        <h3 id="user-email" style="font-weight:400; color:#a3b8ad;"></h3>
     </div>
     <div class="nav-right">
         <a href="#">About Us</a>
@@ -28,7 +62,7 @@
             <div class="dropdown">
                 <a href="#">Change Name</a>
                 <a href="#">Change Password</a>
-                <a href="#">Logout</a>
+                <a href="#" onclick="logout()">Logout</a>
             </div>
         </div>
     </div>
