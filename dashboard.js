@@ -88,12 +88,19 @@ window.showSection = (sectionId) => {
 // --- 3. REWARDS & AI LOGIC ---
 
 // --- AI CONFIGURATION ---
-const GEMINI_API_KEY = "AIzaSyB7H5bhn8y8Z4Ah-vTCqnMNWVw6ovxTrDs";
+const GEMINI_API_KEY = "AIzaSyB7H5bhn8y8Z4Ah-vTCqnMNWVw6ovxTrDs".trim();
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ 
-    model: "gemini-3.1-flash", // Updated for April 2026 availability
+
+// List of models to try in order of preference
+const MODELS_TO_TRY = ["gemini-3.1-flash", "gemini-2.5-flash", "gemini-1.5-flash", "gemini-pro"];
+let activeModelName = MODELS_TO_TRY[0];
+
+const getBotModel = (modelName) => genAI.getGenerativeModel({ 
+    model: modelName,
     systemInstruction: "Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns."
 });
+
+let model = getBotModel(activeModelName);
 
 // Points System
 window.addPoints = (category, amount) => {
@@ -271,7 +278,7 @@ window.sendMessage = async () => {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     try {
-        console.log("CareBot: Generating content via SDK...");
+        console.log(`CareBot: Generating content via SDK using ${activeModelName}...`);
         const result = await model.generateContent(message);
         const response = await result.response;
         const text = response.text();
@@ -284,14 +291,28 @@ window.sendMessage = async () => {
             appendMessage('bot', "I received an empty response. Let's try rephrasing that.");
         }
     } catch (error) {
-        console.error("CareBot SDK Error:", error);
-        document.getElementById(typingId).remove();
+        console.error(`CareBot SDK Error (${activeModelName}):`, error);
         
+        // If 404, try the next model in the list
+        if (error.message.includes("404") || error.message.includes("not found")) {
+            const nextIndex = MODELS_TO_TRY.indexOf(activeModelName) + 1;
+            if (nextIndex < MODELS_TO_TRY.length) {
+                activeModelName = MODELS_TO_TRY[nextIndex];
+                console.warn(`CareBot: Model ${MODELS_TO_TRY[nextIndex-1]} failed, trying ${activeModelName}...`);
+                model = getBotModel(activeModelName);
+                
+                // Remove typing indicator before retrying (it will be re-added or handled)
+                document.getElementById(typingId).remove();
+                return window.sendMessage(); // Recursive retry with new model
+            }
+        }
+
+        document.getElementById(typingId).remove();
         let errorMsg = "Oops! I encountered an error connecting to my AI brain.";
         if (error.message.includes("404")) {
-            errorMsg = "Error 404: The model name or API version seems invalid for your region. I'll automatically try a fallback in the next update if this persists.";
+            errorMsg = "Error 404: I couldn't find a compatible AI model for your key yet. Please ensure 'Generative Language API' is enabled in Google Cloud Console.";
         } else if (error.message.includes("403")) {
-            errorMsg = "Error 403: Access forbidden. Please ensure your API key is correct and has Gemini API enabled in AI Studio.";
+            errorMsg = "Error 403: Access forbidden. Your key might be restricted or Gemini is not available in your region.";
         }
         
         appendMessage('bot', errorMsg);
