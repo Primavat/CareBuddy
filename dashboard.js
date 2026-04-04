@@ -36,48 +36,52 @@ function showPage(user) {
     const greetingName = document.getElementById("user-name-greeting");
     const dropdownName = document.getElementById("display-name");
     const dropdownEmail = document.getElementById("user-email");
-    
-    // Prioritize name from metadata, fallback to "Primavat"
+
     const fullName = user.user_metadata?.full_name || "Primavat";
-    
+
     if (greetingName) greetingName.textContent = fullName;
     if (dropdownName) dropdownName.textContent = fullName;
     if (dropdownEmail) dropdownEmail.textContent = user.email;
-    
-    // Staggered animation for sidebar
-    const items = document.querySelectorAll('.sidebar button');
-    items.forEach((item, index) => {
-        item.style.animationDelay = `${index * 0.1}s`;
-    });
+
+    // Initialize Mode & Default Section
+    const savedMode = localStorage.getItem("dashboardMode") || "personal";
+    window.setDashboardMode(savedMode);
 }
 
 // --- 2. GLOBAL FUNCTIONS (Required for HTML Buttons) ---
+
+window.setDashboardMode = (mode) => {
+    localStorage.setItem("dashboardMode", mode);
+    document.body.className = `mode-${mode}`;
+    
+    // Update Toggle UI
+    document.getElementById("personal-btn").classList.toggle("active", mode === 'personal');
+    document.getElementById("family-btn").classList.toggle("active", mode === 'family');
+
+    // Default Section based on mode
+    if (mode === 'personal') window.showSection('vitalsSection');
+    else window.showSection('profileSection');
+};
+
+window.showSection = (sectionId) => {
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+    // Show target
+    const target = document.getElementById(sectionId);
+    if (target) target.style.display = 'block';
+
+    // Update Sidebar UI
+    const buttons = document.querySelectorAll(".sidebar button");
+    buttons.forEach(btn => {
+        const onClickAttr = btn.getAttribute("onclick") || "";
+        btn.classList.toggle("active", onClickAttr.includes(`'${sectionId}'`));
+    });
+};
 
 window.logout = async () => {
     await supabase.auth.signOut();
     window.location.href = "index.html";
 };
-
-window.showProfile = () => {
-    document.getElementById("profileSection").style.display = "block";
-    document.getElementById("chatbotSection").style.display = "none";
-    setActiveButton(0);
-};
-
-window.showChatbot = () => {
-    document.getElementById("profileSection").style.display = "none";
-    document.getElementById("chatbotSection").style.display = "block";
-    setActiveButton(1);
-};
-
-function setActiveButton(activeIndex) {
-    const buttons = document.querySelectorAll(".sidebar button");
-    buttons.forEach((btn, index) => {
-        btn.classList.toggle("active", index === activeIndex);
-    });
-}
-
-// --- 3. UI INTERACTIVE LOGIC (Dropdowns) ---
 
 window.toggleDropdown = (id) => {
     const dropdown = document.getElementById(id);
