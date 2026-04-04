@@ -1,5 +1,4 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-import { GoogleGenerativeAI } from 'https://esm.run/@google/generative-ai'
 
 const supabase = createClient(
     'https://idbratjfnpkzmbfzcehr.supabase.co',
@@ -9,7 +8,6 @@ const supabase = createClient(
 // --- 1. AUTH & REDIRECT LOGIC ---
 
 async function checkUserSession() {
-    // If the URL has a hash, Google is currently logging us in. STOP redirects.
     if (window.location.hash.includes("access_token")) {
         console.log("Login in progress...");
         return;
@@ -20,7 +18,6 @@ async function checkUserSession() {
     if (session) {
         showPage(session.user);
     } else {
-        // Wait 1.5s to see if the session finishes loading
         setTimeout(async () => {
             const { data: { session: retry } } = await supabase.auth.getSession();
             if (!retry) {
@@ -44,40 +41,31 @@ function showPage(user) {
     if (dropdownName) dropdownName.textContent = fullName;
     if (dropdownEmail) dropdownEmail.textContent = user.email;
 
-    // Initialize Mode & Points
     const savedMode = localStorage.getItem("dashboardMode") || "personal";
     window.setDashboardMode(savedMode);
     
-    // Initial UI update for points
     updatePointsUI();
-
-    // Auto-greet the user after a short delay
     setTimeout(() => autoGreet(fullName), 1000);
 }
 
-// --- 2. GLOBAL FUNCTIONS (Required for HTML Buttons) ---
+// --- 2. GLOBAL FUNCTIONS ---
 
 window.setDashboardMode = (mode) => {
     localStorage.setItem("dashboardMode", mode);
     document.body.className = `mode-${mode}`;
 
-    // Update Toggle UI
     document.getElementById("personal-btn").classList.toggle("active", mode === 'personal');
     document.getElementById("family-btn").classList.toggle("active", mode === 'family');
 
-    // Default Section based on mode
     if (mode === 'personal') window.showSection('vitalsSection');
     else window.showSection('profileSection');
 };
 
 window.showSection = (sectionId) => {
-    // Hide all sections
     document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
-    // Show target
     const target = document.getElementById(sectionId);
     if (target) target.style.display = 'block';
 
-    // Update Sidebar UI
     const buttons = document.querySelectorAll(".sidebar button");
     buttons.forEach(btn => {
         const onClickAttr = btn.getAttribute("onclick") || "";
@@ -85,24 +73,8 @@ window.showSection = (sectionId) => {
     });
 };
 
-// --- 3. REWARDS & AI LOGIC ---
+// --- 3. REWARDS LOGIC ---
 
-// --- AI CONFIGURATION ---
-const GEMINI_API_KEY = "AIzaSyB7H5bhn8y8Z4Ah-vTCqnMNWVw6ovxTrDs".trim();
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-
-// List of models to try in order of preference
-const MODELS_TO_TRY = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-pro"];
-let activeModelName = MODELS_TO_TRY[0];
-
-const getBotModel = (modelName) => genAI.getGenerativeModel({ 
-    model: modelName,
-    systemInstruction: "Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns."
-}, { apiVersion: 'v1' }); // Force v1 for better global stability
-
-let model = getBotModel(activeModelName);
-
-// Points System
 window.addPoints = (category, amount) => {
     const points = JSON.parse(localStorage.getItem("carebuddy_points") || '{"hydration":0, "fitness":0}');
     points[category] += amount;
@@ -139,14 +111,12 @@ window.toggleDropdown = (id) => {
     dropdown.classList.toggle('show');
 };
 
-// Close dropdowns on outside click
 document.addEventListener('click', (e) => {
     if (!e.target.closest('.profile-menu') && !e.target.closest('.settings')) {
         document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
     }
 });
 
-// Setup click listeners for the icons
 document.addEventListener('DOMContentLoaded', () => {
     const profileIcon = document.querySelector('#profile-menu .menu-icon');
     const settingsIcon = document.querySelector('#settings-menu .menu-icon');
@@ -155,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (settingsIcon) settingsIcon.onclick = () => window.toggleDropdown('settings-dropdown');
 });
 
-// --- 4. STUB FUNCTIONS FOR MENU OPTIONS ---
+// --- 4. STUB FUNCTIONS ---
 
 window.showNotificationSettings = () => alert("🔔 Notification Settings: This feature is coming soon!");
 window.showPrivacy = () => alert("🔒 Privacy Settings: Your data is always encrypted and secure.");
@@ -169,7 +139,7 @@ window.changeName = () => {
 };
 window.changePassword = () => alert("🔑 Change Password: A reset link has been sent to your email (Demo).");
 
-// --- 5. FAMILY & CHATBOT LOGIC ---
+// --- 5. FAMILY LOGIC ---
 
 const form = document.getElementById("familyForm");
 const memberList = document.getElementById("memberList");
@@ -237,7 +207,8 @@ function calculateAge(birthdate) {
     return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
 
-// --- CHATBOT WIDGET FUNCTIONALITY ---
+// --- 6. CHATBOT ---
+
 window.toggleChatWidget = () => {
     const chatWindow = document.getElementById("chatWindow");
     const isHidden = chatWindow.style.display === "none";
@@ -246,10 +217,8 @@ window.toggleChatWidget = () => {
 
 function autoGreet(name) {
     const chatMessages = document.getElementById("chatMessages");
-    // Only greet if chat is empty
     if (chatMessages.children.length === 0) {
         appendMessage('bot', `How can I help you today, ${name}? 👋`);
-        // Optionally open the widget automatically on first load
         document.getElementById("chatWindow").style.display = "flex";
     }
 }
@@ -259,71 +228,39 @@ window.sendMessage = async (retryMsg = null) => {
     const message = retryMsg || input.value.trim();
     if (!message) return;
 
-    // Only append user message and clear input on first attempt
     if (!retryMsg) {
         appendMessage('user', message);
         input.value = "";
     }
 
-    if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("PASTE")) {
-        appendMessage('bot', "CareBot needs an API Key! Please add it to dashboard.js.");
-        return;
-    }
-
-    // Typing indicator with dynamic model name
     const typingId = 'typing-' + Date.now();
     const chatMessages = document.getElementById("chatMessages");
     const typingDiv = document.createElement("div");
     typingDiv.id = typingId;
     typingDiv.className = "bot-msg typing";
-    typingDiv.textContent = `CareBot is thinking (${activeModelName})...`;
+    typingDiv.textContent = "CareBot is thinking...";
     chatMessages.appendChild(typingDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     try {
-        // Generating content silently via SDK
-        const result = await model.generateContent(message);
-        const response = await result.response;
-        const text = response.text();
-        
-        document.getElementById(typingId).remove();
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
 
-        if (text) {
-            appendMessage('bot', text);
+        const data = await response.json();
+        document.getElementById(typingId)?.remove();
+
+        if (data.reply) {
+            appendMessage('bot', data.reply);
         } else {
-            appendMessage('bot', "I received an empty response. Let's try rephrasing that.");
+            appendMessage('bot', "I received an empty response. Please try again.");
         }
+
     } catch (error) {
-        // Log errors without exposing full request details
-        console.error(`CareBot Service Error (${activeModelName})`);
-        
-        // Remove typing indicator before retrying or failing
-        if (document.getElementById(typingId)) {
-            document.getElementById(typingId).remove();
-        }
-
-        // If 404, try the next model in the list
-        if (error.message.includes("404") || error.message.includes("not found")) {
-            const nextIndex = MODELS_TO_TRY.indexOf(activeModelName) + 1;
-            if (nextIndex < MODELS_TO_TRY.length) {
-                const prevModel = activeModelName;
-                activeModelName = MODELS_TO_TRY[nextIndex];
-                console.warn(`CareBot: Model ${prevModel} failed, trying ${activeModelName}...`);
-                model = getBotModel(activeModelName);
-                
-                // Retry with the same message
-                return window.sendMessage(message); 
-            }
-        }
-
-        let errorMsg = "Oops! I encountered an error connecting to my AI brain.";
-        if (error.message.includes("404")) {
-            errorMsg = "Error 404: AI Model sync issue. This usually resolves automatically in a few minutes.";
-        } else if (error.message.includes("403")) {
-            errorMsg = "Error 403: Security Block. Please ensure 'Generative Language API' is enabled in your Google Cloud Console.";
-        }
-        
-        appendMessage('bot', errorMsg);
+        document.getElementById(typingId)?.remove();
+        appendMessage('bot', "Oops! Could not connect to CareBot. Please try again.");
     }
 };
 
@@ -336,7 +273,7 @@ function appendMessage(sender, text) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// --- VACCINATION TRACKER LOGIC ---
+// --- 7. VACCINATION TRACKER ---
 
 const VACCINE_SCHEDULE = [
     { id: 'bcg', name: 'BCG (Tuberculosis)', ageMonths: 0, description: 'Single dose at birth' },
@@ -357,7 +294,6 @@ window.renderVaccinations = () => {
     const profileSelect = document.getElementById("vaccine-profile-select");
     if (!list || !profileSelect) return;
 
-    // Sync Dropdown with Family Members
     const currentVal = profileSelect.value;
     profileSelect.innerHTML = '<option value="user">Me (Primary)</option>';
     members.forEach((m, idx) => {
@@ -368,7 +304,6 @@ window.renderVaccinations = () => {
     });
     profileSelect.value = currentVal;
 
-    // Determine target birthdate
     let birthdate = localStorage.getItem("carebuddy_user_dob") || "1990-01-01";
     let profileId = "user";
     
@@ -460,25 +395,11 @@ function calculateAgeInMonths(birthdate) {
     return (now.getFullYear() - dob.getFullYear()) * 12 + (now.getMonth() - dob.getMonth());
 }
 
-// Initial Call
 setTimeout(window.renderVaccinations, 500);
 
-// --- DIAGNOSTICS ---
-window.testGeminiConnection = async () => {
-    try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}`);
-        const data = await res.json();
-        if (data.error) alert("API Error: " + data.error.message);
-        else alert("Connection successful! Models are available.");
-    } catch (e) {
-        alert("Failed to connect to AI services.");
-    }
-};
-
-// Initialize on Load
+// Initialize
 checkUserSession();
 
-// Listen for the Handshake finishing
 supabase.auth.onAuthStateChange((event, session) => {
     if (session) showPage(session.user);
     if (event === "SIGNED_OUT") window.location.href = "index.html";
