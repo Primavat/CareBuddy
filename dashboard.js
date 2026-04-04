@@ -33,12 +33,17 @@ async function checkUserSession() {
 
 function showPage(user) {
     document.body.style.display = "block";
-    const emailDisplay = document.getElementById("user-email");
-    const nameDisplay = document.getElementById("display-name");
-
-    if (emailDisplay) emailDisplay.textContent = user.email;
-    if (nameDisplay) nameDisplay.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
-
+    const greetingName = document.getElementById("user-name-greeting");
+    const dropdownName = document.getElementById("display-name");
+    const dropdownEmail = document.getElementById("user-email");
+    
+    // Prioritize name from metadata, fallback to "Primavat"
+    const fullName = user.user_metadata?.full_name || "Primavat";
+    
+    if (greetingName) greetingName.textContent = fullName;
+    if (dropdownName) dropdownName.textContent = fullName;
+    if (dropdownEmail) dropdownEmail.textContent = user.email;
+    
     // Staggered animation for sidebar
     const items = document.querySelectorAll('.sidebar button');
     items.forEach((item, index) => {
