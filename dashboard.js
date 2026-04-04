@@ -46,9 +46,12 @@ function showPage(user) {
     // Initialize Mode & Points
     const savedMode = localStorage.getItem("dashboardMode") || "personal";
     window.setDashboardMode(savedMode);
-
+    
     // Initial UI update for points
     updatePointsUI();
+
+    // Auto-greet the user after a short delay
+    setTimeout(() => autoGreet(fullName), 1000);
 }
 
 // --- 2. GLOBAL FUNCTIONS (Required for HTML Buttons) ---
@@ -224,7 +227,23 @@ function calculateAge(birthdate) {
     return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
 
-// --- CHATBOT FUNCTIONALITY ---
+// --- CHATBOT WIDGET FUNCTIONALITY ---
+window.toggleChatWidget = () => {
+    const chatWindow = document.getElementById("chatWindow");
+    const isHidden = chatWindow.style.display === "none";
+    chatWindow.style.display = isHidden ? "flex" : "none";
+};
+
+function autoGreet(name) {
+    const chatMessages = document.getElementById("chatMessages");
+    // Only greet if chat is empty
+    if (chatMessages.children.length === 0) {
+        appendMessage('bot', `How can I help you today, ${name}? 👋`);
+        // Optionally open the widget automatically on first load
+        document.getElementById("chatWindow").style.display = "flex";
+    }
+}
+
 window.sendMessage = async () => {
     const input = document.getElementById("chatInput");
     const message = input.value.trim();
@@ -233,8 +252,8 @@ window.sendMessage = async () => {
     appendMessage('user', message);
     input.value = "";
 
-    if (GEMINI_API_KEY === "PASTE_YOUR_GEMINI_API_KEY_HERE") {
-        appendMessage('bot', "Please provide a valid Gemini API Key in dashboard.js to enable CareBot.");
+    if (GEMINI_API_KEY === "PASTE_YOUR_GEMINI_API_KEY_HERE" || !GEMINI_API_KEY) {
+        appendMessage('bot', "CareBot needs an API Key! Please add it to dashboard.js.");
         return;
     }
 
@@ -249,6 +268,7 @@ window.sendMessage = async () => {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     try {
+        console.log("CareBot: Sending request to Gemini...");
         const response = await fetch(GEMINI_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -260,14 +280,26 @@ window.sendMessage = async () => {
         });
 
         const data = await response.json();
-        const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm sorry, I couldn't process that. Please try again.";
+        console.log("CareBot: Received response:", data);
 
+        if (data.error) {
+            throw new Error(data.error.message || "API Error");
+        }
+
+        const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        
         document.getElementById(typingId).remove();
-        appendMessage('bot', aiResponse);
+
+        if (aiResponse) {
+            appendMessage('bot', aiResponse);
+        } else {
+            console.warn("CareBot: No text in response. Finish reason:", data.candidates?.[0]?.finishReason);
+            appendMessage('bot', "I'm sorry, I couldn't process that. It might be a sensitive topic or a connection glitch.");
+        }
     } catch (error) {
-        console.error("AI Error:", error);
+        console.error("CareBot: Error during fetch:", error);
         document.getElementById(typingId).remove();
-        appendMessage('bot', "Oops! Something went wrong with the connection. Please check your API key or internet.");
+        appendMessage('bot', "Oops! I'm having trouble connecting to my AI brain. Please check your API key or internet.");
     }
 };
 

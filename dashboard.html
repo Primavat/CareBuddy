@@ -68,7 +68,6 @@
 
     <aside class="sidebar">
         <!-- Common -->
-        <button onclick="showSection('chatbotSection')" id="btn-chatbot" class="sidebar-item"><i>🤖</i> Chatbot</button>
         
         <!-- Personal Only -->
         <button onclick="showSection('vitalsSection')" id="btn-vitals" class="sidebar-item personal-only"><i>💓</i> My Vitals</button>
@@ -200,23 +199,28 @@
                 </div>
             </div>
 
-            <!-- COMMON SECTIONS -->
-            <div id="chatbotSection" class="section" style="display:none;">
-                <h2>CareBuddy Chatbot 🤖</h2>
-                <div class="chat-container">
-                    <div id="chatMessages" class="chat-messages">
-                        <div class="bot-msg">
-                            Hello 👋 I’m CareBuddy. How can I help you today?
-                        </div>
-                    </div>
-                    <div class="chat-input">
-                        <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendMessage()">
-                        <button onclick="sendMessage()">Send</button>
-                    </div>
-                </div>
-            </div>
 
         </main>
+    </div>
+
+    <!-- Floating Chatbot Widget -->
+    <div id="chatbotWidget" class="chatbot-widget">
+        <div id="chatWindow" class="chat-window" style="display: none;">
+            <div class="chat-header">
+                <h3>CareBot 🤖</h3>
+                <button onclick="toggleChatWidget()" class="close-chat">×</button>
+            </div>
+            <div id="chatMessages" class="chat-messages">
+                <!-- Messages will be injected here -->
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+        <button id="chatbotFab" class="chatbot-fab" onclick="toggleChatWidget()">
+            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="CareBot">
+        </button>
     </div>
 
     <script src="dashboard.js" type="module"></script>
