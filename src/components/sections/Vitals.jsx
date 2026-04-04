@@ -1,14 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Activity, Thermometer, Droplet, Plus, TrendingUp } from 'lucide-react';
 
 const Vitals = () => {
-    const stats = [
-        { name: 'Blood Pressure', value: '120/80', unit: 'mmHg', icon: Heart, color: 'text-red-500', bg: 'bg-red-50' },
-        { name: 'Heart Rate', value: '72', unit: 'BPM', icon: Activity, color: 'text-primary', bg: 'bg-primary/10' },
-        { name: 'Body Temp', value: '98.6', unit: '°F', icon: Thermometer, color: 'text-amber-500', bg: 'bg-amber-50' },
-        { name: 'Glucose', value: '95', unit: 'mg/dL', icon: Droplet, color: 'text-blue-500', bg: 'bg-blue-50' },
-    ];
+    const [vitals, setVitals] = useState([
+        { id: 1, name: 'Blood Pressure', value: '120/80', unit: 'mmHg', icon: Heart, color: 'text-red-500', bg: 'bg-red-50' },
+        { id: 2, name: 'Heart Rate', value: '72', unit: 'BPM', icon: Activity, color: 'text-primary', bg: 'bg-primary/10' },
+        { id: 3, name: 'SpO2 Level', value: '98', unit: '%', icon: Thermometer, color: 'text-amber-500', bg: 'bg-amber-50' },
+        { id: 4, name: 'Glucose', value: '95', unit: 'mg/dL', icon: Droplet, color: 'text-blue-500', bg: 'bg-blue-50' },
+    ]);
+
+    const handleUpdate = () => {
+        const item = prompt("Which vital to update? (Blood Pressure, Heart Rate, SpO2, Glucose)");
+        if (!item) return;
+        const newVal = prompt(`Enter new value for ${item}:`);
+        if (!newVal) return;
+
+        setVitals(vitals.map(v => {
+            if (v.name.toLowerCase().includes(item.toLowerCase())) {
+                return { ...v, value: newVal };
+            }
+            return v;
+        }));
+    };
 
     return (
         <div className="max-w-6xl mx-auto">
@@ -17,13 +31,16 @@ const Vitals = () => {
                     <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">💓 My Health Vitals</h2>
                     <p className="text-text-dim font-bold italic leading-relaxed text-sm">Real-time overview of your core health metrics.</p>
                 </div>
-                <button className="bg-primary text-white px-8 py-3.5 rounded-2xl font-black shadow-lg hover:bg-green-700 transition-all flex items-center gap-2">
+                <button 
+                  onClick={handleUpdate}
+                  className="bg-primary text-white px-8 py-3.5 rounded-2xl font-black shadow-lg hover:bg-green-700 transition-all flex items-center gap-2"
+                >
                     <Plus size={20} /> Update Vitals
                 </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                {stats.map((s, i) => (
+                {vitals.map((s, i) => (
                     <motion.div
                         key={s.name}
                         initial={{ opacity: 0, scale: 0.9 }}

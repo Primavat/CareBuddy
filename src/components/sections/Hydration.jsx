@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Droplet, Plus, Trophy, Waves } from 'lucide-react';
+import { Droplet, Plus, Trophy, Waves, Droplets } from 'lucide-react';
 
 const Hydration = () => {
-  const [glasses, setGlasses] = useState(0);
+  const [glasses, setGlasses] = useState(6);
+  const [target] = useState(12);
+
+  const addGlass = () => {
+    if (glasses < target) {
+      setGlasses(prev => prev + 1);
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto font-sans">
@@ -13,30 +20,29 @@ const Hydration = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div className="bg-white p-10 rounded-[3rem] border border-border shadow-soft flex flex-col items-center justify-center relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-10 text-primary opacity-5 group-hover:opacity-10 transition-opacity"><Waves size={160} /></div>
-          
-          <div className="relative z-10 flex flex-col items-center">
-            <motion.div 
-               animate={{ y: [0, -10, 0] }} 
-               transition={{ repeat: Infinity, duration: 2 }}
-               className="w-24 h-24 bg-primary/10 rounded-[2.5rem] flex items-center justify-center text-primary mb-8 border border-primary/20 shadow-inner shadow-primary/20"
-            >
-              <Droplet size={48} fill="currentColor" />
-            </motion.div>
-            
-            <div className="flex items-baseline gap-2 mb-8">
-              <span className="text-6xl font-black text-secondary tracking-tighter">{glasses}</span>
-              <span className="text-xl font-bold text-text-dim uppercase tracking-widest">Glasses</span>
+        <div className="bg-white p-8 rounded-[2.5rem] border border-border shadow-sm text-center">
+            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6">Daily Progress</h3>
+            <div className="relative w-48 h-48 mx-auto flex items-center justify-center">
+                <svg className="w-full h-full transform -rotate-90">
+                    <circle cx="96" cy="96" r="88" fill="none" stroke="#f3f4f6" strokeWidth="12" />
+                    <motion.circle 
+                        cx="96" cy="96" r="88" fill="none" stroke="#3498db" strokeWidth="12" 
+                        strokeDasharray={552}
+                        animate={{ strokeDashoffset: 552 - (552 * (glasses / target)) }}
+                        transition={{ duration: 1 }}
+                    />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-4xl font-black text-secondary">{glasses}</span>
+                    <span className="text-[10px] font-bold text-text-dim uppercase tracking-tighter">of {target} glasses</span>
+                </div>
             </div>
-
             <button 
-              onClick={() => setGlasses(glasses + 1)}
-              className="bg-primary text-white w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg hover:bg-green-700 transition-all flex items-center justify-center gap-2"
+              onClick={addGlass}
+              className="mt-10 bg-[#3498db] text-white px-10 py-4 rounded-2xl font-black shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 mx-auto"
             >
-              <Plus size={18} fill="currentColor" /> Add 250ml Glass
+                <Droplets size={20} /> Log Water Glass
             </button>
-          </div>
         </div>
 
         <div className="bg-secondary p-10 rounded-[3rem] text-white flex flex-col justify-between overflow-hidden relative group">

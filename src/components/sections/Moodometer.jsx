@@ -20,10 +20,12 @@ const Moodometer = () => {
     { type: 'Angry', emoji: '😠', icon: Angry, color: '#e63946' },
   ];
 
-  const logMood = async (mood) => {
-    setSelectedMood(mood);
+  const selectMood = async (mood) => {
+    setCurrentMood(mood);
     setLoading(true);
-    setTip("");
+    
+    const newEntry = { id: Date.now(), mood: mood.emoji, label: mood.type, date: new Date().toLocaleTimeString() };
+    setMoodHistory(prev => [newEntry, ...prev].slice(0, 5));
 
     const prompt = `The user at CareBuddy just logged their mood as ${mood.type} (${mood.emoji}). 
     As an empathetic health assistant, provide a ONE-SENTENCE relaxation tip or mindfulness advice for this specific mood. 

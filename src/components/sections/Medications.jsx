@@ -17,7 +17,7 @@ const Medications = ({ members }) => {
 
   return (
     <div className="max-w-6xl mx-auto font-sans">
-      <div className="mb-14 flex justify-between items-center pb-6 border-b border-gray-100">
+      <div className="mb-10 flex justify-between items-center pb-6 border-b border-gray-100">
         <div>
           <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">💊 Medication Tracker</h2>
           <p className="text-sm font-bold text-text-dim italic leading-relaxed">Stay on top of your family's prescriptions and daily vitamins.</p>
@@ -27,7 +27,36 @@ const Medications = ({ members }) => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Sticky Progress Summarry (Compact) */}
+        <div className="w-full lg:w-64 sticky top-24 z-10">
+            <div className="bg-secondary p-5 rounded-[2rem] shadow-xl border border-white/10 text-white">
+                <div className="flex items-center justify-between mb-4">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Today's Progress</p>
+                    <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
+                        <CheckCircle2 size={16} className="text-primary" />
+                    </div>
+                </div>
+                <div className="mb-4">
+                    <h3 className="text-3xl font-black">{Math.round((meds.filter(m => m.status === 'taken').length / meds.length) * 100)}%</h3>
+                    <p className="text-[10px] font-bold text-white/50 uppercase mt-1">Doses Completed</p>
+                </div>
+                <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                    <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(meds.filter(m => m.status === 'taken').length / meds.length) * 100}%` }}
+                        className="h-full bg-primary"
+                    />
+                </div>
+                <div className="mt-4 flex gap-2">
+                    <span className="text-[9px] font-black bg-white/10 px-2 py-1 rounded-md uppercase tracking-tighter">Taken: {meds.filter(m => m.status === 'taken').length}</span>
+                    <span className="text-[9px] font-black bg-white/10 px-2 py-1 rounded-md uppercase tracking-tighter">Left: {meds.filter(m => m.status !== 'taken').length}</span>
+                </div>
+            </div>
+        </div>
+
+        {/* Scrolling Med List */}
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
         <AnimatePresence>
           {meds.map((m, index) => (
             <motion.div
@@ -72,6 +101,7 @@ const Medications = ({ members }) => {
             </motion.div>
           ))}
         </AnimatePresence>
+      </div>
       </div>
     </div>
   );

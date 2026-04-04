@@ -7,10 +7,22 @@ import { Settings, User, LogOut, Edit2, Shield, Globe, Sun } from 'lucide-react'
 const Navbar = ({ mode, setMode, userName, setUserName }) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
   const navigate = useNavigate();
   
   const userMenuRef = useRef(null);
   const settingsRef = useRef(null);
+
+  // Fetch real user email
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserEmail(user.email);
+      }
+    };
+    fetchUser();
+  }, []);
 
   // Close menus on click outside
   useEffect(() => {
@@ -133,6 +145,7 @@ const Navbar = ({ mode, setMode, userName, setUserName }) => {
                  <div className="px-4 py-4 mb-2 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100">
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">User Settings</p>
                     <p className="text-sm font-black text-secondary truncate">{userName}</p>
+                    {userEmail && <p className="text-[10px] font-medium text-gray-400 truncate opacity-70">{userEmail}</p>}
                 </div>
                 
                 <button 

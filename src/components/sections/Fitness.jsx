@@ -3,11 +3,29 @@ import { motion } from 'framer-motion';
 import { Dumbbell, Activity, Timer, Zap, Plus, Flame } from 'lucide-react';
 
 const Fitness = () => {
-    const stats = [
-        { name: 'Steps Today', value: '8,432', unit: 'steps', icon: Activity, color: 'text-primary' },
-        { name: 'Active Time', value: '45', unit: 'mins', icon: Timer, color: 'text-amber-500' },
-        { name: 'Calories', value: '320', unit: 'kcal', icon: Flame, color: 'text-red-500' }
-    ];
+    const [stats, setStats] = useState([
+        { id: 1, label: 'Steps Today', value: '8,432', unit: 'steps', target: '10,000', color: 'text-primary', icon: Activity },
+        { id: 2, label: 'Calories Burnt', value: '450', unit: 'kcal', target: '600', color: 'text-amber-500', icon: Flame },
+        { id: 3, label: 'Active Mins', value: '45', unit: 'min', target: '60', color: 'text-blue-500', icon: Timer },
+    ]);
+
+    const handleAddWorkout = () => {
+        const type = prompt("What workout did you do? (e.g., Running, Gym, Yoga)");
+        if (!type) return;
+        const mins = parseInt(prompt("Duration in minutes?"));
+        if (isNaN(mins)) return;
+
+        setStats(stats.map(s => {
+            if (s.id === 3) {
+                return { ...s, value: (parseInt(s.value.replace(',', '')) + mins).toString() };
+            }
+            if (s.id === 2) {
+                return { ...s, value: (parseInt(s.value.replace(',', '')) + mins * 10).toString() };
+            }
+            return s;
+        }));
+        alert(`Great job! ${type} for ${mins} mins added.`);
+    };
 
     return (
         <div className="max-w-6xl mx-auto font-sans">
@@ -16,7 +34,10 @@ const Fitness = () => {
                     <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">🏃 Fitness Tracker</h2>
                     <p className="text-sm font-bold text-text-dim italic leading-relaxed">Monitor your physical activity and hit your daily workout milestones.</p>
                 </div>
-                <button className="bg-primary text-white px-8 py-3.5 rounded-2xl font-black shadow-lg hover:bg-green-700 transition-all flex items-center gap-2">
+                <button 
+                  onClick={handleAddWorkout}
+                  className="bg-primary text-white px-8 py-3.5 rounded-2xl font-black shadow-lg hover:bg-green-700 transition-all flex items-center gap-2"
+                >
                     <Plus size={20} /> Add Workout
                 </button>
             </div>

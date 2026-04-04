@@ -4,31 +4,31 @@ import { Syringe, Calendar, CheckCircle2, Clock } from 'lucide-react';
 import { VACCINE_SCHEDULE } from '../../constants/healthData';
 
 const Vaccinations = () => {
-  const [selectedCategory, setSelectedCategory] = React.useState('all');
+  const [filter, setFilter] = useState('all');
+  const [vaccines] = useState([
+    { id: 1, name: 'BCG', date: 'Oct 2023', status: 'Completed', member: 'Baby Sam' },
+    { id: 2, name: 'Polio (OPV)', date: 'Nov 2023', status: 'Overdue', member: 'Baby Sam' },
+    { id: 3, name: 'Hepatitis B', date: 'Jan 2024', status: 'Upcoming', member: 'Baby Sam' },
+    { id: 4, name: 'MMR', date: 'Feb 2024', status: 'Upcoming', member: 'Rahul' }
+  ]);
 
-  const filteredVaccines = VACCINE_SCHEDULE.filter(v => {
-    if (selectedCategory === 'all') return true;
-    if (selectedCategory === 'infant') return v.ageMonths <= 12;
-    if (selectedCategory === 'child') return v.ageMonths > 12 && v.ageMonths <= 216;
-    if (selectedCategory === 'adult') return v.ageMonths > 216;
-    return true;
-  });
+  const filteredVaccines = filter === 'all' ? vaccines : vaccines.filter(v => v.status.toLowerCase() === filter.toLowerCase());
 
   return (
     <div className="max-w-6xl mx-auto font-sans">
-      <div className="mb-14 flex justify-between items-end pb-6 border-b border-gray-100">
+      <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100">
         <div>
-          <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">💉 Vaccination Tracker</h2>
-          <p className="text-sm font-bold text-text-dim italic leading-relaxed">Track essential immunization milestones for your family.</p>
+          <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">💉 Vaccination Records</h2>
+          <p className="text-sm font-bold text-text-dim italic leading-relaxed">Keep track of immunization schedules for your children and yourself.</p>
         </div>
-        <div className="flex bg-gray-100 p-1 rounded-2xl border border-border">
-          {['all', 'infant', 'child', 'adult'].map(cat => (
+        <div className="flex bg-gray-100 p-1 rounded-xl">
+          {['all', 'overdue', 'upcoming', 'completed'].map((f) => (
             <button 
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-6 py-2 rounded-xl text-xs font-black uppercase transition-all ${selectedCategory === cat ? 'bg-white shadow-md text-primary' : 'text-text-dim'}`}
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-4 py-2 rounded-lg text-xs font-black uppercase transition-all ${filter === f ? 'bg-primary text-white shadow-md' : 'text-gray-400 hover:text-secondary'}`}
             >
-              {cat}
+              {f}
             </button>
           ))}
         </div>
