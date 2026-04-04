@@ -63,11 +63,15 @@ const Hospitals = () => {
           const mappedHospitals = data.elements.map(el => {
             const type = el.tags.amenity === 'hospital' ? 'ER' : 
                          el.tags.amenity === 'pharmacy' ? 'Pharmacy' : 'Clinic';
+            const lat = el.lat || el.center?.lat;
+            const lon = el.lon || el.center?.lon;
             return {
               id: el.id,
               name: el.tags.name || "Unnamed Facility",
               type: type,
-              distance: lat && lon ? calculateDistance(lat, lon, el.lat || el.center.lat, el.lon || el.center.lon) : 'Global Search',
+              lat: lat,
+              lon: lon,
+              distance: lat && lon && userCoords ? calculateDistance(userCoords.latitude, userCoords.longitude, lat, lon) : userCoords ? calculateDistance(userCoords.latitude, userCoords.longitude, lat, lon) : 'Global Discovery',
               rating: (Math.random() * (5 - 4) + 4).toFixed(1),
               phone: el.tags.phone || el.tags["contact:phone"] || "+1-800-CARE"
             };
@@ -122,6 +126,13 @@ const Hospitals = () => {
     if (e.key === 'Enter') {
       fetchNearby();
     }
+  };
+
+  const handleNavigate = (h) => {
+    const origin = userCoords ? `${userCoords.latitude},${userCoords.longitude}` : 'Current+Location';
+    const destination = h.lat && h.lon ? `${h.lat},${h.lon}` : encodeURIComponent(h.name);
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=driving`;
+    window.open(mapsUrl, '_blank');
   };
 
   const filteredHospitals = hospitals.filter(h => {
@@ -216,7 +227,7 @@ const Hospitals = () => {
               </div>
 
               <button 
-                onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.name)}`, '_blank')}
+                onClick={() => handleNavigate(h)}
                 className="w-full bg-gray-50 text-secondary py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border border-border hover:bg-secondary hover:text-white transition-all"
               >
                 Navigate Now
