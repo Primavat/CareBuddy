@@ -43,9 +43,12 @@ function showPage(user) {
     if (dropdownName) dropdownName.textContent = fullName;
     if (dropdownEmail) dropdownEmail.textContent = user.email;
 
-    // Initialize Mode & Default Section
+    // Initialize Mode & Points
     const savedMode = localStorage.getItem("dashboardMode") || "personal";
     window.setDashboardMode(savedMode);
+    
+    // Initial UI update for points
+    updatePointsUI();
 }
 
 // --- 2. GLOBAL FUNCTIONS (Required for HTML Buttons) ---
@@ -63,7 +66,17 @@ window.setDashboardMode = (mode) => {
     else window.showSection('profileSection');
 };
 
+let currentSectionId = null;
+const SENSITIVE_SECTIONS = ['vitalsSection', 'journalSection', 'mentalSection', 'womenSection'];
+
 window.showSection = (sectionId) => {
+    // Check for Privacy Lock
+    if (SENSITIVE_SECTIONS.includes(sectionId) && !window.unlocked) {
+        currentSectionId = sectionId;
+        document.getElementById("privacyLock").style.display = "flex";
+        return;
+    }
+
     // Hide all sections
     document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
     // Show target
@@ -76,6 +89,55 @@ window.showSection = (sectionId) => {
         const onClickAttr = btn.getAttribute("onclick") || "";
         btn.classList.toggle("active", onClickAttr.includes(`'${sectionId}'`));
     });
+};
+
+// --- 3. PRIVACY LOCK & REWARDS LOGIC ---
+
+let enteredPin = "";
+const CORRECT_PIN = "1234";
+
+window.enterPin = (num) => {
+    if (enteredPin.length < 4) {
+        enteredPin += num;
+        document.getElementById("pinDisplay").textContent = "•".repeat(enteredPin.length).padEnd(4, "x");
+    }
+};
+
+window.clearPin = () => {
+    enteredPin = "";
+    document.getElementById("pinDisplay").textContent = "xxxx";
+};
+
+window.verifyPin = () => {
+    if (enteredPin === CORRECT_PIN) {
+        window.unlocked = true;
+        document.getElementById("privacyLock").style.display = "none";
+        if (currentSectionId) window.showSection(currentSectionId);
+    } else {
+        alert("Invalid PIN! Try 1234");
+        window.clearPin();
+    }
+};
+
+// Points System
+window.addPoints = (category, amount) => {
+    const points = JSON.parse(localStorage.getItem("carebuddy_points") || '{"hydration":0, "fitness":0}');
+    points[category] += amount;
+    localStorage.setItem("carebuddy_points", JSON.stringify(points));
+    updatePointsUI();
+};
+
+function updatePointsUI() {
+    const points = JSON.parse(localStorage.getItem("carebuddy_points") || '{"hydration":0, "fitness":0}');
+    const hydElem = document.getElementById("hydration-points");
+    const fitElem = document.getElementById("fitness-points");
+    if (hydElem) hydElem.textContent = points.hydration;
+    if (fitElem) fitElem.textContent = points.fitness;
+}
+
+window.logHydration = () => {
+    window.addPoints('hydration', 10);
+    alert("Great job! You earned 10 points for staying hydrated 💧");
 };
 
 window.logout = async () => {

@@ -69,17 +69,22 @@
     <aside class="sidebar">
         <!-- Common -->
         <button onclick="showSection('chatbotSection')" id="btn-chatbot" class="sidebar-item"><i>🤖</i> Chatbot</button>
-        <button id="btn-medications" class="sidebar-item"><i>💊</i> Medications</button>
-        <button id="btn-hydration" class="sidebar-item"><i>💧</i> Hydration</button>
-        <button id="btn-reminders" class="sidebar-item"><i>📅</i> Reminders</button>
-        <button id="btn-mental" class="sidebar-item"><i>🧠</i> Mental Health</button>
-
+        
         <!-- Personal Only -->
         <button onclick="showSection('vitalsSection')" id="btn-vitals" class="sidebar-item personal-only"><i>💓</i> My Vitals</button>
         <button onclick="showSection('journalSection')" id="btn-journal" class="sidebar-item personal-only"><i>📖</i> My Journal</button>
+        <button onclick="showSection('hydrationSection')" id="btn-hydration" class="sidebar-item personal-only"><i>💧</i> Hydration</button>
+        <button onclick="showSection('fitnessSection')" id="btn-fitness" class="sidebar-item personal-only"><i>🏃</i> Fitness</button>
+        <button onclick="showSection('mentalSection')" id="btn-mental" class="sidebar-item personal-only"><i>🧠</i> Mental Health</button>
+        <button onclick="showSection('womenSection')" id="btn-women" class="sidebar-item personal-only"><i>🚺</i> Women's Health</button>
 
         <!-- Family Only -->
         <button onclick="showSection('profileSection')" id="btn-profiles" class="sidebar-item family-only"><i>🏠</i> Family Profiles</button>
+        <button onclick="showSection('familyMedsSection')" id="btn-family-meds" class="sidebar-item family-only"><i>💊</i> Medications</button>
+        <button onclick="showSection('vaccineSection')" id="btn-vaccine" class="sidebar-item family-only"><i>💉</i> Vaccinations</button>
+        <button onclick="showSection('hospitalSection')" id="btn-hospitals" class="sidebar-item family-only"><i>🏥</i> Hospitals</button>
+        <button onclick="showSection('nurseSection')" id="btn-nurse" class="sidebar-item family-only"><i>👩‍⚕️</i> Caretakers</button>
+        <button onclick="showSection('dietSection')" id="btn-diet" class="sidebar-item family-only"><i>🥗</i> Dietary Plans</button>
     </aside>
 
         <main class="content">
@@ -100,6 +105,37 @@
                 <div class="card">
                     <textarea placeholder="How are you feeling today? Log your symptoms or mood..."></textarea>
                     <button type="submit" style="margin-top: 15px;">💾 Save Entry</button>
+                </div>
+            </div>
+
+            <div id="hydrationSection" class="personal-only section" style="display:none;">
+                <h2>💧 Hydration Tracker</h2>
+                <div class="card">
+                    <p>Track your daily water intake and earn points!</p>
+                    <div class="points-badge">Points: <span id="hydration-points">0</span></div>
+                    <button onclick="logHydration()">🥛 Drink 250ml</button>
+                </div>
+            </div>
+
+            <div id="fitnessSection" class="personal-only section" style="display:none;">
+                <h2>🏃 Fitness Tracker</h2>
+                <div class="card">
+                    <p>Track your steps and physical activity.</p>
+                    <div class="points-badge">Points: <span id="fitness-points">0</span></div>
+                </div>
+            </div>
+
+            <div id="mentalSection" class="personal-only section" style="display:none;">
+                <h2>🧠 Mental Health</h2>
+                <div class="card">
+                    <p>Monitor your mood, sleep, and stress levels.</p>
+                </div>
+            </div>
+
+            <div id="womenSection" class="personal-only section" style="display:none;">
+                <h2>🚺 Women's Health</h2>
+                <div class="card">
+                    <p>Menstrual Cycle, Pregnancy, and Menopause tracking.</p>
                 </div>
             </div>
 
@@ -128,6 +164,42 @@
                 <div class="member_list" id="memberList"></div>
             </div>
 
+            <div id="familyMedsSection" class="family-only section" style="display:none;">
+                <h2>💊 Medication & Reminders</h2>
+                <div class="card">
+                    <p>Manage family medication schedules.</p>
+                    <button onclick="window.open('https://www.1mg.com', '_blank')">🛒 Order Medicine (External)</button>
+                </div>
+            </div>
+
+            <div id="vaccineSection" class="family-only section" style="display:none;">
+                <h2>💉 Vaccination Reminders</h2>
+                <div class="card">
+                    <p>Age-based vaccination tracking and alerts.</p>
+                </div>
+            </div>
+
+            <div id="hospitalSection" class="family-only section" style="display:none;">
+                <h2>🏥 Nearby Hospitals</h2>
+                <div class="card">
+                    <p>Search for healthcare services near you.</p>
+                </div>
+            </div>
+
+            <div id="nurseSection" class="family-only section" style="display:none;">
+                <h2>👩‍⚕️ Caretaker/Nurse Connection</h2>
+                <div class="card">
+                    <p>Register and find professional caretakers.</p>
+                </div>
+            </div>
+
+            <div id="dietSection" class="family-only section" style="display:none;">
+                <h2>🥗 Personalized Dietary Plans</h2>
+                <div class="card">
+                    <p>Custom dietary advice for family members.</p>
+                </div>
+            </div>
+
             <!-- COMMON SECTIONS -->
             <div id="chatbotSection" class="section" style="display:none;">
                 <h2>CareBuddy Chatbot 🤖</h2>
@@ -145,6 +217,29 @@
             </div>
 
         </main>
+    </div>
+
+    <!-- Privacy Lock Overlay -->
+    <div id="privacyLock" class="privacy-overlay" style="display: none;">
+        <div class="pin-container">
+            <h3>🔒 Sensitive Data</h3>
+            <p>Enter your 4-digit PIN</p>
+            <div id="pinDisplay" class="pin-display">xxxx</div>
+            <div class="pin-pad">
+                <button onclick="enterPin('1')">1</button>
+                <button onclick="enterPin('2')">2</button>
+                <button onclick="enterPin('3')">3</button>
+                <button onclick="enterPin('4')">4</button>
+                <button onclick="enterPin('5')">5</button>
+                <button onclick="enterPin('6')">6</button>
+                <button onclick="enterPin('7')">7</button>
+                <button onclick="enterPin('8')">8</button>
+                <button onclick="enterPin('9')">9</button>
+                <button onclick="clearPin()">C</button>
+                <button onclick="enterPin('0')">0</button>
+                <button onclick="verifyPin()">OK</button>
+            </div>
+        </div>
     </div>
 
     <script src="dashboard.js" type="module"></script>
