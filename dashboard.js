@@ -254,26 +254,29 @@ function autoGreet(name) {
     }
 }
 
-window.sendMessage = async () => {
+window.sendMessage = async (retryMsg = null) => {
     const input = document.getElementById("chatInput");
-    const message = input.value.trim();
+    const message = retryMsg || input.value.trim();
     if (!message) return;
 
-    appendMessage('user', message);
-    input.value = "";
+    // Only append user message and clear input on first attempt
+    if (!retryMsg) {
+        appendMessage('user', message);
+        input.value = "";
+    }
 
     if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("PASTE")) {
         appendMessage('bot', "CareBot needs an API Key! Please add it to dashboard.js.");
         return;
     }
 
-    // Typing indicator
+    // Typing indicator with dynamic model name
     const typingId = 'typing-' + Date.now();
     const chatMessages = document.getElementById("chatMessages");
     const typingDiv = document.createElement("div");
     typingDiv.id = typingId;
     typingDiv.className = "bot-msg typing";
-    typingDiv.textContent = "CareBot is thinking...";
+    typingDiv.textContent = `CareBot is thinking (${activeModelName})...`;
     chatMessages.appendChild(typingDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -293,24 +296,28 @@ window.sendMessage = async () => {
     } catch (error) {
         console.error(`CareBot SDK Error (${activeModelName}):`, error);
         
+        // Remove typing indicator before retrying or failing
+        if (document.getElementById(typingId)) {
+            document.getElementById(typingId).remove();
+        }
+
         // If 404, try the next model in the list
         if (error.message.includes("404") || error.message.includes("not found")) {
             const nextIndex = MODELS_TO_TRY.indexOf(activeModelName) + 1;
             if (nextIndex < MODELS_TO_TRY.length) {
+                const prevModel = activeModelName;
                 activeModelName = MODELS_TO_TRY[nextIndex];
-                console.warn(`CareBot: Model ${MODELS_TO_TRY[nextIndex-1]} failed, trying ${activeModelName}...`);
+                console.warn(`CareBot: Model ${prevModel} failed, trying ${activeModelName}...`);
                 model = getBotModel(activeModelName);
                 
-                // Remove typing indicator before retrying (it will be re-added or handled)
-                document.getElementById(typingId).remove();
-                return window.sendMessage(); // Recursive retry with new model
+                // Retry with the same message
+                return window.sendMessage(message); 
             }
         }
 
-        document.getElementById(typingId).remove();
         let errorMsg = "Oops! I encountered an error connecting to my AI brain.";
         if (error.message.includes("404")) {
-            errorMsg = "Error 404: I couldn't find a compatible AI model for your key yet. Please ensure 'Generative Language API' is enabled in Google Cloud Console.";
+            errorMsg = "Error 404: I couldn't find a compatible AI model for your key. It's possible the Generative Language API is not enabled in your Google Cloud Console.";
         } else if (error.message.includes("403")) {
             errorMsg = "Error 403: Access forbidden. Your key might be restricted or Gemini is not available in your region.";
         }
