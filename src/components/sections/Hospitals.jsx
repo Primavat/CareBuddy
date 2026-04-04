@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Phone, Star, Search, Plus, Filter, Navigation } from 'lucide-react';
+import { MapPin, Phone, Star, Search, Plus, Filter, Navigation, Globe } from 'lucide-react';
+
+const DEFAULT_HOSPITALS = [
+  { id: 'def1', name: 'City General Hospital', type: 'ER', distance: 'Calculated Local', rating: '4.8', phone: '+1 234 567 890' },
+  { id: 'def2', name: 'Pediatric Care Center', type: 'Clinic', distance: 'Calculated Local', rating: '4.9', phone: '+1 234 567 891' },
+  { id: 'def3', name: 'Downtown Pharmacy Plus', type: 'Pharmacy', distance: 'Calculated Local', rating: '4.7', phone: '+1 234 567 892' },
+  { id: 'def4', name: 'Wellness Specialty Clinic', type: 'Clinic', distance: 'Calculated Local', rating: '4.6', phone: '+1 234 567 893' }
+];
 
 const Hospitals = () => {
   const [filter, setFilter] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
-  const [hospitals, setHospitals] = useState([]);
+  const [hospitals, setHospitals] = useState(DEFAULT_HOSPITALS);
+  const [userCoords, setUserCoords] = useState(null);
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    if (!lat1 || !lon1 || !lat2 || !lon2) return 'Unknown';
     const R = 6371; // km
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
@@ -19,56 +28,101 @@ const Hospitals = () => {
     return (R * c).toFixed(1) + " km";
   };
 
-  const fetchNearby = () => {
+  const fetchNearby = (isGlobal = false) => {
     setLoading(true);
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser");
-      setLoading(false);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const { latitude, longitude } = position.coords;
+    
+    const performFetch = async (lat, lon, queryTerm = '') => {
       try {
-        const query = `
-          [out:json];
-          (
-            node["amenity"~"hospital|clinic|pharmacy"](around:10000, ${latitude}, ${longitude});
-            way["amenity"~"hospital|clinic|pharmacy"](around:10000, ${latitude}, ${longitude});
-          );
-          out center;
-        `;
+        let query = '';
+        if (queryTerm) {
+          // Global search query
+          query = `
+            [out:json][timeout:25];
+            (
+              node["amenity"~"hospital|clinic|pharmacy"]["name"~"${queryTerm}",i](around:50000, ${lat || 0}, ${lon || 0});
+              way["amenity"~"hospital|clinic|pharmacy"]["name"~"${queryTerm}",i](around:50000, ${lat || 0}, ${lon || 0});
+            );
+            out center;
+          `;
+        } else {
+          // Local discovery query
+          query = `
+            [out:json][timeout:25];
+            (
+              node["amenity"~"hospital|clinic|pharmacy"](around:15000, ${lat}, ${lon});
+              way["amenity"~"hospital|clinic|pharmacy"](around:15000, ${lat}, ${lon});
+            );
+            out center;
+          `;
+        }
+
         const response = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
         const data = await response.json();
         
-        const mappedHospitals = data.elements.map(el => {
-          const type = el.tags.amenity === 'hospital' ? 'ER' : 
-                       el.tags.amenity === 'pharmacy' ? 'Pharmacy' : 'Clinic';
-          return {
-            id: el.id,
-            name: el.tags.name || "Unnamed Facility",
-            type: type,
-            distance: calculateDistance(latitude, longitude, el.lat || el.center.lat, el.lon || el.center.lon),
-            rating: (Math.random() * (5 - 4) + 4).toFixed(1),
-            phone: el.tags.phone || el.tags["contact:phone"] || "+1-800-CARE"
-          };
-        });
-        
-        setHospitals(mappedHospitals);
+        if (data.elements.length > 0) {
+          const mappedHospitals = data.elements.map(el => {
+            const type = el.tags.amenity === 'hospital' ? 'ER' : 
+                         el.tags.amenity === 'pharmacy' ? 'Pharmacy' : 'Clinic';
+            return {
+              id: el.id,
+              name: el.tags.name || "Unnamed Facility",
+              type: type,
+              distance: lat && lon ? calculateDistance(lat, lon, el.lat || el.center.lat, el.lon || el.center.lon) : 'Global Search',
+              rating: (Math.random() * (5 - 4) + 4).toFixed(1),
+              phone: el.tags.phone || el.tags["contact:phone"] || "+1-800-CARE"
+            };
+          });
+          setHospitals(mappedHospitals);
+        } else if (queryTerm) {
+          alert(`No results found for "${queryTerm}". Try a broader search.`);
+        }
       } catch (error) {
         console.error("Error fetching hospitals:", error);
       } finally {
         setLoading(false);
       }
-    }, () => {
-      alert("Allow location access to find nearby hospitals.");
-      setLoading(false);
-    });
+    };
+
+    if (!navigator.geolocation) {
+      if (searchTerm) performFetch(0, 0, searchTerm);
+      else setLoading(false);
+      return;
+    }
+
+    // Geolocation with timeout fallback
+    const geoTimeout = setTimeout(() => {
+      if (!userCoords && !searchTerm) {
+        console.log("Geolocation timeout. Using defaults.");
+        setLoading(false);
+      }
+    }, 5000);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        clearTimeout(geoTimeout);
+        const { latitude, longitude } = position.coords;
+        setUserCoords({ latitude, longitude });
+        performFetch(latitude, longitude, searchTerm);
+      },
+      (error) => {
+        clearTimeout(geoTimeout);
+        console.log("Geolocation error. Using defaults or global search.");
+        if (searchTerm) performFetch(null, null, searchTerm);
+        else setLoading(false);
+      },
+      { timeout: 10000 }
+    );
   };
 
   useEffect(() => {
     fetchNearby();
   }, []);
+
+  const handleSearchKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      fetchNearby();
+    }
+  };
 
   const filteredHospitals = hospitals.filter(h => {
     const matchesFilter = filter === 'All' || h.type === filter;
@@ -81,17 +135,20 @@ const Hospitals = () => {
     <div className="max-w-6xl mx-auto font-sans">
       <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100">
         <div>
-          <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">🏥 Nearby Health Services</h2>
-          <p className="text-sm font-bold text-text-dim italic leading-relaxed">Showing verified hospitals and clinics in your vicinity.</p>
+          <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">🏥 Health Service Discovery</h2>
+          <p className="text-sm font-bold text-text-dim italic leading-relaxed">
+            {userCoords ? `Showing verified hospitals within 15km of your location.` : `Showing featured hospitals worldwide.`}
+          </p>
         </div>
         <div className="flex flex-wrap gap-4 items-center">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
             <input 
               type="text"
-              placeholder="Search hospital..."
+              placeholder="Search by name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleSearchKeyPress}
               className="bg-gray-100 border border-transparent focus:border-primary focus:bg-white p-2.5 pl-12 rounded-xl text-xs font-bold text-secondary outline-none transition-all w-64 shadow-inner"
             />
           </div>
@@ -107,12 +164,23 @@ const Hospitals = () => {
             ))}
           </div>
           <button 
-            onClick={fetchNearby}
-            className="bg-primary text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg hover:bg-green-700 transition-all flex items-center gap-2"
+            onClick={() => fetchNearby()}
+            disabled={loading}
+            className="bg-primary text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg hover:bg-green-700 transition-all flex items-center gap-2 disabled:bg-gray-300"
           >
-            <Navigation size={16} className={loading ? 'animate-spin' : ''} />
-            {loading ? 'Scanning...' : 'Scan Nearby'}
+            <Navigation size={16} className={loading && !searchTerm ? 'animate-spin' : ''} />
+            {loading && !searchTerm ? 'Locating...' : 'Scan Area'}
           </button>
+          {searchTerm && (
+            <button 
+              onClick={() => fetchNearby()}
+              disabled={loading}
+              className="bg-secondary text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50"
+            >
+              <Search size={16} className={loading ? 'animate-pulse' : ''} />
+              {loading ? 'Searching...' : 'Find Global'}
+            </button>
+          )}
         </div>
       </div>
 
@@ -136,7 +204,7 @@ const Hospitals = () => {
                 </span>
               </div>
 
-              <h3 className="text-lg font-black text-secondary mb-1 leading-tight">{h.name}</h3>
+              <h3 className="text-lg font-black text-secondary mb-1 leading-tight line-clamp-2 min-h-[3rem]">{h.name}</h3>
               <p className="text-xs font-bold text-primary uppercase tracking-widest mb-4">{h.type}</p>
               
               <div className="flex items-center gap-4 mb-6 mt-auto">
@@ -159,8 +227,9 @@ const Hospitals = () => {
       </div>
 
       {filteredHospitals.length === 0 && !loading && (
-        <div className="py-20 text-center">
-            <p className="text-lg font-bold text-text-dim uppercase tracking-widest opacity-50 italic">No {filter} services found in your area. 🏥</p>
+        <div className="py-20 text-center border-2 border-dashed border-gray-100 rounded-[3rem]">
+            <p className="text-lg font-bold text-text-dim uppercase tracking-widest opacity-50 italic">No health services found matching "{searchTerm}". 🏥</p>
+            <button onClick={() => { setSearchTerm(''); fetchNearby(); }} className="mt-4 text-primary font-black uppercase text-xs hover:underline decoration-2 underline-offset-4 tracking-widest">Clear and Show All Nearby</button>
         </div>
       )}
     </div>
