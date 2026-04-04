@@ -324,6 +324,163 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
     box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
 }
 
+/* --- VACCINATION STYLES --- */
+.vaccine-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.vaccine-summary {
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 20px;
+}
+
+.progress-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#vaccine-progress-text {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--secondary);
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 12px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--primary);
+    width: 0%;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vaccine-filters {
+    display: flex;
+    gap: 15px;
+}
+
+.filter-btn {
+    padding: 10px 24px;
+    border-radius: 30px;
+    border: none;
+    background: #ffffff;
+    color: var(--secondary);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.filter-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(110, 211, 190, 0.3);
+}
+
+.vaccine-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.vaccine-card {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.04);
+    border: 1px solid var(--border);
+    position: relative;
+    transition: transform 0.3s;
+}
+
+.vaccine-card:hover {
+    transform: translateY(-5px);
+}
+
+.vaccine-card h3 {
+    margin-bottom: 8px;
+    color: var(--secondary);
+}
+
+.vaccine-card .age-tag {
+    font-size: 0.8rem;
+    background: var(--bg);
+    color: var(--primary);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.vaccine-card .status {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vaccine-card.completed {
+    background: #f7fffd;
+    border-color: #d1f7ee;
+}
+
+.vaccine-card.overdue {
+    border-left: 5px solid #ff7675;
+}
+
+.btn-done {
+    padding: 8px 16px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.badge {
+    background: #ff7675;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 7px;
+    border-radius: 50%;
+    margin-left: 8px;
+    vertical-align: middle;
+    font-weight: 700;
+    box-shadow: 0 2px 5px rgba(255,118,117,0.4);
+}
+
+/* Profile Select Styles */
+.profile-select {
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--secondary);
+    outline: none;
+    cursor: pointer;
+}
+
+.filter-group {
+    display: flex;
+    gap: 10px;
+}
+
 /* ================= CHATBOT WIDGET ================= */
 .chatbot-widget {
     position: fixed;

@@ -92,13 +92,13 @@ const GEMINI_API_KEY = "AIzaSyB7H5bhn8y8Z4Ah-vTCqnMNWVw6ovxTrDs".trim();
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 // List of models to try in order of preference
-const MODELS_TO_TRY = ["gemini-3.1-flash", "gemini-2.5-flash", "gemini-1.5-flash", "gemini-pro"];
+const MODELS_TO_TRY = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-pro"];
 let activeModelName = MODELS_TO_TRY[0];
 
 const getBotModel = (modelName) => genAI.getGenerativeModel({ 
     model: modelName,
     systemInstruction: "Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns."
-});
+}, { apiVersion: 'v1' }); // Force v1 for better global stability
 
 let model = getBotModel(activeModelName);
 
@@ -281,7 +281,7 @@ window.sendMessage = async (retryMsg = null) => {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     try {
-        console.log(`CareBot: Generating content via SDK using ${activeModelName}...`);
+        // Generating content silently via SDK
         const result = await model.generateContent(message);
         const response = await result.response;
         const text = response.text();
@@ -294,7 +294,8 @@ window.sendMessage = async (retryMsg = null) => {
             appendMessage('bot', "I received an empty response. Let's try rephrasing that.");
         }
     } catch (error) {
-        console.error(`CareBot SDK Error (${activeModelName}):`, error);
+        // Log errors without exposing full request details
+        console.error(`CareBot Service Error (${activeModelName})`);
         
         // Remove typing indicator before retrying or failing
         if (document.getElementById(typingId)) {
@@ -317,9 +318,9 @@ window.sendMessage = async (retryMsg = null) => {
 
         let errorMsg = "Oops! I encountered an error connecting to my AI brain.";
         if (error.message.includes("404")) {
-            errorMsg = "Error 404: I couldn't find a compatible AI model for your key. It's possible the Generative Language API is not enabled in your Google Cloud Console.";
+            errorMsg = "Error 404: AI Model sync issue. This usually resolves automatically in a few minutes.";
         } else if (error.message.includes("403")) {
-            errorMsg = "Error 403: Access forbidden. Your key might be restricted or Gemini is not available in your region.";
+            errorMsg = "Error 403: Security Block. Please ensure 'Generative Language API' is enabled in your Google Cloud Console.";
         }
         
         appendMessage('bot', errorMsg);
@@ -335,17 +336,142 @@ function appendMessage(sender, text) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+// --- VACCINATION TRACKER LOGIC ---
+
+const VACCINE_SCHEDULE = [
+    { id: 'bcg', name: 'BCG (Tuberculosis)', ageMonths: 0, description: 'Single dose at birth' },
+    { id: 'hepb1', name: 'Hepatitis B (Dose 1)', ageMonths: 0, description: 'At birth' },
+    { id: 'polio1', name: 'Oral Polio Vaccine (OPV)', ageMonths: 1.5, description: '6 weeks old' },
+    { id: 'rotav', name: 'Rotavirus Vaccine', ageMonths: 2, description: '2 months old' },
+    { id: 'mmr1', name: 'MMR (Dose 1)', ageMonths: 9, description: '9 months old' },
+    { id: 'dpt_boost', name: 'DPT Booster', ageMonths: 18, description: '1.5 years old' },
+    { id: 'typhoid', name: 'Typhoid Vaccine', ageMonths: 24, description: '2 years old' },
+    { id: 'hpv', name: 'HPV Vaccine', ageMonths: 120, description: '10 years old' },
+    { id: 'flu', name: 'Annual Flu Shot', ageMonths: 6, description: 'Recommended annually from 6mo+' }
+];
+
+let currentVaccineFilter = 'all';
+
+window.renderVaccinations = () => {
+    const list = document.getElementById("vaccineList");
+    const profileSelect = document.getElementById("vaccine-profile-select");
+    if (!list || !profileSelect) return;
+
+    // Sync Dropdown with Family Members
+    const currentVal = profileSelect.value;
+    profileSelect.innerHTML = '<option value="user">Me (Primary)</option>';
+    members.forEach((m, idx) => {
+        const opt = document.createElement("option");
+        opt.value = idx;
+        opt.textContent = m.name;
+        profileSelect.appendChild(opt);
+    });
+    profileSelect.value = currentVal;
+
+    // Determine target birthdate
+    let birthdate = localStorage.getItem("carebuddy_user_dob") || "1990-01-01";
+    let profileId = "user";
+    
+    if (profileSelect.value !== "user") {
+        const mem = members[profileSelect.value];
+        if (mem) {
+            birthdate = mem.birthdate;
+            profileId = `member_${profileSelect.value}`;
+        }
+    }
+
+    const userAgeMonths = calculateAgeInMonths(birthdate);
+    const completedKey = `carebuddy_vaccines_${profileId}`;
+    const completed = JSON.parse(localStorage.getItem(completedKey) || "[]");
+
+    list.innerHTML = "";
+
+    VACCINE_SCHEDULE.forEach(v => {
+        const isDone = completed.includes(v.id);
+        const isOverdue = !isDone && userAgeMonths >= v.ageMonths;
+        
+        if (currentVaccineFilter === 'completed' && !isDone) return;
+        if (currentVaccineFilter === 'pending' && isDone) return;
+
+        const card = document.createElement("div");
+        card.className = `vaccine-card ${isDone ? 'completed' : ''} ${isOverdue ? 'overdue' : ''}`;
+        card.innerHTML = `
+            <div class="age-tag">${v.ageMonths === 0 ? 'At Birth' : (v.ageMonths < 12 ? v.ageMonths + ' mo' : Math.floor(v.ageMonths/12) + ' yrs')}</div>
+            <h3>${v.name}</h3>
+            <p>${v.description}</p>
+            <div class="status">
+                <span>${isDone ? '✅ Completed' : (isOverdue ? '⚠️ Overdue' : '⏳ Upcoming')}</span>
+                ${!isDone ? `<button class="btn-done" onclick="window.markVaccineDone('${v.id}', '${profileId}')">Mark Done</button>` : ''}
+            </div>
+        `;
+        list.appendChild(card);
+    });
+
+    updateVaccineProgress(completed.length);
+    updateVaccineBadge(userAgeMonths, completed);
+};
+
+window.markVaccineDone = (id, profileId) => {
+    const completedKey = `carebuddy_vaccines_${profileId}`;
+    const completed = JSON.parse(localStorage.getItem(completedKey) || "[]");
+    if (!completed.includes(id)) {
+        completed.push(id);
+        localStorage.setItem(completedKey, JSON.stringify(completed));
+        window.renderVaccinations();
+    }
+};
+
+window.filterVaccines = (type) => {
+    currentVaccineFilter = type;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toLowerCase().includes(type));
+    });
+    window.renderVaccinations();
+};
+
+function updateVaccineProgress(doneCount) {
+    const total = VACCINE_SCHEDULE.length;
+    const percent = Math.round((doneCount / total) * 100);
+    const fill = document.getElementById("vaccine-progress-fill");
+    const text = document.getElementById("vaccine-progress-text");
+    if (fill) fill.style.width = percent + "%";
+    if (text) text.textContent = `Overall Protection: ${percent}%`;
+}
+
+function updateVaccineBadge(ageMonths, completed) {
+    const badge = document.getElementById("vaccine-badge");
+    if (!badge) return;
+
+    const overdueCount = VACCINE_SCHEDULE.filter(v => 
+        !completed.includes(v.id) && ageMonths >= v.ageMonths
+    ).length;
+
+    if (overdueCount > 0) {
+        badge.style.display = "inline-block";
+        badge.textContent = overdueCount;
+    } else {
+        badge.style.display = "none";
+    }
+}
+
+function calculateAgeInMonths(birthdate) {
+    const dob = new Date(birthdate);
+    const now = new Date();
+    return (now.getFullYear() - dob.getFullYear()) * 12 + (now.getMonth() - dob.getMonth());
+}
+
+// Initial Call
+setTimeout(window.renderVaccinations, 500);
+
 // --- DIAGNOSTICS ---
 window.testGeminiConnection = async () => {
-    console.log("CareBot Diagnostics: Checking API access...");
     try {
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}`);
         const data = await res.json();
-        console.log("CareBot Diagnostics: Available Models:", data);
         if (data.error) alert("API Error: " + data.error.message);
-        else alert("Connection successful! Check the console (F12) for available models.");
+        else alert("Connection successful! Models are available.");
     } catch (e) {
-        console.error("CareBot Diagnostics: Failed to connect", e);
+        alert("Failed to connect to AI services.");
     }
 };
 

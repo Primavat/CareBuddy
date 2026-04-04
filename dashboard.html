@@ -80,13 +80,48 @@
         <!-- Family Only -->
         <button onclick="showSection('profileSection')" id="btn-profiles" class="sidebar-item family-only"><i>🏠</i> Family Profiles</button>
         <button onclick="showSection('familyMedsSection')" id="btn-family-meds" class="sidebar-item family-only"><i>💊</i> Medications</button>
-        <button onclick="showSection('vaccineSection')" id="btn-vaccine" class="sidebar-item family-only"><i>💉</i> Vaccinations</button>
+        <button onclick="showSection('vaccinationSection')" id="btn-vaccine" class="sidebar-item family-only"><i>💉</i> Vaccinations <span id="vaccine-badge" class="badge" style="display: none;">!</span></button>
         <button onclick="showSection('hospitalSection')" id="btn-hospitals" class="sidebar-item family-only"><i>🏥</i> Hospitals</button>
         <button onclick="showSection('nurseSection')" id="btn-nurse" class="sidebar-item family-only"><i>👩‍⚕️</i> Caretakers</button>
         <button onclick="showSection('dietSection')" id="btn-diet" class="sidebar-item family-only"><i>🥗</i> Dietary Plans</button>
     </aside>
 
         <main class="content">
+
+            <!-- VACCINATION SECTION -->
+            <section id="vaccinationSection" class="section" style="display: none;">
+                <div class="section-header">
+                    <h2>Vaccination Tracker 💉</h2>
+                    <p>Stay updated with essential health milestones.</p>
+                </div>
+
+                <div class="vaccine-dashboard">
+                    <div class="vaccine-summary card">
+                        <div class="progress-container">
+                            <span id="vaccine-progress-text">Progress: 0%</span>
+                            <div class="progress-bar-bg">
+                                <div id="vaccine-progress-fill" class="progress-bar-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vaccine-filters">
+                        <select id="vaccine-profile-select" onchange="window.renderVaccinations()" class="profile-select">
+                            <option value="user">Me (Primary)</option>
+                            <!-- Family members will be injected here -->
+                        </select>
+                        <div class="filter-group">
+                            <button class="filter-btn active" onclick="filterVaccines('all')">All</button>
+                            <button class="filter-btn" onclick="filterVaccines('pending')">Upcoming</button>
+                            <button class="filter-btn" onclick="filterVaccines('completed')">Completed</button>
+                        </div>
+                    </div>
+
+                    <div id="vaccineList" class="vaccine-grid">
+                        <!-- Dynamic Vaccine Cards will be injected here -->
+                    </div>
+                </div>
+            </section>
 
             <!-- PERSONAL MODE SECTIONS -->
             <div id="vitalsSection" class="personal-only section">
