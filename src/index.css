@@ -1,7 +1,7 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+@import "tailwindcss";
 
-@theme {
+:root {
   --color-primary: #27ae60;
   --color-secondary: #1a202c;
   --color-accent: #2ecc71;
@@ -17,6 +17,11 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-bg-main text-text-main font-sans antialiased tracking-tight;
+    background-color: var(--color-bg-main);
+    color: var(--color-text-main);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.025em;
   }
 }

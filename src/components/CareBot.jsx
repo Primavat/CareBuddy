@@ -45,41 +45,41 @@ const CareBot = () => {
   };
 
   return (
-    <div className="fixed bottom-8 right-8 z-[100] hidden md:block font-sans">
+    <div className="fixed bottom-6 right-6 z-[100] hidden md:block font-sans">
       <AnimatePresence>
         {isOpen && (
           <motion.div 
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="mb-4 w-96 max-h-[600px] flex flex-col bg-white rounded-3xl shadow-2xl border border-border overflow-hidden"
+            className="mb-4 w-72 max-h-[480px] flex flex-col bg-white rounded-[2rem] shadow-2xl border border-border overflow-hidden"
           >
-            <div className="bg-primary p-4 flex items-center justify-between text-white">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                  <Bot size={20} />
+            <div className="bg-primary p-3.5 flex items-center justify-between text-white">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <Bot size={18} />
                 </div>
                 <div>
-                  <h3 className="font-bold">CareBot</h3>
-                  <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full">AI Companion</span>
+                  <h3 className="font-bold text-sm">CareBot</h3>
+                  <span className="text-[9px] bg-white/20 px-2 py-0.5 rounded-full">AI Assistant</span>
                 </div>
               </div>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="hover:bg-white/10 p-1.5 rounded-full transition-colors"
+                className="hover:bg-white/10 p-1 rounded-full transition-colors"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
             <div 
               ref={chatRef}
-              className="flex-1 p-4 flex flex-col gap-4 overflow-y-auto min-h-[400px] bg-gray-50"
+              className="flex-1 p-3.5 flex flex-col gap-3 overflow-y-auto min-h-[320px] bg-gray-50"
             >
               {messages.map((m, i) => (
                 <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`
-                    max-w-[80%] p-3.5 rounded-2xl text-sm font-semibold leading-relaxed shadow-sm
+                    max-w-[85%] p-3 rounded-xl text-[13px] font-semibold leading-snug shadow-sm
                     ${m.role === 'user' ? 'bg-primary text-white' : 'bg-white text-secondary border border-border'}
                   `}>
                     {m.text}
@@ -88,29 +88,29 @@ const CareBot = () => {
               ))}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white border border-border p-3 rounded-2xl flex gap-1.5">
-                    <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-primary/40 rounded-full"></motion.div>
-                    <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-primary/40 rounded-full"></motion.div>
-                    <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-primary/40 rounded-full"></motion.div>
+                  <div className="bg-white border border-border p-2.5 rounded-xl flex gap-1">
+                    <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1 h-1 bg-primary/40 rounded-full"></motion.div>
+                    <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1 h-1 bg-primary/40 rounded-full"></motion.div>
+                    <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1 h-1 bg-primary/40 rounded-full"></motion.div>
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="p-4 bg-white border-t border-border flex gap-2">
+            <div className="p-3 bg-white border-t border-border flex gap-2">
               <input 
                 type="text" 
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                placeholder="Ask CareBot something..."
-                className="flex-1 bg-gray-100 border border-border px-4 py-3 rounded-2xl text-sm font-semibold outline-none focus:border-primary transition-colors"
+                placeholder="Type here..."
+                className="flex-1 bg-gray-100 border border-border px-3.5 py-2.5 rounded-xl text-[13px] font-semibold outline-none focus:border-primary transition-colors"
               />
               <button 
                 onClick={sendMessage}
-                className="bg-primary p-3 rounded-2xl text-white shadow-lg hover:bg-green-700 transition-colors"
+                className="bg-primary p-2.5 rounded-xl text-white shadow-lg hover:bg-green-700 transition-colors"
               >
-                <Send size={20} />
+                <Send size={18} />
               </button>
             </div>
           </motion.div>
@@ -121,9 +121,9 @@ const CareBot = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white shadow-2xl hover:bg-green-700 transition-colors border-4 border-white/20"
+        className="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white shadow-2xl hover:bg-green-700 transition-colors border-4 border-white/20"
       >
-        <MessageSquare size={28} />
+        {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
       </motion.button>
     </div>
   );
