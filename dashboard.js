@@ -1,4 +1,5 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+import { GoogleGenerativeAI } from 'https://esm.run/@google/generative-ai'
 
 const supabase = createClient(
     'https://idbratjfnpkzmbfzcehr.supabase.co',
@@ -66,6 +67,10 @@ window.showSection = (sectionId) => {
     const target = document.getElementById(sectionId);
     if (target) target.style.display = 'block';
 
+    if (sectionId === 'vaccinationSection') {
+        window.renderVaccinations();
+    }
+
     const buttons = document.querySelectorAll(".sidebar button");
     buttons.forEach(btn => {
         const onClickAttr = btn.getAttribute("onclick") || "";
@@ -74,6 +79,21 @@ window.showSection = (sectionId) => {
 };
 
 // --- 3. REWARDS LOGIC ---
+
+// --- 3. REWARDS & AI LOGIC ---
+
+const GEMINI_API_KEY = "AIzaSyB7H5bhn8y8Z4Ah-vTCqnMNWVw6ovxTrDs".trim();
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+
+const MODELS_TO_TRY = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-pro"];
+let activeModelName = MODELS_TO_TRY[0];
+
+const getBotModel = (modelName) => genAI.getGenerativeModel({ 
+    model: modelName,
+    systemInstruction: "Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns."
+}, { apiVersion: 'v1' });
+
+let model = getBotModel(activeModelName);
 
 window.addPoints = (category, amount) => {
     const points = JSON.parse(localStorage.getItem("carebuddy_points") || '{"hydration":0, "fitness":0}');
@@ -243,23 +263,35 @@ window.sendMessage = async (retryMsg = null) => {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message })
-        });
-
-        const data = await response.json();
+        const result = await model.generateContent(message);
+        const response = await result.response;
+        const text = response.text();
+        
         document.getElementById(typingId)?.remove();
 
-        if (data.reply) {
-            appendMessage('bot', data.reply);
+        if (text) {
+            appendMessage('bot', text);
         } else {
             appendMessage('bot', "I received an empty response. Please try again.");
         }
 
     } catch (error) {
-        document.getElementById(typingId)?.remove();
+        console.error(`CareBot Service Error (${activeModelName})`);
+        
+        if (document.getElementById(typingId)) {
+            document.getElementById(typingId).remove();
+        }
+
+        if (error.message.includes("404") || error.message.includes("not found")) {
+            const nextIndex = MODELS_TO_TRY.indexOf(activeModelName) + 1;
+            if (nextIndex < MODELS_TO_TRY.length) {
+                const prevModel = activeModelName;
+                activeModelName = MODELS_TO_TRY[nextIndex];
+                model = getBotModel(activeModelName);
+                return window.sendMessage(message); 
+            }
+        }
+
         appendMessage('bot', "Oops! Could not connect to CareBot. Please try again.");
     }
 };
