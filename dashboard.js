@@ -429,6 +429,90 @@ function calculateAgeInMonths(birthdate) {
 
 setTimeout(window.renderVaccinations, 500);
 
+// --- 8. NEARBY HOSPITALS LOGIC ---
+
+window.findNearbyHospitals = () => {
+    const results = document.getElementById("hospitalResults");
+    if (!results) return;
+
+    results.innerHTML = '<div class="empty-state"><p>📡 Scanning for healthcare services...</p></div>';
+
+    if (!navigator.geolocation) {
+        results.innerHTML = '<div class="empty-state"><p>❌ Geolocation is not supported by your browser.</p></div>';
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        const searchQuery = document.getElementById("hospitalSearch").value || "hospital";
+        
+        try {
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}&lat=${latitude}&lon=${longitude}&bounded=1&viewbox=${longitude-0.1},${latitude+0.1},${longitude+0.1},${latitude-0.1}`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            results.innerHTML = "";
+            if (data.length === 0) {
+                results.innerHTML = '<div class="empty-state"><p>📭 No facilities found in your immediate area. Try searching for "Clinic" or "Doctor".</p></div>';
+                return;
+            }
+
+            data.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "hospital-card";
+                card.innerHTML = `
+                    <span class="dist">📍 Medical Facility</span>
+                    <h4>${item.display_name.split(',')[0]}</h4>
+                    <p style="font-size: 0.85rem; color: #666;">${item.display_name.split(',').slice(1, 3).join(',')}</p>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lon}" target="_blank" class="btn-direct">🚗 Get Directions</a>
+                `;
+                results.appendChild(card);
+            });
+        } catch (e) {
+            results.innerHTML = '<div class="empty-state"><p>❌ Connection error. Please try again later.</p></div>';
+        }
+    }, () => {
+        results.innerHTML = '<div class="empty-state"><p>⚠️ Location access denied. Please enable GPS to find nearby services.</p></div>';
+    });
+};
+
+// --- 9. AI DIETARY PLANS ---
+
+window.generateDietPlan = async () => {
+    const goal = document.getElementById("dietGoal").value;
+    const type = document.getElementById("dietType").value;
+    const resultArea = document.getElementById("dietResults");
+    const content = document.getElementById("dietContent");
+
+    if (!resultArea || !content) return;
+
+    resultArea.style.display = "block";
+    content.innerHTML = "✨ CareBot is crafting your personalized plan...";
+    content.scrollIntoView({ behavior: 'smooth' });
+
+    const prompt = `As a professional nutritionist for CareBuddy, generate a detailed ${goal} dietary plan for a ${type} user. 
+    Include:
+    1. A short motivational intro.
+    2. A 1-day sample meal plan (Breakfast, Lunch, Evening Snack, Dinner).
+    3. Three key nutritional tips for this goal.
+    Be concise, empathetic, and professional.`;
+
+    try {
+        const genResult = await model.generateContent(prompt);
+        const response = await genResult.response;
+        content.innerHTML = response.text();
+    } catch (e) {
+        content.innerHTML = "❌ Sorry, I hit a snag while generating your plan. Please try again or check your connection.";
+    }
+};
+
+window.copyDietPlan = () => {
+    const content = document.getElementById("dietContent").innerText;
+    navigator.clipboard.writeText(content).then(() => {
+        alert("📋 Plan copied to clipboard!");
+    });
+};
+
 // Initialize
 checkUserSession();
 

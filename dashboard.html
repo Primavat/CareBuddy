@@ -208,9 +208,23 @@
 
 
             <div id="hospitalSection" class="family-only section" style="display:none;">
-                <h2>🏥 Nearby Hospitals</h2>
-                <div class="card">
-                    <p>Search for healthcare services near you.</p>
+                <div class="section-header">
+                    <h2>Nearby Hospitals & Healthcare 🏥</h2>
+                    <p>Find the nearest medical facilities based on your location.</p>
+                </div>
+                
+                <div class="card search-card">
+                    <div class="search-controls">
+                        <input type="text" id="hospitalSearch" placeholder="Search by name or specialty (e.g. Pediatrics)...">
+                        <button onclick="window.findNearbyHospitals()" class="btn-primary">📡 Find Near Me</button>
+                    </div>
+                </div>
+
+                <div id="hospitalResults" class="hospital-grid">
+                    <!-- Results will be injected here -->
+                    <div class="empty-state">
+                        <p>Click "Find Near Me" to scan for medical services in your vicinity.</p>
+                    </div>
                 </div>
             </div>
 
@@ -222,9 +236,43 @@
             </div>
 
             <div id="dietSection" class="family-only section" style="display:none;">
-                <h2>🥗 Personalized Dietary Plans</h2>
-                <div class="card">
-                    <p>Custom dietary advice for family members.</p>
+                <div class="section-header">
+                    <h2>AI Personalized Dietary Plans 🥗</h2>
+                    <p>Tell CareBot about your goals, and get a custom nutrition guide.</p>
+                </div>
+
+                <div class="card diet-form-card">
+                    <div class="diet-inputs">
+                        <div class="input-group">
+                            <label>Health Goal</label>
+                            <select id="dietGoal">
+                                <option value="general">General Wellness & Energy</option>
+                                <option value="weight-loss">Weight Loss (Healthy)</option>
+                                <option value="muscle">Muscle Gain / High Protein</option>
+                                <option value="diabetic">Diabetic Friendly (Low Sugar)</option>
+                                <option value="heart">Heart Healthy (Low Sodium)</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Dietary Preference</label>
+                            <select id="dietType">
+                                <option value="any">No Preference (Any)</option>
+                                <option value="veg">Vegetarian</option>
+                                <option value="non-veg">Non-Vegetarian</option>
+                                <option value="vegan">Vegan</option>
+                            </select>
+                        </div>
+                        <button onclick="window.generateDietPlan()" class="btn-generate">🥗 Generate My Plan</button>
+                    </div>
+                </div>
+
+                <div id="dietResults" class="diet-result" style="display:none;">
+                    <div class="card result-card">
+                        <div id="dietContent" class="ai-generated-text">
+                            <!-- AI Content will go here -->
+                        </div>
+                        <button onclick="window.copyDietPlan()" class="btn-copy">📋 Copy Plan</button>
+                    </div>
                 </div>
             </div>
 
