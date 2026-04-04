@@ -6,38 +6,38 @@ const supabase = createClient(
 )
 
 // 1. UI Loading Logic
-window.addEventListener("load", function() {
-    setTimeout(function() {
-        const showcase = document.getElementById("showcase-page");
-        const loginContainer = document.getElementById("login-container");
-        if (showcase) showcase.classList.add("hidden");
-        if (loginContainer) {
-            loginContainer.classList.remove("hidden");
-            setTimeout(() => loginContainer.classList.add("fade-in-active"), 50);
-        }
-    }, 2400);
+window.addEventListener("load", function () {
+  setTimeout(function () {
+    const showcase = document.getElementById("showcase-page");
+    const loginContainer = document.getElementById("login-container");
+    if (showcase) showcase.classList.add("hidden");
+    if (loginContainer) {
+      loginContainer.classList.remove("hidden");
+      setTimeout(() => loginContainer.classList.add("fade-in-active"), 50);
+    }
+  }, 2400);
 });
 
 // 2. Auth State Listener
 supabase.auth.onAuthStateChange((event, session) => {
-    console.log("Auth Event:", event, "Session exists:", !!session);
-    const path = window.location.pathname;
-    const isLoginPage = path.includes("index.html") || path === "/" || path === "";
+  console.log("Auth Event:", event, "Session exists:", !!session);
+  const path = window.location.pathname;
+  const isLoginPage = path.includes("index.html") || path === "/" || path === "";
 
-    if (session && isLoginPage) {
-        window.location.href = "dashboard.html";
-    }
+  if (session && isLoginPage) {
+    window.location.href = "dashboard.html";
+  }
 });
 
 // 3. Navigation & Auth Functions
-window.loginWithGoogle = async function() {
+window.loginWithGoogle = async function () {
   try {
     document.body.style.cursor = "wait";
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: 'https://care-buddy-pi.vercel.app/dashboard.html',
-        skipBrowserRedirect: false 
+        skipBrowserRedirect: false
       }
     });
     if (error) throw error;
@@ -49,34 +49,34 @@ window.loginWithGoogle = async function() {
   }
 }
 
-window.goToStep3 = function() {
-    const contact = document.getElementById("contact").value.trim();
-    if (contact === "") {
-        alert("Please enter phone number or email");
-        return;
-    }
-    document.getElementById("step2").classList.add("hidden");
-    document.getElementById("step3").classList.remove("hidden");
+window.goToStep3 = function () {
+  const contact = document.getElementById("contact").value.trim();
+  if (contact === "") {
+    alert("Please enter phone number or email");
+    return;
+  }
+  document.getElementById("step2").classList.add("hidden");
+  document.getElementById("step3").classList.remove("hidden");
 }
 
-window.verifyOTP = function() {
-    const otp = document.getElementById("otp").value.trim();
-    if (otp === "123456") {
-        window.location.href = "dashboard.html";
-    } else {
-        alert("Invalid OTP. Please try again.");
-    }
+window.verifyOTP = function () {
+  const otp = document.getElementById("otp").value.trim();
+  if (otp === "123456") {
+    window.location.href = "dashboard.html";
+  } else {
+    alert("Invalid OTP. Please try again.");
+  }
 }
 
 // 4. Initial Page Load Check
 async function initialCheck() {
-    if (window.location.hash.includes("access_token")) return; 
+  if (window.location.hash.includes("access_token")) return;
 
-    const { data: { session } } = await supabase.auth.getSession();
-    const path = window.location.pathname;
-    if (session && (path.includes("index.html") || path === "/")) {
-        window.location.href = "dashboard.html";
-    }
+  const { data: { session } } = await supabase.auth.getSession();
+  const path = window.location.pathname;
+  if (session && (path.includes("index.html") || path === "/")) {
+    window.location.href = "dashboard.html";
+  }
 }
 
 initialCheck();
