@@ -71,6 +71,7 @@
         
         <!-- Personal Only -->
         <button onclick="showSection('vitalsSection')" id="btn-vitals" class="sidebar-item personal-only"><i>💓</i> My Vitals</button>
+        <button onclick="showSection('moodSection')" id="btn-mood" class="sidebar-item personal-only"><i>🎭</i> Moodometer</button>
         <button onclick="showSection('journalSection')" id="btn-journal" class="sidebar-item personal-only"><i>📖</i> My Journal</button>
         <button onclick="showSection('hydrationSection')" id="btn-hydration" class="sidebar-item personal-only"><i>💧</i> Hydration</button>
         <button onclick="showSection('fitnessSection')" id="btn-fitness" class="sidebar-item personal-only"><i>🏃</i> Fitness</button>
@@ -131,6 +132,30 @@
                     <div style="padding: 20px; text-align: center; border: 2px dashed var(--border); border-radius: 16px; color: var(--text-dim)">
                         Interactive Tracking Coming Soon 🚀
                     </div>
+                </div>
+            </div>
+
+            <!-- MOODOMETER SECTION -->
+            <div id="moodSection" class="personal-only section" style="display:none;">
+                <div class="section-header">
+                    <h2>Moodometer 🎭</h2>
+                    <p>Track your emotional wellness and get AI relaxation tips.</p>
+                </div>
+
+                <div class="card mood-card-main">
+                    <h3>How are you feeling right now?</h3>
+                    <div class="mood-curve">
+                        <div class="mood-emoji" onclick="logMood('angry', '😠')"><span>😠</span><p>Angry</p></div>
+                        <div class="mood-emoji" onclick="logMood('sad', '😔')"><span>😔</span><p>Sad</p></div>
+                        <div class="mood-emoji" onclick="logMood('neutral', '😐')"><span>😐</span><p>Neutral</p></div>
+                        <div class="mood-emoji" onclick="logMood('happy', '😊')"><span>😊</span><p>Happy</p></div>
+                        <div class="mood-emoji" onclick="logMood('excited', '🤩')"><span>🤩</span><p>Excited</p></div>
+                    </div>
+                </div>
+
+                <div id="moodTip" class="card tip-card" style="display:none;">
+                    <h4>🧠 CareBot's Gentle Reminder</h4>
+                    <p id="tipText">Generating your mindfulness tip...</p>
                 </div>
             </div>
 
@@ -199,11 +224,32 @@
             </div>
 
             <div id="familyMedsSection" class="family-only section" style="display:none;">
-                <h2>💊 Medication & Reminders</h2>
-                <div class="card">
-                    <p>Manage family medication schedules.</p>
-                    <button onclick="window.open('https://www.1mg.com', '_blank')">🛒 Order Medicine (External)</button>
+                <div class="section-header">
+                    <h2>Family Medications & Reminders 💊</h2>
+                    <p>Keep track of everyone's doses with high-visibility tracking.</p>
                 </div>
+                
+                <div class="med-board">
+                    <div class="card med-card highlighted">
+                        <div class="med-time">08:30 AM</div>
+                        <div class="med-info">
+                            <h3>Paracetamol (500mg)</h3>
+                            <p>For: Rahul • After Breakfast</p>
+                        </div>
+                        <span class="status-badge urgent">Take Now</span>
+                    </div>
+
+                    <div class="card med-card">
+                        <div class="med-time">01:00 PM</div>
+                        <div class="med-info">
+                            <h3>Multivitamins</h3>
+                            <p>For: Me • Post Lunch</p>
+                        </div>
+                        <span class="status-badge upcoming">Upcoming</span>
+                    </div>
+                </div>
+
+                <button class="btn-add-record">+ Add Medication Reminder</button>
             </div>
 
 

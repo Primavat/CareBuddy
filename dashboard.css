@@ -1,20 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+
 /* Premium Dashboard Styles - CareBuddy (Subtle Light Theme) */
 :root {
+    --primary: #27ae60; /* Vibrant Solid Green */
+    --secondary: #2c3e50; /* Darker Blue/Grey for readability */
     --bg-main: #f8faf9;
     --bg-side: #ffffff;
     --bg-card: #ffffff;
     --accent: #50d890; /* Mint Fresh */
     --accent-soft: rgba(80, 216, 144, 0.1);
-    --text-main: #2c3e50;
-    --text-dim: #7f8c8d;
-    --border: #eef2f0;
+    --text-main: #1a202c;
+    --text-dim: #4a5568;
+    --border: #e2e8f0;
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     --glass: blur(8px);
 }
 
 * {
     box-sizing: border-box;
-    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Outfit', 'Inter', sans-serif;
 }
 
 body {
@@ -89,6 +93,16 @@ body {
     background: var(--bg-card);
     color: var(--accent);
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.white-textp {
+    color: var(--text-dim);
+    line-height: 1.6;
+}
+
+strong {
+    color: var(--text-main);
+    font-weight: 700;
 }
 
 .white-text {
@@ -266,13 +280,21 @@ hr { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
 
 input, select, textarea {
     background: #fcfdfe;
-    border: 1.5px solid var(--border);
+    border: 1.5px solid var(--border) !important;
     color: var(--text-main);
+    font-weight: 500;
     padding: 14px;
     border-radius: 12px;
     width: 100%;
     outline: none;
     transition: all 0.3s;
+}
+
+label {
+    color: var(--text-main);
+    font-weight: 700;
+    margin-bottom: 5px;
+    display: block;
 }
 
 input:focus, select:focus, textarea:focus {
@@ -527,17 +549,19 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
 .hospital-card .btn-direct {
     margin-top: 10px;
     text-align: center;
-    padding: 10px;
-    background: #f0f7f5;
-    color: var(--primary);
+    padding: 12px;
+    background: #27ae60; /* Solid Green */
+    color: white;
     text-decoration: none;
     border-radius: 12px;
-    font-weight: 600;
-    transition: background 0.3s;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+    transition: all 0.3s;
 }
 
 .hospital-card .btn-direct:hover {
-    background: var(--bg);
+    background: #219150;
+    transform: translateY(-2px);
 }
 
 /* --- DIET STYLES --- */
@@ -719,6 +743,178 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
     100% { box-shadow: 0 0 0 0 rgba(80, 216, 144, 0); }
 }
 
+/* --- FAMILY FOLDER & MEMBER CARDS --- */
+.member-folder {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    transition: transform 0.2s;
+}
+
+.member-folder:hover {
+    transform: translateX(5px);
+    border-left: 5px solid var(--primary);
+}
+
+.member-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 12px;
+}
+
+.member-avatar {
+    width: 50px;
+    height: 50px;
+    background: #e8f5e9;
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.member-info h3 {
+    font-size: 1.1rem;
+    color: var(--secondary);
+    margin: 0;
+}
+
+.member-info p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+}
+
+.member-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px;
+}
+
+.member-body {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 12px;
+}
+
+.member-body p {
+    font-size: 0.95rem;
+    color: var(--secondary);
+    line-height: 1.4;
+}
+
+/* --- MEDICATION BOARD --- */
+.med-board {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.med-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 25px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+}
+
+.med-card.highlighted {
+    background: #fff9f0;
+    border-color: #ffeaa7;
+}
+
+.med-time {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+.status-badge {
+    margin-left: auto;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: #f1f2f6;
+}
+
+.status-badge.urgent {
+    background: #ff7675;
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* --- MOODOMETER CURVE --- */
+.mood-card-main {
+    text-align: center;
+    padding: 40px;
+}
+
+.mood-curve {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 50px;
+    height: 120px;
+    position: relative;
+}
+
+.mood-emoji {
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.mood-emoji span {
+    font-size: 3rem;
+    display: block;
+}
+
+.mood-emoji p {
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-top: 8px;
+}
+
+/* Positioning emojis in a Curve */
+.mood-emoji:nth-child(1) { transform: translateY(40px) rotate(-15deg); }
+.mood-emoji:nth-child(2) { transform: translateY(15px) rotate(-8deg); }
+.mood-emoji:nth-child(3) { transform: translateY(0) rotate(0deg); }
+.mood-emoji:nth-child(4) { transform: translateY(15px) rotate(8deg); }
+.mood-emoji:nth-child(5) { transform: translateY(40px) rotate(15deg); }
+
+.mood-emoji:hover {
+    transform: scale(1.3) !important;
+}
+
+.tip-card {
+    background: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 /* Mobile Visibility - Desktop Only as requested */
 @media screen and (max-width: 768px) {
     .chatbot-widget { display: none !important; }
@@ -734,13 +930,27 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
 }
 
 /* Sidebar entrance */
-.sidebar button {
-    animation: sideFade 0.4s ease forwards;
-    opacity: 0;
+.sidebar-item {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--secondary);
+    transition: all 0.2s;
+    opacity: 1 !important; /* Ensure visibility */
 }
-@keyframes sideFade {
-    from { opacity: 0; transform: translateX(-10px); }
-    to { opacity: 1; transform: translateX(0); }
+
+.sidebar-item i {
+    font-size: 1.1rem;
+    margin-right: 12px;
+}
+
+.sidebar-item.active {
+    background: #e8f5e9;
+    color: #27ae60;
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.15);
+}
+
+.sidebar-item:hover {
+    background: #f0f4f2;
 }
 
 /* ================= MODE SPECIFIC VISIBILITY ================= */

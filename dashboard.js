@@ -189,15 +189,28 @@ if (form) {
 
 function renderMembers() {
     memberList.innerHTML = "";
+    if (members.length === 0) {
+        memberList.innerHTML = '<div class="empty-state">No family members added yet. Add one to see their health milestones.</div>';
+        return;
+    }
+
     members.forEach((m, index) => {
         const div = document.createElement("div");
-        div.className = "member";
+        div.className = "member-folder";
         div.innerHTML = `
-            <strong>${m.name}</strong> (${m.relation})<br>
-            Age: ${m.age} | Health: ${m.health || "N/A"}
-            <div class="member-actions">
-                <button onclick="window.editMember(${index})">✏️</button>
-                <button onclick="window.deleteMember(${index})">🗑️</button>
+            <div class="member-header">
+                <div class="member-avatar">${m.name.charAt(0)}</div>
+                <div class="member-info">
+                    <h3>${m.name}</h3>
+                    <p>${m.relation} • ${m.age} Yrs</p>
+                </div>
+                <div class="member-actions">
+                    <button onclick="window.editMember(${index})">✏️</button>
+                    <button onclick="window.deleteMember(${index})">🗑️</button>
+                </div>
+            </div>
+            <div class="member-body">
+                <p><strong>Health Summary:</strong> ${m.health || "No underlying conditions noted."}</p>
             </div>`;
         memberList.appendChild(div);
     });
@@ -308,15 +321,27 @@ function appendMessage(sender, text) {
 // --- 7. VACCINATION TRACKER ---
 
 const VACCINE_SCHEDULE = [
-    { id: 'bcg', name: 'BCG (Tuberculosis)', ageMonths: 0, description: 'Single dose at birth' },
-    { id: 'hepb1', name: 'Hepatitis B (Dose 1)', ageMonths: 0, description: 'At birth' },
-    { id: 'polio1', name: 'Oral Polio Vaccine (OPV)', ageMonths: 1.5, description: '6 weeks old' },
-    { id: 'rotav', name: 'Rotavirus Vaccine', ageMonths: 2, description: '2 months old' },
-    { id: 'mmr1', name: 'MMR (Dose 1)', ageMonths: 9, description: '9 months old' },
-    { id: 'dpt_boost', name: 'DPT Booster', ageMonths: 18, description: '1.5 years old' },
-    { id: 'typhoid', name: 'Typhoid Vaccine', ageMonths: 24, description: '2 years old' },
-    { id: 'hpv', name: 'HPV Vaccine', ageMonths: 120, description: '10 years old' },
-    { id: 'flu', name: 'Annual Flu Shot', ageMonths: 6, description: 'Recommended annually from 6mo+' }
+    // --- INFANT (0-12 Months) ---
+    { id: 'bcg', name: 'BCG (Tuberculosis)', ageMonths: 0, description: 'Single dose given at birth.' },
+    { id: 'hepb1', name: 'Hepatitis B (Dose 1)', ageMonths: 0, description: 'At birth or within 24 hours.' },
+    { id: 'polio1', name: 'Polio (IPV/OPV)', ageMonths: 1.5, description: '6 weeks old.' },
+    { id: 'dtap1', name: 'DTaP (Dose 1)', ageMonths: 2, description: 'Protects against Diphtheria, Tetanus, Pertussis.' },
+    { id: 'rota1', name: 'Rotavirus (Dose 1)', ageMonths: 2, description: 'Prevents severe diarrhea.' },
+    { id: 'pneu1', name: 'Pneumococcal (Dose 1)', ageMonths: 2, description: 'Protects against pneumonia.' },
+    { id: 'mmr1', name: 'MMR (Dose 1)', ageMonths: 9, description: 'Measles, Mumps, Rubella.' },
+
+    // --- CHILD / TEEN (1-18 Years) ---
+    { id: 'var1', name: 'Varicella (Chickenpox)', ageMonths: 12, description: '1 year old.' },
+    { id: 'hepa1', name: 'Hepatitis A', ageMonths: 13, description: '1.5 years old.' },
+    { id: 'typh1', name: 'Typhoid (Booster)', ageMonths: 24, description: 'Every 2-3 years.' },
+    { id: 'hpv1', name: 'HPV (Dose 1)', ageMonths: 120, description: 'Around 10-12 years old.' },
+    { id: 'mening', name: 'Meningococcal', ageMonths: 132, description: 'Prevents meningitis.' },
+
+    // --- ADULT (18+) ---
+    { id: 'tdap_boost', name: 'Tdap Booster', ageMonths: 240, description: 'Every 10 years for adults.' },
+    { id: 'flu_annual', name: 'Annual Flu Vaccine', ageMonths: 6, description: 'Recommended seasonal vaccine.' },
+    { id: 'covid_boost', name: 'COVID-19 Follow-up', ageMonths: 192, description: 'Annual recommended booster.' },
+    { id: 'shing', name: 'Shingles Vaccine', ageMonths: 600, description: 'Recommended for age 50+.' }
 ];
 
 let currentVaccineFilter = 'all';
@@ -511,6 +536,31 @@ window.copyDietPlan = () => {
     navigator.clipboard.writeText(content).then(() => {
         alert("📋 Plan copied to clipboard!");
     });
+};
+
+// --- 10. MOODOMETER LOGIC ---
+
+window.logMood = async (type, emoji) => {
+    const tipCard = document.getElementById("moodTip");
+    const tipText = document.getElementById("tipText");
+    if (!tipCard || !tipText) return;
+
+    // Show the card and a loading state
+    tipCard.style.display = "block";
+    tipText.innerHTML = `<i>CareBot is thinking about your ${type} mood...</i>`;
+    tipCard.scrollIntoView({ behavior: 'smooth' });
+
+    const prompt = `The user at CareBuddy just logged their mood as ${type} (${emoji}). 
+    As an empathetic health assistant, provide a ONE-SENTENCE relaxation tip or mindfulness advice for this specific mood. 
+    Be warm, brief, and helpful.`;
+
+    try {
+        const genResult = await model.generateContent(prompt);
+        const response = await genResult.response;
+        tipText.innerHTML = `"${response.text()}"`;
+    } catch (e) {
+        tipText.innerHTML = "Take a deep breath and remember you're doing great! 🌿";
+    }
 };
 
 // Initialize
