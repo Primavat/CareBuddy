@@ -4,6 +4,7 @@ import { MapPin, Phone, Star, Search, Plus, Filter, Navigation } from 'lucide-re
 
 const Hospitals = () => {
   const [filter, setFilter] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [hospitals] = useState([
     { id: 1, name: 'City General Hospital', type: 'ER', distance: '1.2 km', rating: '4.8', phone: '+1 234 567 890' },
@@ -12,7 +13,12 @@ const Hospitals = () => {
     { id: 4, name: 'Downtown Pharmacy', type: 'Pharmacy', distance: '2.1 km', rating: '4.3', phone: '+1 234 567 893' }
   ]);
 
-  const filteredHospitals = filter === 'All' ? hospitals : hospitals.filter(h => h.type === filter);
+  const filteredHospitals = hospitals.filter(h => {
+    const matchesFilter = filter === 'All' || h.type === filter;
+    const matchesSearch = h.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         h.type.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
 
   const fetchNearby = () => {
     setLoading(true);
@@ -27,6 +33,16 @@ const Hospitals = () => {
           <p className="text-sm font-bold text-text-dim italic leading-relaxed">Quick access to emergency rooms and specialty clinics in your area.</p>
         </div>
         <div className="flex flex-wrap gap-4 items-center">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <input 
+              type="text"
+              placeholder="Search hospital..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="bg-gray-100 border border-transparent focus:border-primary focus:bg-white p-2.5 pl-12 rounded-xl text-xs font-bold text-secondary outline-none transition-all w-64 shadow-inner"
+            />
+          </div>
           <div className="flex bg-gray-100 p-1 rounded-xl">
             {['All', 'ER', 'Clinic', 'Pharmacy'].map((type) => (
               <button 

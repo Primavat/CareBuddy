@@ -22,7 +22,10 @@ const Medications = ({ members }) => {
           <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">💊 Medication Tracker</h2>
           <p className="text-sm font-bold text-text-dim italic leading-relaxed">Stay on top of your family's prescriptions and daily vitamins.</p>
         </div>
-        <button className="bg-primary text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg hover:bg-green-700 transition-colors">
+        <button 
+          onClick={() => window.open('https://www.1mg.com', '_blank')}
+          className="bg-primary text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg hover:bg-green-700 transition-colors"
+        >
           <Plus size={20} /> Add Medication
         </button>
       </div>
