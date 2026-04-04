@@ -1,78 +1,16 @@
-# 🚀 CareBuddy  
-### Your Intelligent Healthcare Companion
+# React + Vite
 
----
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## 📌 Overview
+Currently, two official plugins are available:
 
-**CareBuddy** is a modern full-stack healthcare companion platform designed to assist users with **health management, guidance, and digital interaction**.  
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-It focuses on solving real-world healthcare challenges such as:
-- Lack of accessible medical guidance  
-- Difficulty in maintaining health routines  
-- Poor patient-caregiver communication  
+## React Compiler
 
----
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## ✨ Key Features
+## Expanding the ESLint configuration
 
-- 💬 **Interactive Chat Interface**  
-  Enables real-time communication and guidance  
-
-- 🧠 **AI-powered Assistance**  
-  Provides personalized suggestions and responses  
-
-- 📊 **User-friendly Dashboard**  
-  Clean UI for better navigation and experience  
-
-- 📁 **Modular Component Architecture**  
-  Scalable React-based structure  
-
-- ⚡ **Fast Frontend (Vite + React + TypeScript)**  
-  Optimized for performance and developer experience  
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-- React (with TypeScript)
-- Vite
-- Tailwind / UI component system
-
-### Backend (if applicable / planned)
-- Node.js / Express
-- API-based architecture
-
-### Tools & Libraries
-- Zod (validation)
-- Custom UI component library
-- Modern hooks & modular structure
-
----
-### Contribution
-- Contributions are welcome !
-# Fork the repo
-# Create your feature branch
-git checkout -b feature/your-feature
-
-# Commit changes
-git commit -m "Add feature"
-
-# Push and open PR
-
-## 📂 Project Structure
-
-```bash
-CareBuddy/
-│
-├── public/              # Static assets
-├── src/
-│   ├── components/      # Reusable UI components
-│   ├── pages/           # Application pages
-│   ├── hooks/           # Custom React hooks
-│   ├── lib/             # Utility functions
-│   └── main.tsx         # Entry point
-│
-├── package.json
-└── vite.config.ts
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
