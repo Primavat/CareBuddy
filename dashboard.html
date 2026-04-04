@@ -20,11 +20,22 @@
 
     <nav class="navbar">
         <div class="nav-left">
-        <a href="#">About Us</a>
-    </div>
-    <div class="nav-center">
-        <h2>Hello <span id="user-name-greeting">Primavat</span>, welcome to <span class="white-text">Care</span><span class="brand">Buddy</span></h2>
-    </div>
+            <!-- Navbar left space -->
+        </div>
+
+        <div class="nav-center">
+            <h2>Hello <span id="user-name-greeting">Primavat</span>, welcome to <span class="white-text">Care</span><span class="brand">Buddy</span></h2>
+            
+            <div class="mode-switcher">
+                <button class="mode-btn active" id="personal-btn" onclick="setDashboardMode('personal')">
+                    <i>👤</i> Personal
+                </button>
+                <button class="mode-btn" id="family-btn" onclick="setDashboardMode('family')">
+                    <i>🏠</i> Family
+                </button>
+            </div>
+        </div>
+
         <div class="nav-right">
             <a href="#">About Us</a>
             <div class="settings" id="settings-menu">
@@ -55,18 +66,45 @@
 
     <div class="dashboard">
 
-        <aside class="sidebar">
-            <button onclick="showProfile()" class="active"><i>👤</i> Profile</button>
-            <button onclick="showChatbot()"><i>🤖</i> Chatbot</button>
-            <button><i>💊</i> Medications</button>
-            <button><i>💧</i> Hydration</button>
-            <button><i>📅</i> Reminders</button>
-            <button><i>🧠</i> Mental Health</button>
-        </aside>
+    <aside class="sidebar">
+        <!-- Common -->
+        <button onclick="showSection('chatbotSection')" id="btn-chatbot" class="sidebar-item"><i>🤖</i> Chatbot</button>
+        <button id="btn-medications" class="sidebar-item"><i>💊</i> Medications</button>
+        <button id="btn-hydration" class="sidebar-item"><i>💧</i> Hydration</button>
+        <button id="btn-reminders" class="sidebar-item"><i>📅</i> Reminders</button>
+        <button id="btn-mental" class="sidebar-item"><i>🧠</i> Mental Health</button>
+
+        <!-- Personal Only -->
+        <button onclick="showSection('vitalsSection')" id="btn-vitals" class="sidebar-item personal-only"><i>💓</i> My Vitals</button>
+        <button onclick="showSection('journalSection')" id="btn-journal" class="sidebar-item personal-only"><i>📖</i> My Journal</button>
+
+        <!-- Family Only -->
+        <button onclick="showSection('profileSection')" id="btn-profiles" class="sidebar-item family-only"><i>🏠</i> Family Profiles</button>
+    </aside>
 
         <main class="content">
 
-            <div id="profileSection">
+            <!-- PERSONAL MODE SECTIONS -->
+            <div id="vitalsSection" class="personal-only section">
+                <h2>💓 My Health Vitals</h2>
+                <div class="card">
+                    <p style="color: var(--text-dim)">Track your blood pressure, heart rate, and more here.</p>
+                    <div style="padding: 20px; text-align: center; border: 2px dashed var(--border); border-radius: 16px; color: var(--text-dim)">
+                        Interactive Tracking Coming Soon 🚀
+                    </div>
+                </div>
+            </div>
+
+            <div id="journalSection" class="personal-only section" style="display:none;">
+                <h2>📖 Health Journal</h2>
+                <div class="card">
+                    <textarea placeholder="How are you feeling today? Log your symptoms or mood..."></textarea>
+                    <button type="submit" style="margin-top: 15px;">💾 Save Entry</button>
+                </div>
+            </div>
+
+            <!-- FAMILY MODE SECTIONS -->
+            <div id="profileSection" class="family-only section" style="display:none;">
                 <h2>🏠 Family Profiles</h2>
                 <form id="familyForm">
                     <div class="form-row">
@@ -90,7 +128,8 @@
                 <div class="member_list" id="memberList"></div>
             </div>
 
-            <div id="chatbotSection" style="display:none;">
+            <!-- COMMON SECTIONS -->
+            <div id="chatbotSection" class="section" style="display:none;">
                 <h2>CareBuddy Chatbot 🤖</h2>
                 <div class="chat-container">
                     <div id="chatMessages" class="chat-messages">
