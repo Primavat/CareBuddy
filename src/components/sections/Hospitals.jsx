@@ -131,7 +131,8 @@ const Hospitals = () => {
   const handleNavigate = (h) => {
     const origin = userCoords ? `${userCoords.latitude},${userCoords.longitude}` : 'Current+Location';
     const destination = h.lat && h.lon ? `${h.lat},${h.lon}` : encodeURIComponent(h.name);
-    const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=driving`;
+    // Added dir_action=navigate to trigger the 'Start' button/navigation mode
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=driving&dir_action=navigate`;
     window.open(mapsUrl, '_blank');
   };
 
