@@ -1,4 +1,5 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+import { GoogleGenerativeAI } from 'https://esm.run/@google/generative-ai'
 
 const supabase = createClient(
     'https://idbratjfnpkzmbfzcehr.supabase.co',
@@ -88,10 +89,11 @@ window.showSection = (sectionId) => {
 
 // --- AI CONFIGURATION ---
 const GEMINI_API_KEY = "AIzaSyB7H5bhn8y8Z4Ah-vTCqnMNWVw6ovxTrDs";
-// Using v1beta and gemini-pro for maximum compatibility across regions
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-const CHAT_PERSONALITY = "Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns.";
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ 
+    model: "gemini-1.5-flash",
+    systemInstruction: "Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns."
+});
 
 // Points System
 window.addPoints = (category, amount) => {
@@ -253,7 +255,7 @@ window.sendMessage = async () => {
     appendMessage('user', message);
     input.value = "";
 
-    if (GEMINI_API_KEY === "PASTE_YOUR_GEMINI_API_KEY_HERE" || !GEMINI_API_KEY) {
+    if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("PASTE")) {
         appendMessage('bot', "CareBot needs an API Key! Please add it to dashboard.js.");
         return;
     }
@@ -269,49 +271,30 @@ window.sendMessage = async () => {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     try {
-        console.log("CareBot: Sending request to Gemini (v1beta)...");
-        // Try flash first, then pro if it fails
-        let response = await fetch(GEMINI_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: `${CHAT_PERSONALITY}\n\nUser Question: ${message}` }] }]
-            })
-        });
-
-        if (response.status === 404) {
-            console.warn("CareBot: Flash model not found, trying gemini-pro fallback...");
-            const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
-            response = await fetch(fallbackUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: `${CHAT_PERSONALITY}\n\nUser Question: ${message}` }] }]
-                })
-            });
-        }
-
-        const data = await response.json();
-        console.log("CareBot: Received response:", data);
-
-        if (data.error) {
-            throw new Error(data.error.message || "API Error");
-        }
-
-        const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        console.log("CareBot: Generating content via SDK...");
+        const result = await model.generateContent(message);
+        const response = await result.response;
+        const text = response.text();
         
         document.getElementById(typingId).remove();
 
-        if (aiResponse) {
-            appendMessage('bot', aiResponse);
+        if (text) {
+            appendMessage('bot', text);
         } else {
-            console.warn("CareBot: No text in response. Finish reason:", data.candidates?.[0]?.finishReason);
-            appendMessage('bot', "I'm sorry, I couldn't process that. It might be a sensitive topic or a connection glitch.");
+            appendMessage('bot', "I received an empty response. Let's try rephrasing that.");
         }
     } catch (error) {
-        console.error("CareBot: Error during fetch:", error);
+        console.error("CareBot SDK Error:", error);
         document.getElementById(typingId).remove();
-        appendMessage('bot', "Oops! I'm having trouble connecting to my AI brain. Please check your API key or internet.");
+        
+        let errorMsg = "Oops! I encountered an error connecting to my AI brain.";
+        if (error.message.includes("404")) {
+            errorMsg = "Error 404: The model name or API version seems invalid for your region. I'll automatically try a fallback in the next update if this persists.";
+        } else if (error.message.includes("403")) {
+            errorMsg = "Error 403: Access forbidden. Please ensure your API key is correct and has Gemini API enabled in AI Studio.";
+        }
+        
+        appendMessage('bot', errorMsg);
     }
 };
 
