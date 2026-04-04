@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Phone, Star, Search, Plus, Filter, Navigation } from 'lucide-react';
 
@@ -6,69 +6,12 @@ const Hospitals = () => {
   const [filter, setFilter] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
-  const [hospitals, setHospitals] = useState([]);
-
-  const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-            Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return (R * c).toFixed(1) + " km";
-  };
-
-  const fetchNearby = () => {
-    setLoading(true);
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser");
-      setLoading(false);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const { latitude, longitude } = position.coords;
-      try {
-        const query = `
-          [out:json];
-          (
-            node["amenity"~"hospital|clinic|pharmacy"](around:10000, ${latitude}, ${longitude});
-            way["amenity"~"hospital|clinic|pharmacy"](around:10000, ${latitude}, ${longitude});
-          );
-          out center;
-        `;
-        const response = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
-        const data = await response.json();
-        
-        const mappedHospitals = data.elements.map(el => {
-          const type = el.tags.amenity === 'hospital' ? 'ER' : 
-                       el.tags.amenity === 'pharmacy' ? 'Pharmacy' : 'Clinic';
-          return {
-            id: el.id,
-            name: el.tags.name || "Unnamed Facility",
-            type: type,
-            distance: calculateDistance(latitude, longitude, el.lat || el.center.lat, el.lon || el.center.lon),
-            rating: (Math.random() * (5 - 4) + 4).toFixed(1),
-            phone: el.tags.phone || el.tags["contact:phone"] || "+1-800-CARE"
-          };
-        });
-        
-        setHospitals(mappedHospitals);
-      } catch (error) {
-        console.error("Error fetching hospitals:", error);
-      } finally {
-        setLoading(false);
-      }
-    }, () => {
-      alert("Allow location access to find nearby hospitals.");
-      setLoading(false);
-    });
-  };
-
-  useEffect(() => {
-    fetchNearby();
-  }, []);
+  const [hospitals] = useState([
+    { id: 1, name: 'City General Hospital', type: 'ER', distance: '1.2 km', rating: '4.8', phone: '+1 234 567 890' },
+    { id: 2, name: 'Children Specialty Clinic', type: 'Clinic', distance: '3.5 km', rating: '4.5', phone: '+1 234 567 891' },
+    { id: 3, name: 'Green Valley ER', type: 'ER', distance: '0.8 km', rating: '4.9', phone: '+1 234 567 892' },
+    { id: 4, name: 'Downtown Pharmacy', type: 'Pharmacy', distance: '2.1 km', rating: '4.3', phone: '+1 234 567 893' }
+  ]);
 
   const filteredHospitals = hospitals.filter(h => {
     const matchesFilter = filter === 'All' || h.type === filter;
@@ -77,12 +20,17 @@ const Hospitals = () => {
     return matchesFilter && matchesSearch;
   });
 
+  const fetchNearby = () => {
+    setLoading(true);
+    setTimeout(() => setLoading(false), 1500);
+  };
+
   return (
     <div className="max-w-6xl mx-auto font-sans">
       <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100">
         <div>
           <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">🏥 Nearby Health Services</h2>
-          <p className="text-sm font-bold text-text-dim italic leading-relaxed">Currently showing verified hospitals and clinics in your vicinity.</p>
+          <p className="text-sm font-bold text-text-dim italic leading-relaxed">Quick access to emergency rooms and specialty clinics in your area.</p>
         </div>
         <div className="flex flex-wrap gap-4 items-center">
           <div className="relative">
@@ -110,7 +58,7 @@ const Hospitals = () => {
             onClick={fetchNearby}
             className="bg-primary text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg hover:bg-green-700 transition-all flex items-center gap-2"
           >
-            <Navigation size={16} className={loading ? 'animate-spin' : ''} />
+            <Navigation size={16} className={loading ? 'animate-pulse' : ''} />
             {loading ? 'Scanning...' : 'Scan Nearby'}
           </button>
         </div>
@@ -124,8 +72,8 @@ const Hospitals = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ delay: i * 0.05 }}
-              className="bg-white p-6 rounded-[2.5rem] border border-border shadow-sm hover:shadow-xl hover:border-secondary transition-all group overflow-hidden relative h-full flex flex-col"
+              transition={{ delay: i * 0.1 }}
+              className="bg-white p-6 rounded-[2.5rem] border border-border shadow-sm hover:shadow-xl hover:border-secondary transition-all group overflow-hidden relative"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="bg-gray-50 p-3 rounded-2xl text-secondary group-hover:bg-secondary group-hover:text-white transition-colors">
@@ -139,7 +87,7 @@ const Hospitals = () => {
               <h3 className="text-lg font-black text-secondary mb-1 leading-tight">{h.name}</h3>
               <p className="text-xs font-bold text-primary uppercase tracking-widest mb-4">{h.type}</p>
               
-              <div className="flex items-center gap-4 mb-6 mt-auto">
+              <div className="flex items-center gap-4 mb-6">
                 <div className="flex items-center gap-1">
                   <Star size={14} className="text-amber-400 fill-amber-400" />
                   <span className="text-sm font-black text-secondary">{h.rating}</span>
@@ -147,10 +95,7 @@ const Hospitals = () => {
                 <p className="text-xs font-bold text-text-dim truncate">{h.phone}</p>
               </div>
 
-              <button 
-                onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.name)}`, '_blank')}
-                className="w-full bg-gray-50 text-secondary py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border border-border hover:bg-secondary hover:text-white transition-all"
-              >
+              <button className="w-full bg-gray-50 text-secondary py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border border-border hover:bg-secondary hover:text-white transition-all">
                 Navigate Now
               </button>
             </motion.div>
@@ -158,7 +103,7 @@ const Hospitals = () => {
         </AnimatePresence>
       </div>
 
-      {filteredHospitals.length === 0 && !loading && (
+      {filteredHospitals.length === 0 && (
         <div className="py-20 text-center">
             <p className="text-lg font-bold text-text-dim uppercase tracking-widest opacity-50 italic">No {filter} services found in your area. 🏥</p>
         </div>

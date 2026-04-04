@@ -96,47 +96,47 @@ const Vaccinations = () => {
                     )}
                 </div>
 
-                <div className="lg:col-span-1 relative">
-                    <div className="fixed top-24 right-10 w-64 bg-secondary p-5 rounded-[2rem] text-white space-y-5 shadow-2xl border border-white/5 z-40 scale-75 origin-top-right">
+                <div className="lg:col-span-1">
+                    <div className="bg-secondary p-8 rounded-[3rem] text-white space-y-8 sticky top-28 shadow-2xl border border-white/5">
                         <div className="flex justify-between items-start">
                             <div>
-                                <h3 className="text-xl font-black mb-0.5">📊 Rate</h3>
-                                <p className="text-gray-400 font-bold text-[10px] uppercase tracking-widest">{completedCount} of {vaccines.length} Secure</p>
+                                <h3 className="text-2xl font-black mb-1">📊 Rate</h3>
+                                <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">{completedCount} of {vaccines.length} Secure</p>
                             </div>
-                            <div className="p-2 bg-white/10 rounded-xl">
-                                <FileText size={18} className="text-primary" />
+                            <div className="p-3 bg-white/10 rounded-2xl">
+                                <FileText size={24} className="text-primary" />
                             </div>
                         </div>
                         
-                        <div className="space-y-4">
-                            <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                                <div className="flex justify-between text-[9px] font-black uppercase mb-2 text-gray-300 tracking-widest">
-                                    <span>Progress</span>
+                        <div className="space-y-6">
+                            <div className="bg-white/5 p-6 rounded-3xl border border-white/10">
+                                <div className="flex justify-between text-[10px] font-black uppercase mb-3 text-gray-300 tracking-[0.2em]">
+                                    <span>Total Progress</span>
                                     <span className="text-primary">{progressPerc}%</span>
                                 </div>
-                                <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                                <div className="h-2.5 w-full bg-white/10 rounded-full overflow-hidden">
                                     <motion.div 
                                         initial={{ width: 0 }} 
                                         animate={{ width: `${progressPerc}%` }} 
-                                        className="h-full bg-primary shadow-[0_0_10px_rgba(46,204,113,0.5)]" 
+                                        className="h-full bg-primary shadow-[0_0_15px_rgba(46,204,113,0.5)]" 
                                     />
                                 </div>
                             </div>
 
-                            <div className="space-y-2.5">
-                                <h4 className="text-[9px] font-black uppercase text-white/40 tracking-widest ml-1">Recent</h4>
-                                <div className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
-                                    <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center text-primary"><CheckCircle2 size={14} /></div>
+                            <div className="space-y-4">
+                                <h4 className="text-[10px] font-black uppercase text-white/40 tracking-[0.3em] ml-1">Recent Activity</h4>
+                                <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5 group hover:bg-white/10 transition-all cursor-default">
+                                    <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform"><CheckCircle2 size={18} /></div>
                                     <div>
-                                        <div className="text-[10px] font-black text-gray-200">BCG Dose</div>
-                                        <div className="text-[8px] font-bold text-gray-500 uppercase">Active</div>
+                                        <div className="text-xs font-black text-gray-200">BCG Dose</div>
+                                        <div className="text-[10px] font-bold text-gray-500 uppercase">Immunity Active</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <button className="w-full py-3.5 bg-primary text-white text-[10px] font-black rounded-xl shadow-lg hover:bg-green-700 transition-all uppercase tracking-widest border border-primary/50">
-                             Report
+                        <button className="w-full py-5 bg-primary text-white text-xs font-black rounded-2xl shadow-xl hover:bg-green-700 transition-all uppercase tracking-widest border border-primary/50 flex items-center justify-center gap-2">
+                             Download Report
                         </button>
                     </div>
                 </div>
