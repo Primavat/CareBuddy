@@ -3,14 +3,14 @@
 /* Premium Dashboard Styles - CareBuddy (Subtle Light Theme) */
 :root {
     --primary: #27ae60;
-    --secondary: #1a202c; /* Absolute Dark Blue-Black */
-    --accent: #e67e22;
+    --secondary: #1a202c;
+    --accent: #2ecc71; /* Pure Brand Green */
     --bg-main: #fcfdfe;
     --bg-side: #ffffff;
     --bg-card: #ffffff;
-    --text-main: #000000; /* Pure Black for headers */
-    --text-dim: #2c3e50; /* Deep Grey-Black for all descriptions */
-    --border: #d1d5db; /* Darker borders for definition */
+    --text-main: #000000;
+    --text-dim: #2c3e50;
+    --border: #d1d5db;
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     --glass: blur(8px);
 }
@@ -110,8 +110,8 @@ strong {
 }
 
 .brand {
-    color: var(--accent);
-    font-weight: 700;
+    color: #27ae60; /* Brand Green */
+    font-weight: 800;
 }
 
 .nav-right {
@@ -303,25 +303,25 @@ input:focus, select:focus, textarea:focus {
     box-shadow: 0 0 0 4px rgba(80, 216, 144, 0.1);
 }
 
-button[type="submit"] {
-    background: var(--accent);
-    color: #ffffff;
-    border: none;
-    padding: 14px 24px;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 12px rgba(80, 216, 144, 0.2);
+button[type="submit"]:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 18px rgba(39, 174, 96, 0.3); 
 }
-
-button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(80, 216, 144, 0.3); }
 
 /* ================= MEMBER LIST ================= */
 .member-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
+}
+
+.mode-switcher {
+    display: flex;
+    gap: 0;
+    background: #f0f4f2;
+    padding: 4px;
+    border-radius: 30px;
+    border: 2px solid #27ae60; /* Persistent Global Green Border */
 }
 
 .member {
@@ -600,13 +600,13 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
 
 .btn-generate {
     padding: 12px 24px;
-    background: #ff7675;
+    background: #27ae60;
     color: white;
     border: none;
     border-radius: 12px;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(255, 118, 117, 0.3);
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
     transition: transform 0.2s;
 }
 
@@ -647,10 +647,10 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: var(--accent);
+    background: #27ae60; /* Brand Green */
     border: none;
     cursor: pointer;
-    box-shadow: 0 8px 32px rgba(80, 216, 144, 0.4);
+    box-shadow: 0 8px 32px rgba(39, 174, 96, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -864,7 +864,7 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
 }
 
 .status-badge.urgent {
-    background: #ff7675;
+    background: #27ae60;
     color: white;
     animation: pulse 2s infinite;
 }
