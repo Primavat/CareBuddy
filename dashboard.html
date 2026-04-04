@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>CareBuddy Dashboard</title>
@@ -7,93 +8,105 @@
     <link rel="stylesheet" href="dashboard.css">
     <style>
         /* Initial state to prevent flicker before auth check */
-        body { background-color: #0b1a13; color: white; display: none; }
+        body {
+            background-color: #0b1a13;
+            color: white;
+            display: none;
+        }
     </style>
 </head>
+
 <body>
 
-<nav class="navbar">
-    <div class="nav-left">
-        <h2>Hello Buddy, Welcome to <span class="brand">CareBuddy</span></h2>
-        <h3 id="user-email" style="font-weight:400; color:#a3b8ad;"></h3>
-    </div>
-    <div class="nav-right">
-        <a href="#">About Us</a>
-        <div class="settings">
-            <img src="https://cdn-icons-png.flaticon.com/512/2099/2099058.png">
-            <div class="dropdown">
-                <a href="#">Notification Settings</a>
-                <a href="#">Privacy</a>
-                <a href="#">Theme</a>
+    <nav class="navbar">
+        <div class="nav-left">
+            <h2>Hello Buddy, Welcome to <span class="brand">CareBuddy</span></h2>
+            <h3 id="user-email" style="font-weight:400; color:#a3b8ad;"></h3>
+        </div>
+        <div class="nav-right">
+            <a href="#">About Us</a>
+            <div class="settings" id="settings-menu">
+                <img src="https://cdn-icons-png.flaticon.com/512/2099/2099058.png" alt="Settings" class="menu-icon">
+                <div class="dropdown-content" id="settings-dropdown">
+                    <a href="#" onclick="showNotificationSettings()"><i class="icon">🔔</i> Notifications</a>
+                    <a href="#" onclick="showPrivacy()"><i class="icon">🔒</i> Privacy</a>
+                    <a href="#" onclick="showTheme()"><i class="icon">🎨</i> Theme</a>
+                </div>
+            </div>
+            <div class="profile-menu" id="profile-menu">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" class="menu-icon">
+                <div class="dropdown-content" id="profile-dropdown">
+                    <div class="user-header">
+                        <p class="user-name" id="display-name">Care Buddy</p>
+                        <p class="user-role">Premium Member</p>
+                    </div>
+                    <hr>
+                    <a href="#" onclick="changeName()"><i class="icon">👤</i> Change Name</a>
+                    <a href="#" onclick="changePassword()"><i class="icon">🔑</i> Change Password</a>
+                    <hr>
+                    <a href="#" onclick="logout()" class="logout-link"><i class="icon">🚪</i> Logout</a>
+                </div>
             </div>
         </div>
-        <div class="profile-menu">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile">
-            <div class="dropdown">
-                <a href="#">Change Name</a>
-                <a href="#">Change Password</a>
-                <a href="#" onclick="logout()">Logout</a>
+    </nav>
+
+    <div class="dashboard">
+
+        <aside class="sidebar">
+            <button onclick="showProfile()" class="active"><i>👤</i> Profile</button>
+            <button onclick="showChatbot()"><i>🤖</i> Chatbot</button>
+            <button><i>💊</i> Medications</button>
+            <button><i>💧</i> Hydration</button>
+            <button><i>📅</i> Reminders</button>
+            <button><i>🧠</i> Mental Health</button>
+        </aside>
+
+        <main class="content">
+
+            <div id="profileSection">
+                <h2>🏠 Family Profiles</h2>
+                <form id="familyForm">
+                    <div class="form-row">
+                        <input type="text" id="name" placeholder="Full Name" required>
+                        <select id="gender">
+                            <option value="">Gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <input type="date" id="birthdate" required>
+                        <input type="text" id="relation" placeholder="Relation (e.g. Mother)">
+                    </div>
+
+                    <textarea id="health" placeholder="Health Data (conditions, allergies, etc.)"></textarea>
+                    <button type="submit">➕ Add Family Member</button>
+                </form>
+                <div class="member_list" id="memberList"></div>
             </div>
-        </div>
-    </div>
-</nav>
 
-<div class="dashboard">
-
-    <aside class="sidebar">
-        <button onclick="showProfile()" class="active">👤 Profile</button>
-        <button onclick="showChatbot()">🤖 Chatbot</button>
-        <button>💊 Medications</button>
-        <button>💧 Hydration</button>
-        <button>📅 Reminders</button>
-        <button>🧠 Mental Health</button>
-    </aside>
-
-    <main class="content">
-
-        <div id="profileSection">
-            <h2>🏠 Family Profiles</h2>
-            <form id="familyForm">
-                <div class="form-row">
-                    <input type="text" id="name" placeholder="Full Name" required>
-                    <select id="gender">
-                        <option value="">Gender</option>
-                        <option>Male</option>
-                        <option>Female</option>
-                        <option>Other</option>
-                    </select>
-                </div>
-
-                <div class="form-row">
-                    <input type="date" id="birthdate" required>
-                    <input type="text" id="relation" placeholder="Relation (e.g. Mother)">
-                </div>
-
-                <textarea id="health" placeholder="Health Data (conditions, allergies, etc.)"></textarea>
-                <button type="submit">➕ Add Family Member</button>
-            </form>
-            <div class="member_list" id="memberList"></div>
-        </div>
-
-        <div id="chatbotSection" style="display:none;">
-            <h2>CareBuddy Chatbot 🤖</h2>
-            <div class="chat-container">
-                <div id="chatMessages" class="chat-messages">
-                    <div class="bot-msg">
-                        Hello 👋 I’m CareBuddy. How can I help you today?
+            <div id="chatbotSection" style="display:none;">
+                <h2>CareBuddy Chatbot 🤖</h2>
+                <div class="chat-container">
+                    <div id="chatMessages" class="chat-messages">
+                        <div class="bot-msg">
+                            Hello 👋 I’m CareBuddy. How can I help you today?
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Type your message...">
+                        <button onclick="sendMessage()">Send</button>
                     </div>
                 </div>
-                <div class="chat-input">
-                    <input type="text" id="chatInput" placeholder="Type your message...">
-                    <button onclick="sendMessage()">Send</button>
-                </div>
             </div>
-        </div>
 
-    </main>
-</div>
+        </main>
+    </div>
 
-<script src="dashboard.js" type="module"></script>
+    <script src="dashboard.js" type="module"></script>
 
 </body>
+
 </html>

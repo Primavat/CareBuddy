@@ -1,8 +1,8 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabase = createClient(
-  'https://idbratjfnpkzmbfzcehr.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkYnJhdGpmbnBrem1iZnpjZWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMTYyMzMsImV4cCI6MjA5MDc5MjIzM30._SHhi4Q7MTDE12L4tsl6yaLKAWvxZoVmmLZB5wdV59g'
+    'https://idbratjfnpkzmbfzcehr.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkYnJhdGpmbnBrem1iZnpjZWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMTYyMzMsImV4cCI6MjA5MDc5MjIzM30._SHhi4Q7MTDE12L4tsl6yaLKAWvxZoVmmLZB5wdV59g'
 )
 
 // --- 1. AUTH & REDIRECT LOGIC ---
@@ -11,7 +11,7 @@ async function checkUserSession() {
     // If the URL has a hash, Google is currently logging us in. STOP redirects.
     if (window.location.hash.includes("access_token")) {
         console.log("Login in progress...");
-        return; 
+        return;
     }
 
     const { data: { session } } = await supabase.auth.getSession();
@@ -34,7 +34,16 @@ async function checkUserSession() {
 function showPage(user) {
     document.body.style.display = "block";
     const emailDisplay = document.getElementById("user-email");
+    const nameDisplay = document.getElementById("display-name");
+
     if (emailDisplay) emailDisplay.textContent = user.email;
+    if (nameDisplay) nameDisplay.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
+
+    // Staggered animation for sidebar
+    const items = document.querySelectorAll('.sidebar button');
+    items.forEach((item, index) => {
+        item.style.animationDelay = `${index * 0.1}s`;
+    });
 }
 
 // --- 2. GLOBAL FUNCTIONS (Required for HTML Buttons) ---
@@ -63,7 +72,50 @@ function setActiveButton(activeIndex) {
     });
 }
 
-// --- 3. FAMILY & CHATBOT LOGIC ---
+// --- 3. UI INTERACTIVE LOGIC (Dropdowns) ---
+
+window.toggleDropdown = (id) => {
+    const dropdown = document.getElementById(id);
+    const allDropdowns = document.querySelectorAll('.dropdown-content');
+
+    allDropdowns.forEach(d => {
+        if (d.id !== id) d.classList.remove('show');
+    });
+
+    dropdown.classList.toggle('show');
+};
+
+// Close dropdowns on outside click
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.profile-menu') && !e.target.closest('.settings')) {
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+    }
+});
+
+// Setup click listeners for the icons
+document.addEventListener('DOMContentLoaded', () => {
+    const profileIcon = document.querySelector('#profile-menu .menu-icon');
+    const settingsIcon = document.querySelector('#settings-menu .menu-icon');
+
+    if (profileIcon) profileIcon.onclick = () => window.toggleDropdown('profile-dropdown');
+    if (settingsIcon) settingsIcon.onclick = () => window.toggleDropdown('settings-dropdown');
+});
+
+// --- 4. STUB FUNCTIONS FOR MENU OPTIONS ---
+
+window.showNotificationSettings = () => alert("🔔 Notification Settings: This feature is coming soon!");
+window.showPrivacy = () => alert("🔒 Privacy Settings: Your data is always encrypted and secure.");
+window.showTheme = () => alert("🎨 Theme: Custom themes will be available in the next update.");
+window.changeName = () => {
+    const newName = prompt("Enter your new display name:");
+    if (newName) {
+        document.getElementById("display-name").textContent = newName;
+        alert("Name updated successfully! (Local only for demo)");
+    }
+};
+window.changePassword = () => alert("🔑 Change Password: A reset link has been sent to your email (Demo).");
+
+// --- 5. FAMILY & CHATBOT LOGIC ---
 
 const form = document.getElementById("familyForm");
 const memberList = document.getElementById("memberList");

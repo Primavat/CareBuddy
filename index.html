@@ -1,107 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>CareBuddy - AI Health Chatbot</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div class="bg-emojis" aria-hidden="true">
-    <!-- Row 1 -->
-    <span class="emoji" style="top: 5%; left: 10%; animation-delay: 0s;">🏥</span>
-    <span class="emoji" style="top: 10%; left: 30%; animation-delay: 1s;">💊</span>
-    <span class="emoji" style="top: 5%; left: 50%; animation-delay: 2s;">❤️</span>
-    <span class="emoji" style="top: 8%; left: 70%; animation-delay: 0.5s;">💉</span>
-    <span class="emoji" style="top: 12%; left: 90%; animation-delay: 1.5s;">🩺</span>
+    <div class="bg-emojis" aria-hidden="true">
+        <!-- Row 1 -->
+        <span class="emoji" style="top: 5%; left: 10%; animation-delay: 0s;">🏥</span>
+        <span class="emoji" style="top: 10%; left: 30%; animation-delay: 1s;">💊</span>
+        <span class="emoji" style="top: 5%; left: 50%; animation-delay: 2s;">❤️</span>
+        <span class="emoji" style="top: 8%; left: 70%; animation-delay: 0.5s;">💉</span>
+        <span class="emoji" style="top: 12%; left: 90%; animation-delay: 1.5s;">🩺</span>
 
-    <!-- Row 2 -->
-    <span class="emoji" style="top: 25%; left: 5%; animation-delay: 2s;">💉</span>
-    <span class="emoji" style="top: 28%; left: 25%; animation-delay: 0.5s;">🩺</span>
-    <span class="emoji" style="top: 26%; left: 65%; animation-delay: 2.5s;">💊</span>
-    <span class="emoji" style="top: 25%; left: 85%; animation-delay: 0.8s;">❤️</span>
+        <!-- Row 2 -->
+        <span class="emoji" style="top: 25%; left: 5%; animation-delay: 2s;">💉</span>
+        <span class="emoji" style="top: 28%; left: 25%; animation-delay: 0.5s;">🩺</span>
+        <span class="emoji" style="top: 26%; left: 65%; animation-delay: 2.5s;">💊</span>
+        <span class="emoji" style="top: 25%; left: 85%; animation-delay: 0.8s;">❤️</span>
 
-    <!-- Row 3 -->
-    <span class="emoji" style="top: 50%; left: 15%; animation-delay: 1.1s;">❤️</span>
-    <span class="emoji" style="top: 55%; left: 55%; animation-delay: 0s;">💉</span>
-    <span class="emoji" style="top: 48%; left: 75%; animation-delay: 1.8s;">🩺</span>
-    <span class="emoji" style="top: 52%; left: 95%; animation-delay: 0.3s;">💊</span>
+        <!-- Row 3 -->
+        <span class="emoji" style="top: 50%; left: 15%; animation-delay: 1.1s;">❤️</span>
+        <span class="emoji" style="top: 55%; left: 55%; animation-delay: 0s;">💉</span>
+        <span class="emoji" style="top: 48%; left: 75%; animation-delay: 1.8s;">🩺</span>
+        <span class="emoji" style="top: 52%; left: 95%; animation-delay: 0.3s;">💊</span>
 
-    <!-- Row 4 -->
-    <span class="emoji" style="top: 75%; left: 8%; animation-delay: 2.8s;">💊</span>
-    <span class="emoji" style="top: 70%; left: 28%; animation-delay: 0.7s;">💉</span>
-    <span class="emoji" style="top: 80%; left: 48%; animation-delay: 1.4s;">❤️</span>
-    <span class="emoji" style="top: 75%; left: 68%; animation-delay: 2.2s;">🏥</span>
-    <span class="emoji" style="top: 72%; left: 88%; animation-delay: 0.9s;">🩺</span>
+        <!-- Row 4 -->
+        <span class="emoji" style="top: 75%; left: 8%; animation-delay: 2.8s;">💊</span>
+        <span class="emoji" style="top: 70%; left: 28%; animation-delay: 0.7s;">💉</span>
+        <span class="emoji" style="top: 80%; left: 48%; animation-delay: 1.4s;">❤️</span>
+        <span class="emoji" style="top: 75%; left: 68%; animation-delay: 2.2s;">🏥</span>
+        <span class="emoji" style="top: 72%; left: 88%; animation-delay: 0.9s;">🩺</span>
 
-    <!-- Row 5 -->
-    <span class="emoji" style="top: 90%; left: 18%; animation-delay: 1.7s;">🩺</span>
-    <span class="emoji" style="top: 95%; left: 38%; animation-delay: 0.2s;">❤️</span>
-    <span class="emoji" style="top: 88%; left: 58%; animation-delay: 2.6s;">💊</span>
-    <span class="emoji" style="top: 92%; left: 78%; animation-delay: 1.1s;">💉</span>
-    <span class="emoji" style="top: 96%; left: 90%; animation-delay: 0.6s;">🏥</span>
-</div>
-
-<div id="showcase-page" class="showcase-container">
-    <h1 class="showcase-title">Care<span>Buddy</span></h1>
-    <p class="showcase-tagline">Your personal healthcare companion</p>
-</div>
-
-<div class="container hidden fade-box" id="login-container">
-
-    <div class="brand">
-        <h1>Care<span>Buddy</span></h1>
-        <p>Your AI Health Companion</p>
+        <!-- Row 5 -->
+        <span class="emoji" style="top: 90%; left: 18%; animation-delay: 1.7s;">🩺</span>
+        <span class="emoji" style="top: 95%; left: 38%; animation-delay: 0.2s;">❤️</span>
+        <span class="emoji" style="top: 88%; left: 58%; animation-delay: 2.6s;">💊</span>
+        <span class="emoji" style="top: 92%; left: 78%; animation-delay: 1.1s;">💉</span>
+        <span class="emoji" style="top: 96%; left: 90%; animation-delay: 0.6s;">🏥</span>
     </div>
 
-    <div class="chat-box">
-        <div id="step2">
-            <div class="bot-message">
-                Welcome to CareBuddy.<br>
-                Please enter your phone number or email to login.
-            </div>
-            <input type="text" id="contact" placeholder="Phone number or Email">
-            <button onclick="goToStep3()">Send OTP</button>
-            <div class="divider">
-  <hr><span>OR</span><hr>
-</div>
+    <div id="showcase-page" class="showcase-container">
+        <h1 class="showcase-title">Care<span>Buddy</span></h1>
+        <p class="showcase-tagline">Your personal healthcare companion</p>
+    </div>
 
-<button onclick="loginWithGoogle()">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
-    Continue with Google
-</button>
+    <div class="container hidden fade-box" id="login-container">
+
+        <div class="brand">
+            <h1>Care<span>Buddy</span></h1>
+            <p>Your AI Health Companion</p>
         </div>
 
-        <div id="step3" class="hidden">
-            <div class="bot-message">
-                🔐 Verification time!<br>
-                Enter the 6-digit OTP sent to you.
+        <div class="chat-box">
+            <div id="step2">
+                <div class="bot-message">
+                    Welcome to CareBuddy.<br>
+                    Please enter your phone number or email to login.
+                </div>
+                <input type="text" id="contact" placeholder="Phone number or Email">
+                <button onclick="goToStep3()">Send OTP</button>
+                <div class="divider">
+                    <hr><span>OR</span>
+                    <hr>
+                </div>
+
+                <button class="google-btn" onclick="loginWithGoogle()">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
+                    Continue with Google
+                </button>
             </div>
-            <p class="otp-note">(For demo: OTP is <b>123456</b>)</p>
-            <input type="text" id="otp" placeholder="Enter OTP">
-            <button onclick="verifyOTP()">Verify & Login</button>
+
+            <div id="step3" class="hidden">
+                <div class="bot-message">
+                    🔐 Verification time!<br>
+                    Enter the 6-digit OTP sent to you.
+                </div>
+                <p class="otp-note">(For demo: OTP is <b>123456</b>)</p>
+                <input type="text" id="otp" placeholder="Enter OTP">
+                <button onclick="verifyOTP()">Verify & Login</button>
+            </div>
+
+            <div id="success" class="hidden">
+                <div class="bot-message">
+                    ✅ You're all set!<br>
+                    Welcome to CareBuddy. I'm here whenever you need care 💚
+                </div>
+                <button onclick="alert('Redirecting to dashboard...')">
+                    Go to Dashboard
+                </button>
+            </div>
+
         </div>
 
-        <div id="success" class="hidden">
-            <div class="bot-message">
-                ✅ You're all set!<br>
-                Welcome to CareBuddy. I'm here whenever you need care 💚
-            </div>
-            <button onclick="alert('Redirecting to dashboard...')">
-                Go to Dashboard
-            </button>
+        <div class="privacy">
+            🔒 Your health data is <span>secure</span> and never shared.
         </div>
 
     </div>
 
-    <div class="privacy">
-        🔒 Your health data is <span>secure</span> and never shared.
-    </div>
-
-</div>
-
-<script type="module" src="script.js"></script>
+    <script type="module" src="script.js"></script>
 
 </body>
+
 </html>
