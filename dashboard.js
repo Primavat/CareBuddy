@@ -88,7 +88,8 @@ window.showSection = (sectionId) => {
 
 // --- AI CONFIGURATION ---
 const GEMINI_API_KEY = "AIzaSyB7H5bhn8y8Z4Ah-vTCqnMNWVw6ovxTrDs";
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+// Using v1beta and gemini-pro for maximum compatibility across regions
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 const CHAT_PERSONALITY = "Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns.";
 
@@ -268,16 +269,27 @@ window.sendMessage = async () => {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     try {
-        console.log("CareBot: Sending request to Gemini...");
-        const response = await fetch(GEMINI_URL, {
+        console.log("CareBot: Sending request to Gemini (v1beta)...");
+        // Try flash first, then pro if it fails
+        let response = await fetch(GEMINI_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents: [{
-                    parts: [{ text: `${CHAT_PERSONALITY}\n\nUser Question: ${message}` }]
-                }]
+                contents: [{ parts: [{ text: `${CHAT_PERSONALITY}\n\nUser Question: ${message}` }] }]
             })
         });
+
+        if (response.status === 404) {
+            console.warn("CareBot: Flash model not found, trying gemini-pro fallback...");
+            const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+            response = await fetch(fallbackUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: `${CHAT_PERSONALITY}\n\nUser Question: ${message}` }] }]
+                })
+            });
+        }
 
         const data = await response.json();
         console.log("CareBot: Received response:", data);
@@ -311,6 +323,20 @@ function appendMessage(sender, text) {
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
+
+// --- DIAGNOSTICS ---
+window.testGeminiConnection = async () => {
+    console.log("CareBot Diagnostics: Checking API access...");
+    try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}`);
+        const data = await res.json();
+        console.log("CareBot Diagnostics: Available Models:", data);
+        if (data.error) alert("API Error: " + data.error.message);
+        else alert("Connection successful! Check the console (F12) for available models.");
+    } catch (e) {
+        console.error("CareBot Diagnostics: Failed to connect", e);
+    }
+};
 
 // Initialize on Load
 checkUserSession();
