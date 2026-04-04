@@ -126,10 +126,12 @@
 
             <!-- PERSONAL MODE SECTIONS -->
             <div id="vitalsSection" class="personal-only section">
-                <h2>💓 My Health Vitals</h2>
+                <div class="section-header">
+                    <h2>💓 My Health Vitals</h2>
+                    <p>Track your blood pressure, heart rate, and more here.</p>
+                </div>
                 <div class="card">
-                    <p style="color: var(--text-dim)">Track your blood pressure, heart rate, and more here.</p>
-                    <div style="padding: 20px; text-align: center; border: 2px dashed var(--border); border-radius: 16px; color: var(--text-dim)">
+                    <div style="padding: 20px; text-align: center; border: 2px dashed var(--border); border-radius: 16px; color: var(--text-main); font-weight: 800;">
                         Interactive Tracking Coming Soon 🚀
                     </div>
                 </div>
@@ -160,41 +162,54 @@
             </div>
 
             <div id="journalSection" class="personal-only section" style="display:none;">
-                <h2>📖 Health Journal</h2>
+                <div class="section-header">
+                    <h2>📖 Health Journal</h2>
+                    <p>Log your daily thoughts, symptoms, or mood entries here.</p>
+                </div>
                 <div class="card">
-                    <textarea placeholder="How are you feeling today? Log your symptoms or mood..."></textarea>
+                    <textarea placeholder="How are you feeling today?..."></textarea>
                     <button type="submit" style="margin-top: 15px;">💾 Save Entry</button>
                 </div>
             </div>
 
             <div id="hydrationSection" class="personal-only section" style="display:none;">
-                <h2>💧 Hydration Tracker</h2>
+                <div class="section-header">
+                    <h2>💧 Hydration Tracker</h2>
+                    <p>Track your daily water intake and earn health points.</p>
+                </div>
                 <div class="card">
-                    <p>Track your daily water intake and earn points!</p>
                     <div class="points-badge">Points: <span id="hydration-points">0</span></div>
                     <button onclick="logHydration()">🥛 Drink 250ml</button>
                 </div>
             </div>
 
             <div id="fitnessSection" class="personal-only section" style="display:none;">
-                <h2>🏃 Fitness Tracker</h2>
+                <div class="section-header">
+                    <h2>🏃 Fitness Tracker</h2>
+                    <p>Track your steps, exercises, and physical activity milestones.</p>
+                </div>
                 <div class="card">
-                    <p>Track your steps and physical activity.</p>
                     <div class="points-badge">Points: <span id="fitness-points">0</span></div>
                 </div>
             </div>
 
             <div id="mentalSection" class="personal-only section" style="display:none;">
-                <h2>🧠 Mental Health</h2>
+                <div class="section-header">
+                    <h2>🧠 Mental Health</h2>
+                    <p>Monitor your sleep, stress levels, and emotional trends.</p>
+                </div>
                 <div class="card">
-                    <p>Monitor your mood, sleep, and stress levels.</p>
+                    <p>Mental wellness diagnostics coming soon.</p>
                 </div>
             </div>
 
             <div id="womenSection" class="personal-only section" style="display:none;">
-                <h2>🚺 Women's Health</h2>
+                <div class="section-header">
+                    <h2>🚺 Women's Health Hub</h2>
+                    <p>Menstrual Cycle, Pregnancy, and Menopause health tracking.</p>
+                </div>
                 <div class="card">
-                    <p>Menstrual Cycle, Pregnancy, and Menopause tracking.</p>
+                    <p>Specialized maternal care tracking coming soon.</p>
                 </div>
             </div>
 
@@ -275,9 +290,12 @@
             </div>
 
             <div id="nurseSection" class="family-only section" style="display:none;">
-                <h2>👩‍⚕️ Caretaker/Nurse Connection</h2>
+                <div class="section-header">
+                    <h2>Caretaker & Nurse Connection 👩‍⚕️</h2>
+                    <p>Register and find professional healthcare services near you.</p>
+                </div>
                 <div class="card">
-                    <p>Register and find professional caretakers.</p>
+                    <p>Professional nursing and caretaker registration is opening soon. Stay tuned for expert care at your doorstep.</p>
                 </div>
             </div>
 

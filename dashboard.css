@@ -2,16 +2,15 @@
 
 /* Premium Dashboard Styles - CareBuddy (Subtle Light Theme) */
 :root {
-    --primary: #27ae60; /* Vibrant Solid Green */
-    --secondary: #2c3e50; /* Darker Blue/Grey for readability */
-    --bg-main: #f8faf9;
+    --primary: #27ae60;
+    --secondary: #1a202c; /* Absolute Dark Blue-Black */
+    --accent: #e67e22;
+    --bg-main: #fcfdfe;
     --bg-side: #ffffff;
     --bg-card: #ffffff;
-    --accent: #50d890; /* Mint Fresh */
-    --accent-soft: rgba(80, 216, 144, 0.1);
-    --text-main: #1a202c;
-    --text-dim: #4a5568;
-    --border: #e2e8f0;
+    --text-main: #000000; /* Pure Black for headers */
+    --text-dim: #2c3e50; /* Deep Grey-Black for all descriptions */
+    --border: #d1d5db; /* Darker borders for definition */
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     --glass: blur(8px);
 }
@@ -95,9 +94,10 @@ body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.white-textp {
-    color: var(--text-dim);
+p {
+    color: var(--text-dim) !important; /* Force darker text */
     line-height: 1.6;
+    font-weight: 500;
 }
 
 strong {
@@ -428,6 +428,12 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
 
 .vaccine-card:hover {
     transform: translateY(-5px);
+}
+
+.vaccine-card p {
+    color: var(--text-main) !important;
+    font-weight: 600;
+    margin-top: 8px;
 }
 
 .vaccine-card h3 {
@@ -786,8 +792,9 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
 }
 
 .member-info p {
-    font-size: 0.9rem;
-    color: var(--text-dim);
+    font-size: 0.95rem;
+    color: var(--text-main);
+    font-weight: 700;
 }
 
 .member-actions button {
@@ -803,10 +810,11 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
     padding-top: 12px;
 }
 
-.member-body p {
-    font-size: 0.95rem;
-    color: var(--secondary);
-    line-height: 1.4;
+.section-header p {
+    font-size: 1.1rem;
+    color: var(--text-main) !important;
+    font-weight: 600;
+    margin-bottom: 20px;
 }
 
 /* --- MEDICATION BOARD --- */
@@ -846,6 +854,13 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
     padding: 5px 12px;
     border-radius: 20px;
     background: #f1f2f6;
+}
+
+.med-info p {
+    color: var(--text-main) !important;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-top: 5px;
 }
 
 .status-badge.urgent {
@@ -905,9 +920,25 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
 }
 
 .tip-card {
-    background: #e8f5e9;
-    border: 1px solid #c8e6c9;
+    background: #27ae60; /* Solid Green */
+    border: 2px solid #1e8449;
+    color: white !important;
+    padding: 25px;
     animation: slideIn 0.5s ease-out;
+}
+
+.tip-card h4 {
+    color: white !important;
+    font-weight: 800;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#tipText {
+    color: white !important;
+    font-weight: 700;
+    font-size: 1.1rem;
 }
 
 @keyframes slideIn {
