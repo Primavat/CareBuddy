@@ -70,6 +70,9 @@ window.showSection = (sectionId) => {
     if (sectionId === 'vaccinationSection') {
         window.renderVaccinations();
     }
+    if (sectionId === 'journalSection') {
+        window.renderJournalEntries();
+    }
 
     const buttons = document.querySelectorAll(".sidebar button");
     buttons.forEach(btn => {
@@ -561,6 +564,128 @@ window.logMood = async (type, emoji) => {
     } catch (e) {
         tipText.innerHTML = "Take a deep breath and remember you're doing great! 🌿";
     }
+};
+
+// --- 11. HEALTH JOURNAL LOGIC ---
+
+window.updateWordCount = () => {
+    const text = document.getElementById("journalInput").value;
+    const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+    const count = words.length;
+    const counter = document.getElementById("wordCount");
+    if (counter) {
+        counter.innerText = `Words: ${count} / 1000`;
+        counter.style.color = count > 1000 ? "#ff7675" : "var(--text-dim)";
+    }
+};
+
+window.saveJournalEntry = () => {
+    const text = document.getElementById("journalInput").value.trim();
+    if (!text) return alert("Please write something before saving.");
+
+    const words = text.split(/\s+/).filter(w => w.length > 0);
+    if (words.length > 1000) return alert("Please limit your entry to 1,000 words.");
+
+    const entries = JSON.parse(localStorage.getItem("carebuddy_journal") || "[]");
+    const newEntry = {
+        id: Date.now(),
+        date: new Date().toLocaleString(),
+        content: text,
+        starred: false
+    };
+
+    entries.unshift(newEntry);
+    localStorage.setItem("carebuddy_journal", JSON.stringify(entries));
+    document.getElementById("journalInput").value = "";
+    window.updateWordCount();
+    window.renderJournalEntries();
+};
+
+window.renderJournalEntries = () => {
+    const list = document.getElementById("journalList");
+    if (!list) return;
+
+    const entries = JSON.parse(localStorage.getItem("carebuddy_journal") || "[]");
+    list.innerHTML = "";
+
+    if (entries.length === 0) {
+        list.innerHTML = '<div class="empty-state">No journal entries yet. Start writing above!</div>';
+        return;
+    }
+
+    entries.forEach(entry => {
+        const card = document.createElement("div");
+        card.className = `journal-entry ${entry.starred ? 'starred' : ''}`;
+        card.innerHTML = `
+            <div class="journal-date">${entry.date}</div>
+            <div class="journal-content" id="content-${entry.id}">${entry.content}</div>
+            <div class="journal-actions">
+                <button onclick="window.editJournalEntry(${entry.id})" id="edit-btn-${entry.id}">✏️ Edit</button>
+                <button onclick="window.toggleStarJournalEntry(${entry.id})" class="btn-star ${entry.starred ? 'active' : ''}">⭐ Star</button>
+                <button onclick="window.downloadJournalEntry(${entry.id})">💾 Download</button>
+                <button onclick="window.deleteJournalEntry(${entry.id})" class="btn-delete">🗑️ Delete</button>
+            </div>
+        `;
+        list.appendChild(card);
+    });
+};
+
+window.deleteJournalEntry = (id) => {
+    if (!confirm("Are you sure you want to delete this entry?")) return;
+    let entries = JSON.parse(localStorage.getItem("carebuddy_journal") || "[]");
+    entries = entries.filter(e => e.id !== id);
+    localStorage.setItem("carebuddy_journal", JSON.stringify(entries));
+    window.renderJournalEntries();
+};
+
+window.toggleStarJournalEntry = (id) => {
+    const entries = JSON.parse(localStorage.getItem("carebuddy_journal") || "[]");
+    const entry = entries.find(e => e.id === id);
+    if (entry) {
+        entry.starred = !entry.starred;
+        localStorage.setItem("carebuddy_journal", JSON.stringify(entries));
+        window.renderJournalEntries();
+    }
+};
+
+window.editJournalEntry = (id) => {
+    const contentDiv = document.getElementById(`content-${id}`);
+    const editBtn = document.getElementById(`edit-btn-${id}`);
+    
+    if (editBtn.innerText === "✏️ Edit") {
+        const currentText = contentDiv.innerText;
+        contentDiv.innerHTML = `<textarea id="edit-box-${id}" style="width:100%; min-height:100px; padding:10px; border-radius:8px; border:1px solid var(--border);">${currentText}</textarea>`;
+        editBtn.innerText = "💾 Save";
+        editBtn.style.background = "#27ae60";
+        editBtn.style.color = "white";
+    } else {
+        const newText = document.getElementById(`edit-box-${id}`).value.trim();
+        if (!newText) return alert("Content cannot be empty.");
+        
+        const entries = JSON.parse(localStorage.getItem("carebuddy_journal") || "[]");
+        const entry = entries.find(e => e.id === id);
+        if (entry) {
+            entry.content = newText;
+            localStorage.setItem("carebuddy_journal", JSON.stringify(entries));
+            window.renderJournalEntries();
+        }
+    }
+};
+
+window.downloadJournalEntry = (id) => {
+    const entries = JSON.parse(localStorage.getItem("carebuddy_journal") || "[]");
+    const entry = entries.find(e => e.id === id);
+    if (!entry) return;
+
+    // Clean date for filename (e.g., 2026-04-04)
+    const dateStr = new Date(entry.id).toISOString().split('T')[0];
+    const filename = `Journal_${dateStr}.txt`;
+    const blob = new Blob([`CAREBUDDY JOURNAL ENTRY\nDate: ${entry.date}\n\n${entry.content}`], { type: 'text/plain' });
+    
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
 };
 
 // Initialize

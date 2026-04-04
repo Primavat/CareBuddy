@@ -166,9 +166,16 @@
                     <h2>📖 Health Journal</h2>
                     <p>Log your daily thoughts, symptoms, or mood entries here.</p>
                 </div>
-                <div class="card">
-                    <textarea placeholder="How are you feeling today?..."></textarea>
-                    <button type="submit" style="margin-top: 15px;">💾 Save Entry</button>
+                <div class="card journal-input-card">
+                    <textarea id="journalInput" onkeyup="window.updateWordCount()" placeholder="How are you feeling today? (Limit: 1,000 words)..."></textarea>
+                    <div class="journal-footer">
+                        <span id="wordCount">Words: 0 / 1000</span>
+                        <button onclick="window.saveJournalEntry()" class="btn-primary">💾 Save Entry</button>
+                    </div>
+                </div>
+
+                <div id="journalList" class="journal-timeline">
+                    <!-- Entries will be dynamically rendered here -->
                 </div>
             </div>
 
