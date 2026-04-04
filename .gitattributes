@@ -1,0 +1,16 @@
+# Handle line endings automatically
+* text=auto
+
+# Denote all files that are truly text and should be normalized.
+*.html text
+*.css text
+*.js text
+*.json text
+
+# Denote all files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text
