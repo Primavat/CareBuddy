@@ -324,61 +324,72 @@ button[type="submit"]:hover { transform: translateY(-2px); box-shadow: 0 6px 18p
     box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
 }
 
-/* ================= PRIVACY LOCK OVERLAY ================= */
-.privacy-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
+/* ================= CHATBOT UI ================= */
+.chat-container {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    height: 500px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
+    box-shadow: var(--shadow);
 }
 
-.pin-container {
-    background: #fff;
-    padding: 40px;
-    border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-    text-align: center;
-    max-width: 320px;
-    width: 90%;
-}
-
-.pin-display {
-    font-size: 32px;
-    letter-spacing: 12px;
-    margin: 20px 0;
-    height: 48px;
-    color: var(--accent);
-}
-
-.pin-pad {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     gap: 12px;
 }
 
-.pin-pad button {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: #fff;
-    font-size: 20px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
+.bot-msg, .user-msg {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    animation: fadeIn 0.3s ease;
 }
 
-.pin-pad button:hover {
-    background: var(--accent-soft);
-    border-color: var(--accent);
+.bot-msg {
+    align-self: flex-start;
+    background: var(--bg-main);
+    color: var(--text-main);
+    border-bottom-left-radius: 4px;
+}
+
+.user-msg {
+    align-self: flex-end;
+    background: var(--accent);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.typing {
+    font-style: italic;
+    color: var(--text-dim);
+    background: transparent;
+    border: none;
+}
+
+.chat-input {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+    background: #fcfdfe;
+}
+
+.chat-input input {
+    flex: 1;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* ================= UTILITY ================= */

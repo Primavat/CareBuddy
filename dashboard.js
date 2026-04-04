@@ -46,7 +46,7 @@ function showPage(user) {
     // Initialize Mode & Points
     const savedMode = localStorage.getItem("dashboardMode") || "personal";
     window.setDashboardMode(savedMode);
-    
+
     // Initial UI update for points
     updatePointsUI();
 }
@@ -56,7 +56,7 @@ function showPage(user) {
 window.setDashboardMode = (mode) => {
     localStorage.setItem("dashboardMode", mode);
     document.body.className = `mode-${mode}`;
-    
+
     // Update Toggle UI
     document.getElementById("personal-btn").classList.toggle("active", mode === 'personal');
     document.getElementById("family-btn").classList.toggle("active", mode === 'family');
@@ -66,17 +66,7 @@ window.setDashboardMode = (mode) => {
     else window.showSection('profileSection');
 };
 
-let currentSectionId = null;
-const SENSITIVE_SECTIONS = ['vitalsSection', 'journalSection', 'mentalSection', 'womenSection'];
-
 window.showSection = (sectionId) => {
-    // Check for Privacy Lock
-    if (SENSITIVE_SECTIONS.includes(sectionId) && !window.unlocked) {
-        currentSectionId = sectionId;
-        document.getElementById("privacyLock").style.display = "flex";
-        return;
-    }
-
     // Hide all sections
     document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
     // Show target
@@ -91,33 +81,13 @@ window.showSection = (sectionId) => {
     });
 };
 
-// --- 3. PRIVACY LOCK & REWARDS LOGIC ---
+// --- 3. REWARDS & AI LOGIC ---
 
-let enteredPin = "";
-const CORRECT_PIN = "1234";
+// --- AI CONFIGURATION ---
+const GEMINI_API_KEY = "AIzaSyB7H5bhn8y8Z4Ah-vTCqnMNWVw6ovxTrDs";
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-window.enterPin = (num) => {
-    if (enteredPin.length < 4) {
-        enteredPin += num;
-        document.getElementById("pinDisplay").textContent = "•".repeat(enteredPin.length).padEnd(4, "x");
-    }
-};
-
-window.clearPin = () => {
-    enteredPin = "";
-    document.getElementById("pinDisplay").textContent = "xxxx";
-};
-
-window.verifyPin = () => {
-    if (enteredPin === CORRECT_PIN) {
-        window.unlocked = true;
-        document.getElementById("privacyLock").style.display = "none";
-        if (currentSectionId) window.showSection(currentSectionId);
-    } else {
-        alert("Invalid PIN! Try 1234");
-        window.clearPin();
-    }
-};
+const CHAT_PERSONALITY = "Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns.";
 
 // Points System
 window.addPoints = (category, amount) => {
@@ -252,6 +222,62 @@ function calculateAge(birthdate) {
     const dob = new Date(birthdate);
     const ageDate = new Date(Date.now() - dob.getTime());
     return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
+// --- CHATBOT FUNCTIONALITY ---
+window.sendMessage = async () => {
+    const input = document.getElementById("chatInput");
+    const message = input.value.trim();
+    if (!message) return;
+
+    appendMessage('user', message);
+    input.value = "";
+
+    if (GEMINI_API_KEY === "PASTE_YOUR_GEMINI_API_KEY_HERE") {
+        appendMessage('bot', "Please provide a valid Gemini API Key in dashboard.js to enable CareBot.");
+        return;
+    }
+
+    // Typing indicator
+    const typingId = 'typing-' + Date.now();
+    const chatMessages = document.getElementById("chatMessages");
+    const typingDiv = document.createElement("div");
+    typingDiv.id = typingId;
+    typingDiv.className = "bot-msg typing";
+    typingDiv.textContent = "CareBot is thinking...";
+    chatMessages.appendChild(typingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+        const response = await fetch(GEMINI_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{ text: `${CHAT_PERSONALITY}\n\nUser Question: ${message}` }]
+                }]
+            })
+        });
+
+        const data = await response.json();
+        const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm sorry, I couldn't process that. Please try again.";
+
+        document.getElementById(typingId).remove();
+        appendMessage('bot', aiResponse);
+    } catch (error) {
+        console.error("AI Error:", error);
+        document.getElementById(typingId).remove();
+        appendMessage('bot', "Oops! Something went wrong with the connection. Please check your API key or internet.");
+    }
+};
+
+function appendMessage(sender, text) {
+    const chatMessages = document.getElementById("chatMessages");
+    const div = document.createElement("div");
+    div.className = sender === 'user' ? "user-msg" : "bot-msg";
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 // Initialize on Load
