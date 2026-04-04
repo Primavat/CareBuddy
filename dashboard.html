@@ -20,9 +20,11 @@
 
     <nav class="navbar">
         <div class="nav-left">
-            <h2>Hello Buddy, Welcome to <span class="brand">CareBuddy</span></h2>
-            <h3 id="user-email" style="font-weight:400; color:#a3b8ad;"></h3>
-        </div>
+        <a href="#">About Us</a>
+    </div>
+    <div class="nav-center">
+        <h2>Hello <span id="user-name-greeting">Primavat</span>, welcome to <span class="white-text">Care</span><span class="brand">Buddy</span></h2>
+    </div>
         <div class="nav-right">
             <a href="#">About Us</a>
             <div class="settings" id="settings-menu">
@@ -36,10 +38,11 @@
             <div class="profile-menu" id="profile-menu">
                 <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" class="menu-icon">
                 <div class="dropdown-content" id="profile-dropdown">
-                    <div class="user-header">
-                        <p class="user-name" id="display-name">Care Buddy</p>
-                        <p class="user-role">Premium Member</p>
-                    </div>
+                <div class="user-header">
+                    <p class="user-name" id="display-name">Primavat</p>
+                    <p class="user-email" id="user-email"></p>
+                    <p class="user-role">Premium Member</p>
+                </div>
                     <hr>
                     <a href="#" onclick="changeName()"><i class="icon">👤</i> Change Name</a>
                     <a href="#" onclick="changePassword()"><i class="icon">🔑</i> Change Password</a>
