@@ -7,16 +7,25 @@ import CareBot from '../components/CareBot';
 const Dashboard = () => {
   const [mode, setMode] = useState('personal');
   const [activeSection, setActiveSection] = useState('vitalsSection');
-  const [userName, setUserName] = useState('Priyanshu Nimavat');
+  const [userName, setUserName] = useState(() => {
+    return localStorage.getItem('carebuddy_username') || 'Priyanshu Nimavat';
+  });
+
   const [members, setMembers] = useState(() => {
     return JSON.parse(localStorage.getItem('carebuddy_members') || '[]');
   });
+
   const [journalEntries, setJournalEntries] = useState(() => {
     return JSON.parse(localStorage.getItem('carebuddy_journal') || '[]');
   });
+
   const [vaccineCount, setVaccineCount] = useState(0);
 
   // Sync state to localStorage
+  useEffect(() => {
+    localStorage.setItem('carebuddy_username', userName);
+  }, [userName]);
+
   useEffect(() => {
     localStorage.setItem('carebuddy_members', JSON.stringify(members));
   }, [members]);
@@ -41,7 +50,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-bg-main font-sans">
-      <Navbar mode={mode} setMode={setMode} userName={userName} />
+      <Navbar mode={mode} setMode={setMode} userName={userName} setUserName={setUserName} />
       <div className="flex pt-20">
         <Sidebar 
           mode={mode} 
