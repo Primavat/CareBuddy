@@ -1,22 +1,21 @@
-export const config = { runtime: 'edge' };
+export default async function handler(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-export default async function handler(req) {
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
     if (req.method !== 'POST') {
-        return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
+        return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    let message;
-    try {
-        const body = await req.json();
-        message = body.message;
-    } catch (e) {
-        return new Response(JSON.stringify({ error: 'Invalid JSON body' }), { status: 400 });
-    }
-
+    const { message } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-        return new Response(JSON.stringify({ error: 'GEMINI_API_KEY not set' }), { status: 500 });
+        return res.status(500).json({ error: 'GEMINI_API_KEY not set' });
     }
 
     try {
@@ -37,21 +36,18 @@ export default async function handler(req) {
         const data = await response.json();
 
         if (data.error) {
-            return new Response(JSON.stringify({ error: `Gemini Error: ${data.error.message}`, code: data.error.code }), { status: 500 });
+            return res.status(500).json({ error: `Gemini Error: ${data.error.message}`, code: data.error.code });
         }
 
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (!text) {
-            return new Response(JSON.stringify({ error: 'Empty response', raw: data }), { status: 500 });
+            return res.status(500).json({ error: 'Empty response', raw: JSON.stringify(data) });
         }
 
-        return new Response(JSON.stringify({ reply: text }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        return res.status(200).json({ reply: text });
 
     } catch (error) {
-        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+        return res.status(500).json({ error: error.message });
     }
 }
