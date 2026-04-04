@@ -1,53 +1,57 @@
-export default async function handler(req, res) {
+export const config = { runtime: 'edge' };
+
+export default async function handler(req) {
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
+        return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
     }
 
-    const { message } = req.body;
+    let message;
+    try {
+        const body = await req.json();
+        message = body.message;
+    } catch (e) {
+        return new Response(JSON.stringify({ error: 'Invalid JSON body' }), { status: 400 });
+    }
+
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-        return res.status(500).json({ error: 'GEMINI_API_KEY is not set in environment variables' });
+        return new Response(JSON.stringify({ error: 'GEMINI_API_KEY not set' }), { status: 500 });
     }
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
     try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ 
-                    parts: [{ text: message }] 
-                }],
-                systemInstruction: {
-                    parts: [{ text: "Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns." }]
-                }
-            })
-        });
+        const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: message }] }],
+                    systemInstruction: {
+                        parts: [{ text: "Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns." }]
+                    }
+                })
+            }
+        );
 
         const data = await response.json();
 
         if (data.error) {
-            return res.status(500).json({ 
-                error: `Gemini API Error: ${data.error.message}`,
-                code: data.error.code,
-                status: data.error.status
-            });
+            return new Response(JSON.stringify({ error: `Gemini Error: ${data.error.message}`, code: data.error.code }), { status: 500 });
         }
 
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (!text) {
-            return res.status(500).json({ 
-                error: 'Empty response from Gemini',
-                raw: data 
-            });
+            return new Response(JSON.stringify({ error: 'Empty response', raw: data }), { status: 500 });
         }
 
-        res.status(200).json({ reply: text });
+        return new Response(JSON.stringify({ reply: text }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
 
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
     }
 }
