@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Utensils, Sparkles, Loader2, Apple, Target, ClipboardCheck, UtensilsCrossed, CheckCircle } from 'lucide-react';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getGeminiGenerativeModel } from '../../utils/gemini';
 
-const GEMINI_API_KEY = "AIzaSyB7H5bhn8y8Z4Ah-vTCqnMNWVw6ovxTrDs".trim();
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = getGeminiGenerativeModel();
 
 const DietaryPlans = () => {
   const [goal, setGoal] = useState("Weight Loss");

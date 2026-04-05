@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Bot, X, MessageSquare } from 'lucide-react';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getGeminiGenerativeModel } from '../utils/gemini';
 
-const GEMINI_API_KEY = "AIzaSyB7H5bhn8y8Z4Ah-vTCqnMNWVw6ovxTrDs".trim();
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ 
-  model: "gemini-1.5-flash",
-  systemInstruction: "Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns." 
+const model = getGeminiGenerativeModel({
+  systemInstruction:
+    'Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns.',
 });
 
 const CareBot = () => {
@@ -36,9 +34,16 @@ const CareBot = () => {
     try {
       const result = await model.generateContent(userMsg);
       const response = await result.response;
-      setMessages(prev => [...prev, { role: 'bot', text: response.text() }]);
-    } catch (error) {
-      setMessages(prev => [...prev, { role: 'bot', text: "Error connecting to CareBot. Please try again later." }]);
+      const text = response.text();
+      setMessages((prev) => [...prev, { role: 'bot', text }]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'bot',
+          text: 'Error connecting to CareBot. Please try again later.',
+        },
+      ]);
     } finally {
       setIsTyping(false);
     }
