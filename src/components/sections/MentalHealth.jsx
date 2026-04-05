@@ -40,17 +40,17 @@ const MentalHealth = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-secondary p-10 rounded-[3rem] text-bg-main flex flex-col justify-between overflow-hidden relative group">
+        <div className="bg-secondary p-10 rounded-[3rem] text-text-on-filled flex flex-col justify-between overflow-hidden relative group">
            <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:opacity-20 transition-opacity"><MessageSquareHeart size={160} /></div>
            <div className="relative z-10 flex flex-col gap-6">
               <div className="bg-primary/20 w-12 h-12 rounded-2xl flex items-center justify-center text-primary border border-primary/20 shadow-lg">
                 <Brain size={24} />
               </div>
               <h3 className="text-2xl font-bold">Resilience Insights</h3>
-              <p className="text-gray-400 dark:text-text-dim font-bold leading-relaxed mb-6 italic">"Your stress levels are down by 14% compared to last week. Your consistent 7+ hours of sleep and daily mindfulness sessions are building significant psychological resilience!"</p>
+              <p className="text-text-on-filled-muted font-bold leading-relaxed mb-6 italic">"Your stress levels are down by 14% compared to last week. Your consistent 7+ hours of sleep and daily mindfulness sessions are building significant psychological resilience!"</p>
               <div className="flex gap-4">
                  <button className="bg-primary text-white px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest shadow-md hover:bg-green-700 transition-colors">Start Meditation</button>
-                 <button className="bg-bg-main/10 text-bg-main px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest border border-bg-main/10 hover:bg-bg-main/20 transition-colors">Log Emotion</button>
+                 <button className="bg-bg-main/10 text-text-on-filled px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest border border-bg-main/10 hover:bg-bg-main/20 transition-colors">Log Emotion</button>
               </div>
            </div>
         </div>

@@ -105,10 +105,10 @@ const DietaryPlans = () => {
               </div>
            </div>
 
-           <div className="bg-secondary p-8 rounded-[2.5rem] text-white relative overflow-hidden group">
+           <div className="bg-secondary p-8 rounded-[2.5rem] text-text-on-filled relative overflow-hidden group">
               <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-6 border border-white/5 group-hover:bg-primary group-hover:scale-110 transition-all"><Apple size={24} className="text-primary group-hover:text-white" /></div>
               <h4 className="text-xl font-black mb-2 uppercase tracking-tighter">Smart Nutrition</h4>
-              <p className="text-gray-400 font-bold leading-relaxed mb-8 italic text-sm">"Good health is not something we can buy. However, it can be a valuable savings account."</p>
+              <p className="text-text-on-filled-muted font-bold leading-relaxed mb-8 italic text-sm">"Good health is not something we can buy. However, it can be a valuable savings account."</p>
               <div className="flex -space-x-2">
                  {[1,2,3,4].map(i => <div key={i} className="w-9 h-9 rounded-full border-2 border-secondary overflow-hidden bg-gray-200"><img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Food${i}`} alt="user" /></div>)}
                  <div className="w-9 h-9 rounded-full border-2 border-secondary bg-primary text-[10px] font-black flex items-center justify-center shadow-lg">+2k Users</div>

@@ -69,14 +69,14 @@ const Fitness = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 bg-secondary p-10 rounded-[3rem] text-white flex flex-col justify-between overflow-hidden relative group">
+                <div className="lg:col-span-2 bg-secondary p-10 rounded-[3rem] text-text-on-filled flex flex-col justify-between overflow-hidden relative group">
                     <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:opacity-20 transition-opacity"><Zap size={160} /></div>
                     <div className="relative z-10 flex flex-col gap-6">
                         <div className="bg-primary/20 w-12 h-12 rounded-2xl flex items-center justify-center text-primary border border-primary/20">
                             <Zap size={24} />
                         </div>
                         <h3 className="text-2xl font-bold">Weekly Fitness Score: 84</h3>
-                        <p className="text-gray-400 font-bold leading-relaxed mb-6 italic">"You are in the top 15% of active users this week! Maintaining this streak will boost your cardiovascular health by up to 20% over 6 months."</p>
+                        <p className="text-text-on-filled-muted font-bold leading-relaxed mb-6 italic">"You are in the top 15% of active users this week! Maintaining this streak will boost your cardiovascular health by up to 20% over 6 months."</p>
                         <div className="w-full bg-white/10 h-3 rounded-full overflow-hidden">
                             <motion.div animate={{ width: '84%' }} className="h-full bg-primary shadow-[0_0_15px_rgba(39,174,96,0.5)]" />
                         </div>

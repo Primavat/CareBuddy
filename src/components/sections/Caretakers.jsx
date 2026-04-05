@@ -62,7 +62,7 @@ const Caretakers = () => {
                                 </div>
 
                                 <div className="flex w-full gap-2">
-                                    <button className="flex-1 bg-secondary text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+                                    <button className="flex-1 bg-secondary text-text-on-filled py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 dark:hover:text-white transition-colors flex items-center justify-center gap-2">
                                         <Phone size={14} /> Call
                                     </button>
                                     <button className="p-3 bg-gray-50 dark:bg-bg-main text-secondary border border-border rounded-xl hover:bg-card-bg hover:shadow-md transition-all">

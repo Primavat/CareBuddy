@@ -49,14 +49,14 @@ const WomenHealth = () => {
                 </div>
             </div>
 
-            <div className="bg-secondary p-12 rounded-[3.5rem] text-white flex flex-col lg:flex-row items-center gap-10 overflow-hidden relative group">
+            <div className="bg-secondary p-12 rounded-[3.5rem] text-text-on-filled flex flex-col lg:flex-row items-center gap-10 overflow-hidden relative group">
                 <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:opacity-20 transition-opacity"><Sparkles size={160} /></div>
                 <div className="lg:w-1/2 relative z-10 flex flex-col gap-6 font-bold">
                     <div className="w-14 h-14 bg-primary/20 rounded-2xl flex items-center justify-center text-primary border border-primary/20 shadow-lg">
                         <Heart size={28} />
                     </div>
                     <h3 className="text-3xl font-black tracking-tight leading-tight">Insight: Optimal Nutrition for Cycle Health</h3>
-                    <p className="text-gray-400 leading-relaxed italic">"Increasing your Iron and Magnesium intake this week can significantly reduce common cycle fatigue. Try incorporating more spinach and dark chocolate into your diet! 🥬🍫"</p>
+                    <p className="text-text-on-filled-muted leading-relaxed italic">"Increasing your Iron and Magnesium intake this week can significantly reduce common cycle fatigue. Try incorporating more spinach and dark chocolate into your diet! 🥬🍫"</p>
                     <button className="w-fit bg-primary text-white px-10 py-4 rounded-[2rem] font-black text-sm uppercase tracking-widest hover:bg-green-700 transition-colors shadow-2xl">Personalized Advice</button>
                 </div>
                 <div className="lg:w-1/2 flex items-center justify-center relative translate-y-10 group-hover:translate-y-0 transition-transform duration-700">

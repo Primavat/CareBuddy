@@ -45,16 +45,16 @@ const Hydration = () => {
             </button>
         </div>
 
-        <div className="bg-secondary p-10 rounded-[3rem] text-white flex flex-col justify-between overflow-hidden relative group">
+        <div className="bg-secondary p-10 rounded-[3rem] text-text-on-filled flex flex-col justify-between overflow-hidden relative group">
            <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:opacity-20 transition-opacity"><Trophy size={120} /></div>
            <div className="relative z-10">
               <h3 className="text-2xl font-bold mb-4 flex items-center gap-3"><Trophy className="text-primary" /> Daily Milestone</h3>
-              <p className="text-gray-400 font-bold leading-relaxed mb-10 italic">"Drinking 8 glasses a day keeps your metabolism high and skin glowing! You're {Math.min(100, Math.round((glasses/8)*100))}% of the way there."</p>
+              <p className="text-text-on-filled-muted font-bold leading-relaxed mb-10 italic">"Drinking 8 glasses a day keeps your metabolism high and skin glowing! You're {Math.min(100, Math.round((glasses/8)*100))}% of the way there."</p>
               <div className="w-full bg-white/10 h-3 rounded-full overflow-hidden">
                 <motion.div animate={{ width: `${Math.min(100, (glasses/8)*100)}%` }} className="h-full bg-primary" />
               </div>
            </div>
-           <p className="mt-8 text-[10px] font-black uppercase text-gray-500 tracking-widest">Points Earned: {glasses * 10} HP</p>
+           <p className="mt-8 text-[10px] font-black uppercase text-text-on-filled-muted tracking-widest">Points Earned: {glasses * 10} HP</p>
         </div>
       </div>
     </div>

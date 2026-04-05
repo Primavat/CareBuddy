@@ -61,19 +61,19 @@ const Vitals = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-secondary p-10 rounded-[3rem] text-bg-main overflow-hidden relative group">
+                <div className="bg-secondary p-10 rounded-[3rem] text-text-on-filled overflow-hidden relative group">
                     <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:opacity-20 transition-opacity"><TrendingUp size={120} /></div>
                     <div className="relative z-10">
                         <div className="bg-primary/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-6 text-primary border border-primary/20">
                             <TrendingUp size={24} />
                         </div>
                         <h3 className="text-2xl font-bold mb-4">Vitals Summary</h3>
-                        <p className="text-gray-400 font-bold leading-relaxed mb-8 italic">"Your heart rate is 72 BPM—exactly in the target range for optimal heart health. Keep up the good work!"</p>
+                        <p className="text-text-on-filled-muted font-bold leading-relaxed mb-8 italic">"Your heart rate is 72 BPM—exactly in the target range for optimal heart health. Keep up the good work!"</p>
                         <ul className="space-y-4">
-                            <li className="flex items-center gap-3 text-sm font-bold text-bg-main/80">
+                            <li className="flex items-center gap-3 text-sm font-bold text-text-on-filled/80">
                                 <div className="w-2 h-2 bg-primary rounded-full" /> Normal Blood Pressure
                             </li>
-                            <li className="flex items-center gap-3 text-sm font-bold text-bg-main/80">
+                            <li className="flex items-center gap-3 text-sm font-bold text-text-on-filled/80">
                                 <div className="w-2 h-2 bg-primary rounded-full" /> Resting Heart Rate Stable
                             </li>
                         </ul>

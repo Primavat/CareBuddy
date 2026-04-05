@@ -169,7 +169,7 @@ const Hospitals = () => {
               <button 
                 key={type}
                 onClick={() => setFilter(type)}
-                className={`px-4 py-2 rounded-lg text-xs font-black uppercase transition-all ${filter === type ? 'bg-secondary text-white shadow-md' : 'text-gray-400 hover:text-secondary'}`}
+                className={`px-4 py-2 rounded-lg text-xs font-black uppercase transition-all ${filter === type ? 'bg-secondary text-text-on-filled shadow-md' : 'text-gray-400 hover:text-secondary'}`}
               >
                 {type}
               </button>
@@ -187,7 +187,7 @@ const Hospitals = () => {
             <button 
               onClick={() => fetchNearby()}
               disabled={loading}
-              className="bg-secondary text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50"
+              className="bg-secondary text-text-on-filled px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50"
             >
               <Search size={16} className={loading ? 'animate-pulse' : ''} />
               {loading ? 'Searching...' : 'Find Global'}
@@ -208,7 +208,7 @@ const Hospitals = () => {
               className="bg-card-bg p-6 rounded-[2.5rem] border border-border shadow-sm hover:shadow-xl hover:border-secondary transition-all group overflow-hidden relative h-full flex flex-col"
             >
               <div className="flex justify-between items-start mb-4">
-                <div className="bg-gray-50 dark:bg-bg-main p-3 rounded-2xl text-secondary group-hover:bg-secondary group-hover:text-white transition-colors">
+                <div className="bg-gray-50 dark:bg-bg-main p-3 rounded-2xl text-secondary group-hover:bg-secondary group-hover:text-text-on-filled transition-colors">
                   <MapPin size={20} />
                 </div>
                 <span className="text-[10px] font-black uppercase bg-gray-100 dark:bg-border text-gray-400 dark:text-text-dim px-3 py-1 rounded-lg">
@@ -229,7 +229,7 @@ const Hospitals = () => {
 
               <button 
                 onClick={() => handleNavigate(h)}
-                className="w-full bg-gray-50 dark:bg-bg-main text-secondary py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border border-border hover:bg-secondary hover:text-white transition-all"
+                className="w-full bg-gray-50 dark:bg-bg-main text-secondary py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border border-border hover:bg-secondary hover:text-text-on-filled transition-all"
               >
                 Navigate Now
               </button>

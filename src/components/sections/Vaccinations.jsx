@@ -80,7 +80,7 @@ const Vaccinations = () => {
                                 {v.status !== 'Completed' && (
                                     <button 
                                       onClick={() => markAsDone(v.id)}
-                                      className="px-6 py-3 bg-secondary text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-primary transition-all shadow-md active:scale-95"
+                                      className="px-6 py-3 bg-secondary text-text-on-filled rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-md active:scale-95"
                                     >
                                         Mark Done
                                     </button>
@@ -97,11 +97,11 @@ const Vaccinations = () => {
                 </div>
 
                 <div className="lg:col-span-1 relative">
-                    <div className="fixed top-24 right-10 w-64 bg-secondary p-5 rounded-[2rem] text-white space-y-5 shadow-2xl border border-white/5 z-40 scale-75 origin-top-right">
+                    <div className="fixed top-24 right-10 w-64 bg-secondary p-5 rounded-[2rem] text-text-on-filled space-y-5 shadow-2xl border border-white/5 z-40 scale-75 origin-top-right">
                         <div className="flex justify-between items-start">
                             <div>
                                 <h3 className="text-xl font-black mb-0.5">📊 Rate</h3>
-                                <p className="text-gray-400 font-bold text-[10px] uppercase tracking-widest">{completedCount} of {vaccines.length} Secure</p>
+                                <p className="text-text-on-filled-muted font-bold text-[10px] uppercase tracking-widest">{completedCount} of {vaccines.length} Secure</p>
                             </div>
                             <div className="p-2 bg-white/10 rounded-xl">
                                 <FileText size={18} className="text-primary" />
@@ -110,7 +110,7 @@ const Vaccinations = () => {
                         
                         <div className="space-y-4">
                             <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                                <div className="flex justify-between text-[9px] font-black uppercase mb-2 text-gray-300 tracking-widest">
+                                <div className="flex justify-between text-[9px] font-black uppercase mb-2 text-text-on-filled-muted tracking-widest">
                                     <span>Progress</span>
                                     <span className="text-primary">{progressPerc}%</span>
                                 </div>
@@ -124,12 +124,12 @@ const Vaccinations = () => {
                             </div>
 
                             <div className="space-y-2.5">
-                                <h4 className="text-[9px] font-black uppercase text-white/40 tracking-widest ml-1">Recent</h4>
+                                <h4 className="text-[9px] font-black uppercase text-text-on-filled/40 tracking-widest ml-1">Recent</h4>
                                 <div className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
                                     <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center text-primary"><CheckCircle2 size={14} /></div>
                                     <div>
-                                        <div className="text-[10px] font-black text-gray-200">BCG Dose</div>
-                                        <div className="text-[8px] font-bold text-gray-500 uppercase">Active</div>
+                                        <div className="text-[10px] font-black text-text-on-filled">BCG Dose</div>
+                                        <div className="text-[8px] font-bold text-text-on-filled-muted uppercase">Active</div>
                                     </div>
                                 </div>
                             </div>

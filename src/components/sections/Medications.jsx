@@ -33,7 +33,7 @@ const Medications = ({ members }) => {
       <div className="flex flex-col lg:flex-row gap-8 items-start">
         {/* Sticky Progress Summarry (Compact) */}
         <div className="w-full lg:w-64 sticky top-24 z-10">
-            <div className="bg-secondary p-5 rounded-[2rem] shadow-xl border border-white/10 text-white">
+            <div className="bg-secondary p-5 rounded-[2rem] shadow-xl border border-white/10 text-text-on-filled">
                 <div className="flex items-center justify-between mb-4">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Today's Progress</p>
                     <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
@@ -42,7 +42,7 @@ const Medications = ({ members }) => {
                 </div>
                 <div className="mb-4">
                     <h3 className="text-3xl font-black">{Math.round((meds.filter(m => m.status === 'taken').length / meds.length) * 100)}%</h3>
-                    <p className="text-[10px] font-bold text-white/50 uppercase mt-1">Doses Completed</p>
+                    <p className="text-[10px] font-bold text-text-on-filled/50 uppercase mt-1">Doses Completed</p>
                 </div>
                 <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
                     <motion.div 
@@ -70,7 +70,7 @@ const Medications = ({ members }) => {
               className={`p-6 rounded-3xl border border-border shadow-sm flex flex-col gap-4 relative overflow-hidden transition-all bg-card-bg group hover:border-primary`}
             >
               <div className="flex justify-between items-start">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg transition-colors ${m.status === 'urgent' ? 'bg-[#ff7675] animate-pulse' : m.status === 'taken' ? 'bg-primary' : 'bg-secondary'}`}>
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-colors ${m.status === 'urgent' ? 'bg-[#ff7675] animate-pulse text-white' : m.status === 'taken' ? 'bg-primary text-white' : 'bg-secondary text-text-on-filled'}`}>
                   <Pill size={24} />
                 </div>
                 <div className="text-right">

@@ -73,7 +73,7 @@ const FamilyProfiles = ({ members, setMembers }) => {
                             </div>
 
                             <div className="flex gap-3">
-                                <button className="flex-1 bg-secondary text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-colors">
+                                <button className="flex-1 bg-secondary text-text-on-filled py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 dark:hover:text-white transition-colors">
                                     View Health Card
                                 </button>
                                 <button 
