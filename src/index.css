@@ -1,14 +1,40 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+:root {
+  --primary: #27ae60;
+  --secondary: #1a202c;
+  --accent: #2ecc71;
+  --bg-main: #fcfdfe;
+  --text-main: #000000;
+  --text-dim: #2c3e50;
+  --border: #d1d5db;
+  --card-bg: #ffffff;
+  --sidebar-active: #e8f5e9;
+}
+
+.dark {
+  --primary: #2ecc71;
+  --secondary: #f1f5f9;
+  --accent: #27ae60;
+  --bg-main: #0a0e0b;
+  --text-main: #f8fafc;
+  --text-dim: #94a3b8;
+  --border: #1a2c22;
+  --card-bg: #111814;
+  --sidebar-active: #1a2c22;
+}
 
 @theme {
-  --color-primary: #27ae60;
-  --color-secondary: #1a202c;
-  --color-accent: #2ecc71;
-  --color-bg-main: #fcfdfe;
-  --color-text-main: #000000;
-  --color-text-dim: #2c3e50;
-  --color-border: #d1d5db;
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-bg-main: var(--bg-main);
+  --color-text-main: var(--text-main);
+  --color-text-dim: var(--text-dim);
+  --color-border: var(--border);
+  --color-card-bg: var(--card-bg);
+  --color-sidebar-active: var(--sidebar-active);
   --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
 }
 
@@ -17,6 +43,9 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-bg-main text-text-main font-sans antialiased tracking-tight;
+    @apply bg-bg-main text-text-main font-sans antialiased tracking-tight transition-colors duration-300;
+  }
+  * {
+    @apply transition-colors duration-300;
   }
 }

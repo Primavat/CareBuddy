@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import FloatingEmojis from '../components/visuals/FloatingEmojis';
 import { createClient } from '@supabase/supabase-js';
-
 const SUPABASE_URL = 'https://idbratjfnpkzmbfzcehr.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkYnJhdGpmbnBrem1iZnpjZWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMTYyMzMsImV4cCI6MjA5MDc5MjIzM30._SHhi4Q7MTDE12L4tsl6yaLKAWvxZoVmmLZB5wdV59g';
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -27,7 +26,7 @@ const Showcase = () => {
     }, [navigate]);
 
     return (
-        <div className="relative min-h-screen bg-gradient-to-br from-[#0a0e0b] to-[#112218] flex items-center justify-center overflow-hidden">
+        <div className="relative min-h-screen bg-gradient-to-br from-[#0a0e0b] to-[#112218] dark:from-bg-main dark:to-sidebar-active flex items-center justify-center overflow-hidden transition-colors duration-700">
             <FloatingEmojis />
             
             <AnimatePresence>
@@ -44,10 +43,10 @@ const Showcase = () => {
                     }}
                     className="text-center z-10"
                 >
-                    <h1 className="text-6xl font-black text-white m-0 tracking-tight">
+                    <h1 className="text-6xl font-black text-white dark:text-secondary m-0 tracking-tight transition-colors duration-700">
                         Care<span className="text-primary italic">Buddy</span>
                     </h1>
-                    <p className="text-xl font-bold text-[#a3b8ad] mt-4 italic opacity-80 uppercase tracking-widest leading-loose">
+                    <p className="text-xl font-bold text-[#a3b8ad] dark:text-text-dim mt-4 italic opacity-80 uppercase tracking-widest leading-loose transition-colors duration-700">
                         Your personal healthcare companion
                     </p>
                 </motion.div>

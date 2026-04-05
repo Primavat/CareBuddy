@@ -15,12 +15,12 @@ const Caretakers = () => {
 
     return (
         <div className="max-w-6xl mx-auto font-sans">
-            <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100">
+            <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100 dark:border-border">
                 <div>
                     <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">👩‍⚕️ Caretaker Connection</h2>
                     <p className="text-sm font-bold text-text-dim italic leading-relaxed">Connect with certified healthcare professionals for personalized home support.</p>
                 </div>
-                <div className="flex bg-gray-100 p-1 rounded-xl">
+                <div className="flex bg-gray-100 dark:bg-bg-main p-1 rounded-xl border border-transparent dark:border-border">
                     {['All', 'Doctor', 'Nurse', 'Specialist'].map((role) => (
                         <button 
                             key={role}
@@ -42,10 +42,10 @@ const Caretakers = () => {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
                             transition={{ delay: i * 0.05 }}
-                            className="bg-white p-6 rounded-[2.5rem] border border-border shadow-sm hover:shadow-xl hover:border-primary transition-all group relative overflow-hidden"
+                            className="bg-card-bg p-6 rounded-[2.5rem] border border-border shadow-sm hover:shadow-xl hover:border-primary transition-all group relative overflow-hidden"
                         >
                             <div className="flex flex-col items-center text-center">
-                                <div className="w-24 h-24 rounded-3xl overflow-hidden mb-4 border-2 border-border group-hover:border-primary transition-colors bg-gray-50">
+                                <div className="w-24 h-24 rounded-3xl overflow-hidden mb-4 border-2 border-border group-hover:border-primary transition-colors bg-gray-50 dark:bg-bg-main">
                                     <img src={c.image} alt={c.name} />
                                 </div>
                                 <h3 className="text-lg font-black text-secondary leading-tight mb-1">{c.name}</h3>
@@ -65,7 +65,7 @@ const Caretakers = () => {
                                     <button className="flex-1 bg-secondary text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
                                         <Phone size={14} /> Call
                                     </button>
-                                    <button className="p-3 bg-gray-50 text-secondary border border-border rounded-xl hover:bg-white hover:shadow-md transition-all">
+                                    <button className="p-3 bg-gray-50 dark:bg-bg-main text-secondary border border-border rounded-xl hover:bg-card-bg hover:shadow-md transition-all">
                                         <Search size={14} />
                                     </button>
                                 </div>

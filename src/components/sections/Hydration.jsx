@@ -14,13 +14,13 @@ const Hydration = () => {
 
   return (
     <div className="max-w-4xl mx-auto font-sans">
-      <div className="mb-14 text-center pb-6 border-b border-gray-100">
+      <div className="mb-14 text-center pb-6 border-b border-gray-100 dark:border-border">
         <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">💧 Hydration Tracker</h2>
         <p className="text-sm font-bold text-text-dim italic leading-relaxed">Stay refreshed and earn health points for every glass of water.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div className="bg-white p-8 rounded-[2.5rem] border border-border shadow-sm text-center">
+        <div className="bg-card-bg p-8 rounded-[2.5rem] border border-border shadow-sm text-center">
             <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6">Daily Progress</h3>
             <div className="relative w-48 h-48 mx-auto flex items-center justify-center">
                 <svg className="w-full h-full transform -rotate-90">

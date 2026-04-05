@@ -29,7 +29,7 @@ const Fitness = () => {
 
     return (
         <div className="max-w-6xl mx-auto font-sans">
-            <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100">
+            <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100 dark:border-border">
                 <div>
                     <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">🏃 Fitness Tracker</h2>
                     <p className="text-sm font-bold text-text-dim italic leading-relaxed">Monitor your physical activity and hit your daily workout milestones.</p>
@@ -49,12 +49,12 @@ const Fitness = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="bg-white p-8 rounded-[3rem] border border-border shadow-sm flex items-center gap-6 group hover:border-primary transition-all overflow-hidden relative"
+                        className="bg-card-bg p-8 rounded-[3rem] border border-border shadow-sm flex items-center gap-6 group hover:border-primary transition-all overflow-hidden relative"
                     >
                         <div className={`absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity`}>
                             <s.icon size={120} />
                         </div>
-                        <div className={`w-14 h-14 bg-gray-50 ${s.color} rounded-2xl flex items-center justify-center border border-gray-100 group-hover:bg-primary group-hover:text-white transition-all`}>
+                        <div className={`w-14 h-14 bg-gray-50 dark:bg-bg-main ${s.color} rounded-2xl flex items-center justify-center border border-gray-100 dark:border-border group-hover:bg-primary group-hover:text-white transition-all`}>
                             <s.icon size={28} />
                         </div>
                         <div className="relative z-10">
@@ -83,8 +83,8 @@ const Fitness = () => {
                     </div>
                 </div>
 
-                <div className="lg:col-span-1 bg-white p-10 rounded-[3rem] border border-border shadow-sm flex flex-col items-center justify-center text-center">
-                    <div className="w-16 h-16 bg-gray-50 rounded-[2.5rem] flex items-center justify-center mb-6 text-primary border border-gray-100 shadow-xl">
+                <div className="lg:col-span-1 bg-card-bg p-10 rounded-[3rem] border border-border shadow-sm flex flex-col items-center justify-center text-center">
+                    <div className="w-16 h-16 bg-gray-50 dark:bg-bg-main rounded-[2.5rem] flex items-center justify-center mb-6 text-primary border border-gray-100 dark:border-border shadow-xl">
                         <Dumbbell size={32} />
                     </div>
                     <h4 className="text-xl font-bold text-secondary mb-2">Detailed Reports</h4>

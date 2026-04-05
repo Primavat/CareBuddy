@@ -52,7 +52,7 @@ const CareBot = () => {
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="mb-4 w-64 max-h-[400px] flex flex-col bg-white rounded-[2rem] shadow-2xl border border-border overflow-hidden"
+            className="mb-4 w-64 max-h-[400px] flex flex-col bg-card-bg rounded-[2rem] shadow-2xl border border-border overflow-hidden"
           >
             <div className="bg-primary p-3 flex items-center justify-between text-white">
               <div className="flex items-center gap-2">
@@ -74,13 +74,13 @@ const CareBot = () => {
 
             <div 
               ref={chatRef}
-              className="flex-1 p-3 flex flex-col gap-3 overflow-y-auto min-h-[250px] bg-gray-50"
+              className="flex-1 p-3 flex flex-col gap-3 overflow-y-auto min-h-[250px] bg-gray-50 dark:bg-bg-main"
             >
               {messages.map((m, i) => (
                 <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`
                     max-w-[85%] p-2.5 rounded-xl text-[12px] font-semibold leading-relaxed shadow-sm
-                    ${m.role === 'user' ? 'bg-primary text-white' : 'bg-white text-secondary border border-border'}
+                    ${m.role === 'user' ? 'bg-primary text-white' : 'bg-card-bg text-secondary border border-border'}
                   `}>
                     {m.text}
                   </div>
@@ -88,7 +88,7 @@ const CareBot = () => {
               ))}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white border border-border p-2 rounded-xl flex gap-1">
+                  <div className="bg-card-bg border border-border p-2 rounded-xl flex gap-1">
                     <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1 h-1 bg-primary/40 rounded-full"></motion.div>
                     <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1 h-1 bg-primary/40 rounded-full"></motion.div>
                     <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1 h-1 bg-primary/40 rounded-full"></motion.div>
@@ -97,14 +97,14 @@ const CareBot = () => {
               )}
             </div>
 
-            <div className="p-3 bg-white border-t border-border flex gap-2">
+            <div className="p-3 bg-card-bg border-t border-border flex gap-2">
               <input 
                 type="text" 
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                 placeholder="Ask..."
-                className="flex-1 bg-gray-100 border border-border px-3 py-2 rounded-xl text-[12px] font-semibold outline-none focus:border-primary transition-colors"
+                className="flex-1 bg-gray-100 dark:bg-bg-main border border-border px-3 py-2 rounded-xl text-[12px] font-semibold text-secondary outline-none focus:border-primary transition-colors"
               />
               <button 
                 onClick={sendMessage}
@@ -121,7 +121,7 @@ const CareBot = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-2xl hover:bg-green-700 transition-colors border-4 border-white/20"
+        className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-2xl hover:bg-green-700 transition-colors border-4 border-white/20 dark:border-border"
       >
         <MessageSquare size={22} />
       </motion.button>

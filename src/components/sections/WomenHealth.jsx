@@ -5,7 +5,7 @@ import { Venus, Calendar, Heart, Baby, Plus, Sparkles } from 'lucide-react';
 const WomenHealth = () => {
     return (
         <div className="max-w-6xl mx-auto font-sans pb-20">
-            <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100">
+            <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100 dark:border-border">
                 <div>
                     <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">🚺 Women's Health Hub</h2>
                     <p className="text-sm font-bold text-text-dim italic leading-relaxed">Comprehensive tracking for menstrual cycles, pregnancy, and fertility.</p>
@@ -16,7 +16,7 @@ const WomenHealth = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                <div className="bg-white p-10 rounded-[3rem] border border-border shadow-sm flex flex-col justify-between group hover:border-primary transition-all relative overflow-hidden">
+                <div className="bg-card-bg p-10 rounded-[3rem] border border-border shadow-sm flex flex-col justify-between group hover:border-primary transition-all relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity"><Venus size={160} /></div>
                     <div className="relative z-10 font-bold">
                         <div className="w-16 h-16 bg-pink-50 text-pink-500 rounded-2xl flex items-center justify-center mb-6 border border-pink-100 shadow-sm group-hover:bg-pink-500 group-hover:text-white transition-all">
@@ -26,13 +26,13 @@ const WomenHealth = () => {
                         <p className="text-text-dim mb-8 italic">Next cycle expected in <span className="text-pink-500 font-black">12 Days</span>.</p>
                         
                         <div className="flex gap-4">
-                            <div className="bg-gray-50 px-4 py-2 rounded-xl text-xs font-black text-secondary tracking-widest border border-gray-100">Day 14 (Ovulation)</div>
-                            <div className="bg-gray-50 px-4 py-2 rounded-xl text-xs font-black text-secondary tracking-widest border border-gray-100">Normal Flow</div>
+                            <div className="bg-gray-50 dark:bg-bg-main px-4 py-2 rounded-xl text-xs font-black text-secondary tracking-widest border border-gray-100 dark:border-border">Day 14 (Ovulation)</div>
+                            <div className="bg-gray-50 dark:bg-bg-main px-4 py-2 rounded-xl text-xs font-black text-secondary tracking-widest border border-gray-100 dark:border-border">Normal Flow</div>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white p-10 rounded-[3rem] border border-border shadow-sm flex flex-col justify-between group hover:border-primary transition-all relative overflow-hidden">
+                <div className="bg-card-bg p-10 rounded-[3rem] border border-border shadow-sm flex flex-col justify-between group hover:border-primary transition-all relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity"><Baby size={160} /></div>
                     <div className="relative z-10 font-bold">
                         <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center mb-6 border border-blue-100 shadow-sm group-hover:bg-blue-500 group-hover:text-white transition-all">
@@ -42,8 +42,8 @@ const WomenHealth = () => {
                         <p className="text-text-dim mb-8 italic">Week <span className="text-blue-500 font-black">24</span> of your journey.</p>
                         
                         <div className="flex gap-4">
-                            <div className="bg-gray-50 px-4 py-2 rounded-xl text-xs font-black text-secondary tracking-widest border border-gray-100">Second Trimester</div>
-                            <div className="bg-gray-50 px-4 py-2 rounded-xl text-xs font-black text-secondary tracking-widest border border-gray-100">Stable Vitals</div>
+                            <div className="bg-gray-50 dark:bg-bg-main px-4 py-2 rounded-xl text-xs font-black text-secondary tracking-widest border border-gray-100 dark:border-border">Second Trimester</div>
+                            <div className="bg-gray-50 dark:bg-bg-main px-4 py-2 rounded-xl text-xs font-black text-secondary tracking-widest border border-gray-100 dark:border-border">Stable Vitals</div>
                         </div>
                     </div>
                 </div>

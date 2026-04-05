@@ -29,12 +29,12 @@ const Vaccinations = () => {
 
     return (
         <div className="max-w-6xl mx-auto font-sans">
-            <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100">
+            <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100 dark:border-border">
                 <div>
                     <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">💉 Immunization Hub</h2>
                     <p className="text-sm font-bold text-text-dim italic leading-relaxed">Keep track of essential healthcare milestones for you and your family.</p>
                 </div>
-                <div className="flex bg-gray-100 p-1 rounded-xl">
+                <div className="flex bg-gray-100 dark:bg-bg-main p-1 rounded-xl border border-transparent dark:border-border">
                     {['all', 'upcoming', 'completed'].map((f) => (
                         <button 
                             key={f}
@@ -57,9 +57,9 @@ const Vaccinations = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 transition={{ delay: i * 0.05 }}
-                                className="bg-white p-6 rounded-[2.5rem] border border-border flex items-center gap-6 group hover:border-primary transition-all shadow-sm"
+                                className="bg-card-bg p-6 rounded-[2.5rem] border border-border flex items-center gap-6 group hover:border-primary transition-all shadow-sm"
                             >
-                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border transition-all ${v.status === 'Completed' ? 'bg-green-50 text-primary border-primary/20' : 'bg-gray-50 text-gray-400 border-gray-100 group-hover:bg-primary group-hover:text-white group-hover:border-primary'}`}>
+                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border transition-all ${v.status === 'Completed' ? 'bg-green-50 dark:bg-green-950/30 text-primary border-primary/20' : 'bg-gray-50 dark:bg-bg-main text-gray-400 border-gray-100 dark:border-border group-hover:bg-primary group-hover:text-white group-hover:border-primary'}`}>
                                     <Syringe size={24} />
                                 </div>
                                 <div className="flex-1">
@@ -90,7 +90,7 @@ const Vaccinations = () => {
                     </AnimatePresence>
                     
                     {filteredVaccines.length === 0 && (
-                        <div className="py-20 text-center border-2 border-dashed border-border rounded-[3rem] bg-gray-50">
+                        <div className="py-20 text-center border-2 border-dashed border-border rounded-[3rem] bg-gray-50 dark:bg-bg-main">
                             <p className="text-lg font-bold text-text-dim uppercase tracking-widest opacity-50 italic">No {filter} vaccines found. 💉</p>
                         </div>
                     )}

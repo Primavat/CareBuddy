@@ -145,7 +145,7 @@ const Hospitals = () => {
 
   return (
     <div className="max-w-6xl mx-auto font-sans">
-      <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100">
+      <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100 dark:border-border">
         <div>
           <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">🏥 Health Service Discovery</h2>
           <p className="text-sm font-bold text-text-dim italic leading-relaxed">
@@ -161,10 +161,10 @@ const Hospitals = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={handleSearchKeyPress}
-              className="bg-gray-100 border border-transparent focus:border-primary focus:bg-white p-2.5 pl-12 rounded-xl text-xs font-bold text-secondary outline-none transition-all w-64 shadow-inner"
+              className="bg-gray-100 dark:bg-bg-main border border-transparent focus:border-primary focus:bg-white dark:focus:bg-card-bg p-2.5 pl-12 rounded-xl text-xs font-bold text-secondary outline-none transition-all w-64 shadow-inner"
             />
           </div>
-          <div className="flex bg-gray-100 p-1 rounded-xl">
+          <div className="flex bg-gray-100 dark:bg-bg-main p-1 rounded-xl border border-transparent dark:border-border">
             {['All', 'ER', 'Clinic', 'Pharmacy'].map((type) => (
               <button 
                 key={type}
@@ -205,13 +205,13 @@ const Hospitals = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ delay: i * 0.05 }}
-              className="bg-white p-6 rounded-[2.5rem] border border-border shadow-sm hover:shadow-xl hover:border-secondary transition-all group overflow-hidden relative h-full flex flex-col"
+              className="bg-card-bg p-6 rounded-[2.5rem] border border-border shadow-sm hover:shadow-xl hover:border-secondary transition-all group overflow-hidden relative h-full flex flex-col"
             >
               <div className="flex justify-between items-start mb-4">
-                <div className="bg-gray-50 p-3 rounded-2xl text-secondary group-hover:bg-secondary group-hover:text-white transition-colors">
+                <div className="bg-gray-50 dark:bg-bg-main p-3 rounded-2xl text-secondary group-hover:bg-secondary group-hover:text-white transition-colors">
                   <MapPin size={20} />
                 </div>
-                <span className="text-[10px] font-black uppercase bg-gray-100 text-gray-400 px-3 py-1 rounded-lg">
+                <span className="text-[10px] font-black uppercase bg-gray-100 dark:bg-border text-gray-400 dark:text-text-dim px-3 py-1 rounded-lg">
                   {h.distance}
                 </span>
               </div>
@@ -229,7 +229,7 @@ const Hospitals = () => {
 
               <button 
                 onClick={() => handleNavigate(h)}
-                className="w-full bg-gray-50 text-secondary py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border border-border hover:bg-secondary hover:text-white transition-all"
+                className="w-full bg-gray-50 dark:bg-bg-main text-secondary py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border border-border hover:bg-secondary hover:text-white transition-all"
               >
                 Navigate Now
               </button>
@@ -239,7 +239,7 @@ const Hospitals = () => {
       </div>
 
       {filteredHospitals.length === 0 && !loading && (
-        <div className="py-20 text-center border-2 border-dashed border-gray-100 rounded-[3rem]">
+        <div className="py-20 text-center border-2 border-dashed border-gray-100 dark:border-border rounded-[3rem]">
             <p className="text-lg font-bold text-text-dim uppercase tracking-widest opacity-50 italic">No health services found matching "{searchTerm}". 🏥</p>
             <button onClick={() => { setSearchTerm(''); fetchNearby(); }} className="mt-4 text-primary font-black uppercase text-xs hover:underline decoration-2 underline-offset-4 tracking-widest">Clear and Show All Nearby</button>
         </div>

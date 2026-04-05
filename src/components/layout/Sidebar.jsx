@@ -24,7 +24,7 @@ const Sidebar = ({ mode, activeSection, setActiveSection, vaccineCount = 0 }) =>
   ];
 
   return (
-    <aside className="fixed left-0 top-20 bottom-0 w-64 bg-white border-r border-border p-4 flex flex-col gap-2 overflow-y-auto z-40">
+    <aside className="fixed left-0 top-20 bottom-0 w-64 bg-card-bg border-r border-border p-4 flex flex-col gap-2 overflow-y-auto z-40">
       {sections.map((section, index) => (
         <motion.button
           key={section.id}
@@ -42,8 +42,8 @@ const Sidebar = ({ mode, activeSection, setActiveSection, vaccineCount = 0 }) =>
           className={`
             flex items-center gap-3 w-full px-4 py-3 rounded-xl text-left font-bold text-sm transition-colors
             ${activeSection === section.id 
-              ? 'bg-[#e8f5e9] text-primary shadow-sm' 
-              : 'text-secondary hover:bg-gray-100/50'
+              ? 'bg-sidebar-active text-primary shadow-sm' 
+              : 'text-secondary hover:bg-bg-main'
             }
           `}
         >

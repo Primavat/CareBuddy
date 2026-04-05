@@ -44,7 +44,7 @@ const Moodometer = () => {
 
   return (
     <div className="max-w-4xl mx-auto font-sans">
-      <div className="text-center mb-20 pb-4 border-b border-gray-100">
+      <div className="text-center mb-20 pb-4 border-b border-gray-100 dark:border-border">
         <h2 className="text-2xl font-extrabold text-secondary mb-3 tracking-tight uppercase">How are you feeling today?</h2>
         <p className="text-sm font-bold text-text-dim max-w-xl mx-auto leading-relaxed italic">
           Select an emoji that matches your mood today. CareBot will provide a personalized mindfulness tip.
@@ -52,7 +52,7 @@ const Moodometer = () => {
       </div>
 
       <div className="relative h-60 flex items-center justify-center mb-20">
-        <div className="absolute w-full max-w-2xl h-[400px] border-[3px] border-dashed border-gray-100 rounded-[50%] -bottom-[320px]"></div>
+        <div className="absolute w-full max-w-2xl h-[400px] border-[3px] border-dashed border-gray-100 dark:border-border rounded-[50%] -bottom-[320px]"></div>
         
         <div className="flex gap-4 md:gap-8 justify-center items-end h-full">
           {moods.map((m, i) => (
@@ -66,7 +66,7 @@ const Moodometer = () => {
                 ${selectedMood?.type === m.type ? 'scale-110' : 'opacity-60 grayscale-[0.5] hover:opacity-100 hover:grayscale-0'}
               `}
             >
-              <div className="w-20 h-20 rounded-[28px] bg-white border-2 border-gray-100 shadow-xl flex items-center justify-center text-5xl relative overflow-hidden group">
+              <div className="w-20 h-20 rounded-[28px] bg-card-bg border-2 border-gray-100 dark:border-border shadow-xl flex items-center justify-center text-5xl relative overflow-hidden group">
                 <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <span className="relative z-10">{m.emoji}</span>
               </div>

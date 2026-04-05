@@ -17,7 +17,7 @@ const Medications = ({ members }) => {
 
   return (
     <div className="max-w-6xl mx-auto font-sans">
-      <div className="mb-10 flex justify-between items-center pb-6 border-b border-gray-100">
+      <div className="mb-10 flex justify-between items-center pb-6 border-b border-gray-100 dark:border-border">
         <div>
           <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">💊 Medication Tracker</h2>
           <p className="text-sm font-bold text-text-dim italic leading-relaxed">Stay on top of your family's prescriptions and daily vitamins.</p>
@@ -67,7 +67,7 @@ const Medications = ({ members }) => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className={`p-6 rounded-3xl border border-border shadow-sm flex flex-col gap-4 relative overflow-hidden transition-all bg-white group hover:border-primary`}
+              className={`p-6 rounded-3xl border border-border shadow-sm flex flex-col gap-4 relative overflow-hidden transition-all bg-card-bg group hover:border-primary`}
             >
               <div className="flex justify-between items-start">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg transition-colors ${m.status === 'urgent' ? 'bg-[#ff7675] animate-pulse' : m.status === 'taken' ? 'bg-primary' : 'bg-secondary'}`}>
@@ -75,7 +75,7 @@ const Medications = ({ members }) => {
                 </div>
                 <div className="text-right">
                    <span className="text-[10px] font-black uppercase text-gray-400 block tracking-widest">Scheduled For</span>
-                   <span className="text-sm font-black text-secondary uppercase px-2 py-1 bg-gray-100 rounded-lg">{m.time}</span>
+                   <span className="text-sm font-black text-secondary uppercase px-2 py-1 bg-gray-100 dark:bg-border rounded-lg">{m.time}</span>
                 </div>
               </div>
 
@@ -89,15 +89,15 @@ const Medications = ({ members }) => {
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-gray-50">
+              <div className="flex gap-3 pt-4 border-t border-gray-50 dark:border-border">
                 <button 
                   onClick={() => toggleStatus(m.id)}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black transition-all ${m.status === 'taken' ? 'bg-gray-100 text-gray-400' : 'bg-primary text-white shadow-md hover:bg-green-700'}`}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black transition-all ${m.status === 'taken' ? 'bg-gray-100 dark:bg-border text-gray-400' : 'bg-primary text-white shadow-md hover:bg-green-700'}`}
                 >
                   {m.status === 'taken' ? <CheckCircle2 size={16} /> : <Clock size={16} />} 
                   {m.status === 'taken' ? 'TAKEN' : 'MARK TAKEN'}
                 </button>
-                <button className="p-3 bg-gray-50 text-gray-300 rounded-xl hover:text-red-500 hover:bg-red-50 transition-all">
+                <button className="p-3 bg-gray-50 dark:bg-bg-main text-gray-300 rounded-xl hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all">
                   <Trash2 size={16} />
                 </button>
               </div>

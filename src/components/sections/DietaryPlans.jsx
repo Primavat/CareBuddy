@@ -45,7 +45,7 @@ const DietaryPlans = () => {
 
   return (
     <div className="max-w-6xl mx-auto font-sans pb-20">
-      <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100">
+      <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-100 dark:border-border">
         <div>
           <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">🥗 AI Dietary Plans</h2>
           <p className="text-sm font-bold text-text-dim italic leading-relaxed">Personalized meal plans optimized for your fitness goals and health data.</p>
@@ -62,7 +62,7 @@ const DietaryPlans = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
         <div className="lg:col-span-1 space-y-6">
-           <div className="bg-white p-6 rounded-[2.5rem] border border-border shadow-sm group hover:border-primary transition-all">
+           <div className="bg-card-bg p-6 rounded-[2.5rem] border border-border shadow-sm group hover:border-primary transition-all">
               <h3 className="text-xl font-black text-secondary mb-6 flex items-center gap-2 uppercase tracking-tighter">
                 <Target size={20} className="text-primary group-hover:scale-125 transition-transform" /> Nutrition Profile
               </h3>
@@ -73,7 +73,7 @@ const DietaryPlans = () => {
                   <select 
                     value={goal}
                     onChange={(e) => setGoal(e.target.value)}
-                    className="w-full bg-gray-50 border border-border p-4 rounded-3xl font-black text-secondary outline-none focus:border-primary transition-all shadow-inner text-sm tracking-tight"
+                    className="w-full bg-gray-50 dark:bg-bg-main border border-border p-4 rounded-3xl font-black text-secondary outline-none focus:border-primary transition-all shadow-inner text-sm tracking-tight"
                   >
                     <option>Weight Loss</option>
                     <option>Diabetes Friendly</option>
@@ -87,7 +87,7 @@ const DietaryPlans = () => {
                   <select 
                     value={pref}
                     onChange={(e) => setPref(e.target.value)}
-                    className="w-full bg-gray-50 border border-border p-4 rounded-3xl font-black text-secondary outline-none focus:border-primary transition-all shadow-inner text-sm tracking-tight"
+                    className="w-full bg-gray-50 dark:bg-bg-main border border-border p-4 rounded-3xl font-black text-secondary outline-none focus:border-primary transition-all shadow-inner text-sm tracking-tight"
                   >
                     <option>Veg</option>
                     <option>Non-Veg</option>
@@ -123,9 +123,9 @@ const DietaryPlans = () => {
                  <motion.div 
                    key="empty"
                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                   className="h-full min-h-[500px] flex flex-col items-center justify-center bg-gray-50 rounded-[3rem] border-4 border-dashed border-border p-12 text-center"
+                   className="h-full min-h-[500px] flex flex-col items-center justify-center bg-gray-50 dark:bg-bg-main rounded-[3rem] border-4 border-dashed border-border p-12 text-center"
                  >
-                    <div className="w-24 h-24 bg-white shadow-2xl rounded-[2rem] flex items-center justify-center mb-6 text-primary border border-gray-100 animate-bounce transition-all duration-3000">
+                    <div className="w-24 h-24 bg-card-bg shadow-2xl rounded-[2rem] flex items-center justify-center mb-6 text-primary border border-gray-100 dark:border-border animate-bounce transition-all duration-3000">
                       <ClipboardCheck size={40} />
                     </div>
                     <h3 className="text-3xl font-black text-secondary mb-3 tracking-tighter uppercase">Ready to generate your plan?</h3>
@@ -136,7 +136,7 @@ const DietaryPlans = () => {
                   key="content"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white p-10 rounded-[3rem] border border-border shadow-soft h-full relative group min-h-[500px]"
+                  className="bg-card-bg p-10 rounded-[3rem] border border-border shadow-soft h-full relative group min-h-[500px]"
                 >
                    {loading ? (
                      <div className="h-full min-h-[400px] flex flex-col items-center justify-center gap-6">
@@ -151,7 +151,7 @@ const DietaryPlans = () => {
                      </div>
                    ) : (
                      <div className="relative z-10">
-                        <div className="flex justify-between items-start mb-10 border-b border-gray-100 pb-6">
+                        <div className="flex justify-between items-start mb-10 border-b border-gray-100 dark:border-border pb-6">
                            <div className="bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] px-5 py-2 rounded-xl shadow-lg shadow-primary/30">AI Nutrition Guide</div>
                            <button 
                              onClick={() => {
@@ -159,7 +159,7 @@ const DietaryPlans = () => {
                                navigator.clipboard.writeText(textToCopy);
                                alert("Plan copied to clipboard! 📋");
                              }}
-                             className="text-text-dim font-black text-[10px] hover:text-primary transition-all flex items-center gap-2 uppercase tracking-widest bg-gray-50 px-4 py-2 rounded-xl hover:shadow-md"
+                             className="text-text-dim font-black text-[10px] hover:text-primary transition-all flex items-center gap-2 uppercase tracking-widest bg-gray-50 dark:bg-bg-main px-4 py-2 rounded-xl hover:shadow-md"
                            >
                              <ClipboardCheck size={14} /> Copy
                            </button>

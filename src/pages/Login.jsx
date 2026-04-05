@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Sun, Moon } from 'lucide-react';
 import FloatingEmojis from '../components/visuals/FloatingEmojis';
 import LoginBox from '../components/auth/LoginBox';
+import { useDarkMode } from '../hooks/useDarkMode';
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = 'https://idbratjfnpkzmbfzcehr.supabase.co';
@@ -11,6 +13,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const Login = () => {
     const navigate = useNavigate();
+    const { isDark, toggleTheme } = useDarkMode();
 
     useEffect(() => {
         const checkSession = async () => {
@@ -23,7 +26,16 @@ const Login = () => {
     }, [navigate]);
 
     return (
-        <div className="relative min-h-screen bg-gradient-to-br from-[#0a0e0b] to-[#112218] flex items-center justify-center p-6 overflow-hidden text-center">
+        <div className="relative min-h-screen bg-gradient-to-br from-[#0a0e0b] to-[#112218] dark:from-bg-main dark:to-sidebar-active flex items-center justify-center p-6 overflow-hidden text-center transition-colors duration-300">
+            <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                aria-pressed={isDark}
+                className="absolute top-6 right-6 z-20 w-11 h-11 rounded-full border border-white/20 dark:border-border bg-white/10 dark:bg-card-bg flex items-center justify-center text-white dark:text-secondary hover:bg-white/20 dark:hover:bg-bg-main transition-colors"
+            >
+                {isDark ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
             <FloatingEmojis />
             
             <motion.div
