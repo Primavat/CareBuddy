@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Utensils, Sparkles, Loader2, Apple, Target, ClipboardCheck, UtensilsCrossed, CheckCircle } from 'lucide-react';
-import { getGeminiGenerativeModel } from '../../utils/gemini';
-
-const model = getGeminiGenerativeModel();
+import { requestGeminiReply } from '../../utils/gemini';
 
 const DietaryPlans = () => {
   const [goal, setGoal] = useState("Weight Loss");
@@ -22,9 +20,7 @@ const DietaryPlans = () => {
     Add one "Expert Health Tip" at the end.`;
 
     try {
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      let text = response.text();
+      let text = await requestGeminiReply(prompt);
       
       // Basic Markdown-to-HTML Formatter
       text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold

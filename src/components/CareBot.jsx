@@ -1,12 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Bot, X, MessageSquare } from 'lucide-react';
-import { getGeminiGenerativeModel } from '../utils/gemini';
-
-const model = getGeminiGenerativeModel({
-  systemInstruction:
-    'Your name is CareBot. You are a friendly, professional, and knowledgeable medical assistant for the CareBuddy app. Provide concise, helpful, and empathetic health advice. Always remind the user to consult a professional for serious concerns.',
-});
+import { requestGeminiReply } from '../utils/gemini';
 
 const CareBot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,16 +27,17 @@ const CareBot = () => {
     setIsTyping(true);
 
     try {
-      const result = await model.generateContent(userMsg);
-      const response = await result.response;
-      const text = response.text();
+      const text = await requestGeminiReply(userMsg);
       setMessages((prev) => [...prev, { role: 'bot', text }]);
-    } catch {
+    } catch (e) {
+      console.error('[CareBot]', e);
+      const hint =
+        e instanceof Error ? e.message : 'Please try again later.';
       setMessages((prev) => [
         ...prev,
         {
           role: 'bot',
-          text: 'Error connecting to CareBot. Please try again later.',
+          text: `Could not get a reply. ${hint}`,
         },
       ]);
     } finally {

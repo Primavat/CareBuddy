@@ -1,23 +1,34 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
 /**
- * Prefer VITE_GEMINI_API_KEY in .env (Vite exposes only VITE_* vars to the client).
- * The legacy gemini-1.5-flash model id often yields 400/404 from the API; use a current id.
+ * Calls the server-side `/api/chat` route (Vercel in production, Vite middleware in dev).
+ * The browser never sends your Google API key to clients — avoids 400s from invalid/restricted client keys.
  */
-const API_KEY = String(
-  import.meta.env.VITE_GEMINI_API_KEY ??
-    'AIzaSyB7H5bhn8y8Z4Ah-vTCqnMNWVw6ovxTrDs'
-).trim();
-
-export const GEMINI_CHAT_MODEL = 'gemini-2.0-flash';
-
-export function getGeminiGenerativeModel(overrides = {}) {
-  if (!API_KEY) {
-    throw new Error('Missing Gemini API key. Set VITE_GEMINI_API_KEY in your environment.');
+export async function requestGeminiReply(message) {
+  const text = typeof message === 'string' ? message.trim() : '';
+  if (!text) {
+    throw new Error('Message is empty');
   }
-  const genAI = new GoogleGenerativeAI(API_KEY);
-  return genAI.getGenerativeModel({
-    model: GEMINI_CHAT_MODEL,
-    ...overrides,
+
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: text }),
   });
+
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error('Invalid response from chat server');
+  }
+
+  if (!res.ok) {
+    const err = typeof data?.error === 'string' ? data.error : `Request failed (${res.status})`;
+    throw new Error(err);
+  }
+
+  if (typeof data?.reply !== 'string' || !data.reply) {
+    throw new Error('Empty reply from server');
+  }
+
+  return data.reply;
 }

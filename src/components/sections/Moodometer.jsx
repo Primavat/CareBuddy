@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Smile, Frown, Meh, SmilePlus, Angry, Sparkles, Loader2 } from 'lucide-react';
-import { getGeminiGenerativeModel } from '../../utils/gemini';
-
-const model = getGeminiGenerativeModel();
+import { requestGeminiReply } from '../../utils/gemini';
 
 const Moodometer = () => {
   const [selectedMood, setSelectedMood] = useState(null);
@@ -30,9 +28,8 @@ const Moodometer = () => {
     Be warm, brief, and helpful.`;
 
     try {
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      setTip(response.text());
+      const reply = await requestGeminiReply(prompt);
+      setTip(reply);
     } catch (e) {
       setTip("Take a deep breath and remember you're doing great! 🌿");
     } finally {
