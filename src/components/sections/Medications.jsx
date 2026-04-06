@@ -1,18 +1,95 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Pill, Clock, Plus, Trash2, CheckCircle2 } from 'lucide-react';
+import { Pill, Clock, Plus, Trash2, CheckCircle2, Bell, BarChart3, Shield } from 'lucide-react';
+import { medicationReminderSystem } from '../../utils/medicationReminders';
+import { medicationHistory } from '../../utils/medicationHistory';
+import { refillMonitor } from '../../utils/refillMonitor';
+import { medicationInteractionChecker } from '../../utils/medicationInteractions';
+import MedicationModal from '../MedicationModal';
+import MedicationCompliance from '../MedicationCompliance';
+import MedicationInteractions from '../MedicationInteractions';
 
-const Medications = ({ members }) => {
-  const [meds, setMeds] = React.useState([
+const Medications = ({ members, medications, setMedications }) => {
+  const [meds, setMeds] = React.useState(medications.length > 0 ? medications : [
     { id: 1, name: 'Paracetamol', dosage: '500mg', time: '08:00 AM', status: 'taken', patient: 'Rahul' },
     { id: 2, name: 'Amoxicillin', dosage: '250mg', time: '12:00 PM', status: 'urgent', patient: 'Priyanshu' },
     { id: 3, name: 'Vitamin D3', dosage: '60k IU', time: '09:00 PM', status: 'upcoming', patient: 'Anjali' }
   ]);
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showCompliance, setShowCompliance] = useState(false);
+  const [showInteractions, setShowInteractions] = useState(false);
+
+  // Sync with parent component state
+  useEffect(() => {
+    setMedications(meds);
+  }, [meds, setMedications]);
+
+  useEffect(() => {
+    // Initialize reminder system
+    medicationReminderSystem.initialize();
+    
+    // Initialize refill monitor
+    refillMonitor.initialize();
+
+    // Add all current medications to reminder system
+    meds.forEach(med => {
+      if (med.status !== 'taken') {
+        medicationReminderSystem.addReminder(med);
+      }
+    });
+
+    return () => {
+      medicationReminderSystem.destroy();
+      refillMonitor.destroy();
+    };
+  }, []);
+
+  useEffect(() => {
+    // Update reminders when meds change
+    meds.forEach(med => {
+      if (med.status !== 'taken') {
+        medicationReminderSystem.updateReminder(med);
+      } else {
+        medicationReminderSystem.removeReminder(med.id);
+      }
+    });
+  }, [meds]);
 
   const toggleStatus = (id) => {
+    const medication = meds.find(m => m.id === id);
+    const newStatus = medication.status === 'taken' ? 'upcoming' : 'taken';
+    
     setMeds(meds.map(m => 
-      m.id === id ? { ...m, status: m.status === 'taken' ? 'upcoming' : 'taken' } : m
+      m.id === id ? { ...m, status: newStatus } : m
     ));
+    
+    // Log to history
+    if (newStatus === 'taken') {
+      medicationHistory.logDose(
+        medication.id,
+        medication.name,
+        medication.patient,
+        medication.dosage,
+        'taken'
+      );
+    }
+  };
+
+  const addMedication = (newMedication) => {
+    setMeds([...meds, newMedication]);
+  };
+
+  const deleteMedication = (id) => {
+    setMeds(meds.filter(m => m.id !== id));
+  };
+
+  const formatTime = (time) => {
+    const [hours, minutes] = time.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+    return `${displayHour}:${minutes} ${ampm}`;
   };
 
   return (
@@ -22,13 +99,65 @@ const Medications = ({ members }) => {
           <h2 className="text-2xl font-extrabold text-secondary mb-3 uppercase tracking-tight">💊 Medication Tracker</h2>
           <p className="text-sm font-bold text-text-dim italic leading-relaxed">Stay on top of your family's prescriptions and daily vitamins.</p>
         </div>
-        <button 
-          onClick={() => window.open('https://www.1mg.com', '_blank')}
-          className="bg-primary text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg hover:bg-green-700 transition-colors"
-        >
-          <Plus size={20} /> Add Medication
-        </button>
+        <div className="flex gap-2 flex-wrap">
+          <button 
+            onClick={() => setShowCompliance(!showCompliance)}
+            className={`px-4 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg transition-colors ${
+              showCompliance 
+                ? 'bg-primary text-white' 
+                : 'bg-gray-100 dark:bg-border text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+            }`}
+          >
+            <BarChart3 size={20} /> {showCompliance ? 'Hide' : 'Show'} Compliance
+          </button>
+          <button 
+            onClick={() => setShowInteractions(!showInteractions)}
+            className={`px-4 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg transition-colors ${
+              showInteractions 
+                ? 'bg-primary text-white' 
+                : 'bg-gray-100 dark:bg-border text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+            }`}
+          >
+            <Shield size={20} /> {showInteractions ? 'Hide' : 'Show'} Interactions
+          </button>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-primary text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg hover:bg-green-700 transition-colors"
+          >
+            <Plus size={20} /> Add Medication
+          </button>
+        </div>
       </div>
+      
+      {/* Interaction Checker Section */}
+      <AnimatePresence>
+        {showInteractions && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mb-8 overflow-hidden"
+          >
+            <MedicationInteractions medications={meds} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Compliance Tracking Section */}
+      <AnimatePresence>
+        {showCompliance && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mb-8 overflow-hidden"
+          >
+            <MedicationCompliance medications={meds} members={members} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="flex flex-col lg:flex-row gap-8 items-start">
         {/* Sticky Progress Summarry (Compact) */}
@@ -97,7 +226,10 @@ const Medications = ({ members }) => {
                   {m.status === 'taken' ? <CheckCircle2 size={16} /> : <Clock size={16} />} 
                   {m.status === 'taken' ? 'TAKEN' : 'MARK TAKEN'}
                 </button>
-                <button className="p-3 bg-gray-50 dark:bg-bg-main text-gray-300 rounded-xl hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all">
+                <button 
+                  onClick={() => deleteMedication(m.id)}
+                  className="p-3 bg-gray-50 dark:bg-bg-main text-gray-300 rounded-xl hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
+                >
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -106,6 +238,13 @@ const Medications = ({ members }) => {
         </AnimatePresence>
       </div>
       </div>
+      
+      <MedicationModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAddMedication={addMedication}
+        members={members}
+      />
     </div>
   );
 };

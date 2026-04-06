@@ -3,6 +3,7 @@ import Navbar from '../components/layout/Navbar';
 import Sidebar from '../components/layout/Sidebar';
 import MainContent from '../components/MainContent';
 import CareBot from '../components/CareBot';
+import MedicationNotification from '../components/MedicationNotification';
 
 const Dashboard = () => {
   const [mode, setMode] = useState('personal');
@@ -21,6 +22,10 @@ const Dashboard = () => {
 
   const [vaccineCount, setVaccineCount] = useState(0);
 
+  const [medications, setMedications] = useState(() => {
+    return JSON.parse(localStorage.getItem('carebuddy_medications') || '[]');
+  });
+
   // Sync state to localStorage
   useEffect(() => {
     localStorage.setItem('carebuddy_username', userName);
@@ -33,6 +38,10 @@ const Dashboard = () => {
   useEffect(() => {
     localStorage.setItem('carebuddy_journal', JSON.stringify(journalEntries));
   }, [journalEntries]);
+
+  useEffect(() => {
+    localStorage.setItem('carebuddy_medications', JSON.stringify(medications));
+  }, [medications]);
 
   // Update vaccine overdue count (Mock logic for now)
   useEffect(() => {
@@ -65,9 +74,12 @@ const Dashboard = () => {
           setMembers={setMembers}
           journalEntries={journalEntries}
           setJournalEntries={setJournalEntries}
+          medications={medications}
+          setMedications={setMedications}
         />
       </div>
       <CareBot />
+      <MedicationNotification />
     </div>
   );
 };
