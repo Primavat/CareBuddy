@@ -14,9 +14,9 @@ class MedicationReminderSystem {
       this.notificationPermission = await Notification.requestPermission();
     }
     
-    // Initialize phone notification service
+    // Initialize phone notification service in production mode
     phoneNotificationService.initialize({
-      testMode: true,
+      productionMode: true,
       testPhoneNumber: '9913390910'
     });
     
@@ -24,7 +24,8 @@ class MedicationReminderSystem {
     
     console.log('MedicationReminderSystem initialized with phone notifications:', {
       browserNotifications: this.notificationPermission === 'granted',
-      phoneNotifications: this.phoneNotificationsEnabled
+      phoneNotifications: this.phoneNotificationsEnabled,
+      productionMode: phoneNotificationService.getStatus().productionMode
     });
     
     this.startReminderCheck();
@@ -147,9 +148,12 @@ class MedicationReminderSystem {
     console.log(`Phone notifications ${enabled ? 'enabled' : 'disabled'}`);
   }
 
-  // Test notification system
+  // Test notification system with live mode
   async testNotifications(phoneNumber = null) {
-    console.log('Testing notification system...');
+    console.log('🚀 Testing notification system in LIVE MODE...');
+    
+    // Ensure we're in production mode
+    phoneNotificationService.enableProductionMode();
     
     const testMedication = {
       id: 'test',
@@ -159,10 +163,10 @@ class MedicationReminderSystem {
       time: new Date().toLocaleTimeString()
     };
     
-    // Test SMS notification
+    // Test live SMS notification
     if (this.phoneNotificationsEnabled) {
-      const smsResult = await phoneNotificationService.testSMS(phoneNumber);
-      console.log('SMS test result:', smsResult);
+      const smsResult = await phoneNotificationService.sendMedicationReminder(testMedication, phoneNumber);
+      console.log('🎯 LIVE SMS test result:', smsResult);
       return smsResult;
     }
     

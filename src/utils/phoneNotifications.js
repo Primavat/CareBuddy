@@ -1,26 +1,36 @@
 class PhoneNotificationService {
   constructor() {
     this.isConfigured = false;
-    this.testMode = true; // Enable test mode for development
+    this.testMode = false; // Default to production mode
     this.testPhoneNumber = '9913390910';
     this.apiKey = null;
     this.apiEndpoint = null;
+    this.productionMode = false;
   }
 
-  // Initialize the phone notification service
+  // Initialize phone notification service
   initialize(config = {}) {
-    this.apiKey = config.apiKey || process.env.VITE_SMS_API_KEY;
-    this.apiEndpoint = config.apiEndpoint || process.env.VITE_SMS_API_ENDPOINT;
-    this.testPhoneNumber = config.testPhoneNumber || this.testPhoneNumber;
-    this.testMode = config.testMode !== false; // Default to test mode
+    // Load from environment variables first, then allow overrides
+    this.apiKey = config.apiKey || import.meta.env.VITE_SMS_API_KEY;
+    this.apiEndpoint = config.apiEndpoint || import.meta.env.VITE_SMS_API_ENDPOINT;
+    this.testPhoneNumber = config.testPhoneNumber || import.meta.env.VITE_DEFAULT_PHONE_NUMBER || '9913390910';
+    this.productionMode = config.productionMode !== undefined ? config.productionMode : 
+                        (import.meta.env.VITE_PRODUCTION_MODE === 'true');
+    
+    // Enable test mode only if explicitly requested or not in production
+    this.testMode = config.testMode !== undefined ? config.testMode : !this.productionMode;
     
     this.isConfigured = !!(this.apiKey && this.apiEndpoint);
     
-    // Log initialization status
+    // Log initialization status (without exposing sensitive data)
     console.log('Phone Notification Service initialized:', {
       isConfigured: this.isConfigured,
       testMode: this.testMode,
-      testPhoneNumber: this.testPhoneNumber
+      productionMode: this.productionMode,
+      testPhoneNumber: this.testPhoneNumber,
+      hasApiKey: !!this.apiKey,
+      hasEndpoint: !!this.apiEndpoint,
+      apiKeyLength: this.apiKey ? this.apiKey.length : 0
     });
   }
 
@@ -30,7 +40,7 @@ class PhoneNotificationService {
     
     try {
       if (this.testMode) {
-        // Test mode: Log the message and simulate success
+        // Test mode: Log message and simulate success
         console.log(`[SMS TEST] To: ${targetNumber}, Message: "${message}"`);
         
         // Simulate API delay
@@ -46,9 +56,11 @@ class PhoneNotificationService {
       }
 
       if (!this.isConfigured) {
-        throw new Error('SMS service not configured');
+        throw new Error('SMS service not configured - missing API credentials');
       }
 
+      console.log(`[SMS LIVE] Sending to ${targetNumber}: ${message.substring(0, 50)}...`);
+      
       // Real SMS API call (using a generic SMS service structure)
       const response = await fetch(this.apiEndpoint, {
         method: 'POST',
@@ -68,6 +80,8 @@ class PhoneNotificationService {
       }
 
       const result = await response.json();
+      console.log(`[SMS SUCCESS] Message sent successfully to ${targetNumber}`);
+      
       return {
         success: true,
         messageId: result.messageId,
@@ -131,10 +145,26 @@ class PhoneNotificationService {
     return {
       isConfigured: this.isConfigured,
       testMode: this.testMode,
+      productionMode: this.productionMode,
       testPhoneNumber: this.testPhoneNumber,
       hasApiKey: !!this.apiKey,
-      hasEndpoint: !!this.apiEndpoint
+      hasEndpoint: !!this.apiEndpoint,
+      apiKeyLength: this.apiKey ? this.apiKey.length : 0
     };
+  }
+
+  // Switch to production mode
+  enableProductionMode() {
+    this.testMode = false;
+    this.productionMode = true;
+    console.log('🚀 Phone Notification Service switched to PRODUCTION MODE');
+  }
+
+  // Switch to test mode
+  enableTestMode() {
+    this.testMode = true;
+    this.productionMode = false;
+    console.log('🧪 Phone Notification Service switched to TEST MODE');
   }
 }
 

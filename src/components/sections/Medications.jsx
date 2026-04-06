@@ -86,15 +86,23 @@ const Medications = ({ members, medications, setMedications }) => {
 
   const testPhoneNotification = async () => {
     try {
+      console.log('🚀 Testing LIVE SMS notification to 9913390910...');
+      
+      // Force production mode for this test
+      phoneNotificationService.enableProductionMode();
+      
       const result = await medicationReminderSystem.testNotifications('9913390910');
+      
       if (result.success) {
-        alert('Test notification sent successfully to 9913390910! Check console for details.');
+        alert('✅ LIVE SMS notification sent successfully to 9913390910! Check your phone.');
+        console.log('🎉 SUCCESS: Real SMS notification delivered to 9913390910');
       } else {
-        alert('Test notification failed. Check console for details.');
+        alert('❌ SMS notification failed. Check console for details.');
+        console.error('❌ FAILED: SMS notification failed:', result);
       }
     } catch (error) {
-      console.error('Test notification error:', error);
-      alert('Test notification failed. Check console for details.');
+      console.error('❌ Test notification error:', error);
+      alert('❌ Test notification failed. Check console for details.');
     }
   };
 
@@ -136,9 +144,9 @@ const Medications = ({ members, medications, setMedications }) => {
           </button>
           <button 
             onClick={testPhoneNotification}
-            className="px-4 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+            className="px-4 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg bg-red-500 text-white hover:bg-red-600 transition-colors"
           >
-            📱 Test SMS
+            � Send LIVE SMS
           </button>
           <button 
             onClick={() => setIsModalOpen(true)}

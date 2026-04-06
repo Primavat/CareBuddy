@@ -13,9 +13,9 @@ class RefillMonitor {
       this.notificationPermission = await Notification.requestPermission();
     }
     
-    // Initialize phone notification service
+    // Initialize phone notification service in production mode
     phoneNotificationService.initialize({
-      testMode: true,
+      productionMode: true,
       testPhoneNumber: '9913390910'
     });
     
@@ -23,7 +23,8 @@ class RefillMonitor {
     
     console.log('RefillMonitor initialized with phone notifications:', {
       browserNotifications: this.notificationPermission === 'granted',
-      phoneNotifications: this.phoneNotificationsEnabled
+      phoneNotifications: this.phoneNotificationsEnabled,
+      productionMode: phoneNotificationService.getStatus().productionMode
     });
     
     this.startMonitoring();
