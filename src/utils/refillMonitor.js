@@ -1,13 +1,31 @@
+import { phoneNotificationService } from './phoneNotifications';
+
 class RefillMonitor {
   constructor() {
     this.checkInterval = null;
     this.notificationPermission = null;
+    this.phoneNotificationsEnabled = false;
+    this.phoneNumber = null;
   }
 
   async initialize() {
     if ('Notification' in window) {
       this.notificationPermission = await Notification.requestPermission();
     }
+    
+    // Initialize phone notification service
+    phoneNotificationService.initialize({
+      testMode: true,
+      testPhoneNumber: '9913390910'
+    });
+    
+    this.phoneNotificationsEnabled = true;
+    
+    console.log('RefillMonitor initialized with phone notifications:', {
+      browserNotifications: this.notificationPermission === 'granted',
+      phoneNotifications: this.phoneNotificationsEnabled
+    });
+    
     this.startMonitoring();
   }
 
@@ -75,19 +93,36 @@ class RefillMonitor {
     return daysRemaining <= medication.refillDaysBefore;
   }
 
-  sendAlert(alert) {
+  async sendAlert(alert) {
+    console.log(`Sending refill alert: ${alert.message}`);
+    
+    // Browser notification
     if (this.notificationPermission === 'granted') {
-      const notification = new Notification('Medication Alert', {
-        body: alert.message,
-        icon: '/favicon.svg',
-        tag: `medication-${alert.type}-${alert.medication.id}`,
-        requireInteraction: true
-      });
+      try {
+        const notification = new Notification('Medication Alert', {
+          body: alert.message,
+          icon: '/favicon.svg',
+          tag: `medication-${alert.type}-${alert.medication.id}`,
+          requireInteraction: true
+        });
 
-      notification.onclick = () => {
-        window.focus();
-        notification.close();
-      };
+        notification.onclick = () => {
+          window.focus();
+          notification.close();
+        };
+      } catch (error) {
+        console.error('Browser notification failed:', error);
+      }
+    }
+
+    // Phone notification (SMS)
+    if (this.phoneNotificationsEnabled) {
+      try {
+        const smsResult = await phoneNotificationService.sendRefillAlert(alert.medication, this.phoneNumber);
+        console.log('SMS alert result:', smsResult);
+      } catch (error) {
+        console.error('SMS alert failed:', error);
+      }
     }
 
     // Also show in-app notification
@@ -119,6 +154,18 @@ class RefillMonitor {
     if (currentStock <= lowStockThreshold) return { status: 'low', color: 'orange', message: 'Low stock' };
     if (this.needsRefillSoon(medication)) return { status: 'refill_soon', color: 'yellow', message: 'Refill soon' };
     return { status: 'good', color: 'green', message: 'Stock OK' };
+  }
+
+  // Set phone number for SMS notifications
+  setPhoneNumber(phoneNumber) {
+    this.phoneNumber = phoneNumber;
+    console.log(`Phone number set for refill alerts: ${phoneNumber}`);
+  }
+
+  // Enable/disable phone notifications
+  setPhoneNotificationsEnabled(enabled) {
+    this.phoneNotificationsEnabled = enabled;
+    console.log(`Refill alerts phone notifications ${enabled ? 'enabled' : 'disabled'}`);
   }
 
   destroy() {

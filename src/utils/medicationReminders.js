@@ -1,14 +1,32 @@
+import { phoneNotificationService } from './phoneNotifications';
+
 class MedicationReminderSystem {
   constructor() {
     this.reminders = new Map();
     this.checkInterval = null;
     this.notificationPermission = null;
+    this.phoneNotificationsEnabled = false;
+    this.phoneNumber = null;
   }
 
   async initialize() {
     if ('Notification' in window) {
       this.notificationPermission = await Notification.requestPermission();
     }
+    
+    // Initialize phone notification service
+    phoneNotificationService.initialize({
+      testMode: true,
+      testPhoneNumber: '9913390910'
+    });
+    
+    this.phoneNotificationsEnabled = true;
+    
+    console.log('MedicationReminderSystem initialized with phone notifications:', {
+      browserNotifications: this.notificationPermission === 'granted',
+      phoneNotifications: this.phoneNotificationsEnabled
+    });
+    
     this.startReminderCheck();
   }
 
@@ -65,19 +83,36 @@ class MedicationReminderSystem {
     });
   }
 
-  sendNotification(medication) {
+  async sendNotification(medication) {
+    console.log(`Sending notification for medication: ${medication.name}`);
+    
+    // Browser notification
     if (this.notificationPermission === 'granted') {
-      const notification = new Notification('Medication Reminder', {
-        body: `Time to take ${medication.name} (${medication.dosage}) for ${medication.patient}`,
-        icon: '/favicon.svg',
-        tag: `medication-${medication.id}`,
-        requireInteraction: true
-      });
+      try {
+        const notification = new Notification('Medication Reminder', {
+          body: `Time to take ${medication.name} (${medication.dosage}) for ${medication.patient}`,
+          icon: '/favicon.svg',
+          tag: `medication-${medication.id}`,
+          requireInteraction: true
+        });
 
-      notification.onclick = () => {
-        window.focus();
-        notification.close();
-      };
+        notification.onclick = () => {
+          window.focus();
+          notification.close();
+        };
+      } catch (error) {
+        console.error('Browser notification failed:', error);
+      }
+    }
+
+    // Phone notification (SMS)
+    if (this.phoneNotificationsEnabled) {
+      try {
+        const smsResult = await phoneNotificationService.sendMedicationReminder(medication, this.phoneNumber);
+        console.log('SMS notification result:', smsResult);
+      } catch (error) {
+        console.error('SMS notification failed:', error);
+      }
     }
 
     // Also show in-app notification
@@ -98,6 +133,40 @@ class MedicationReminderSystem {
 
   updateReminder(medication) {
     this.addReminder(medication); // This will update the existing reminder
+  }
+
+  // Set phone number for SMS notifications
+  setPhoneNumber(phoneNumber) {
+    this.phoneNumber = phoneNumber;
+    console.log(`Phone number set for notifications: ${phoneNumber}`);
+  }
+
+  // Enable/disable phone notifications
+  setPhoneNotificationsEnabled(enabled) {
+    this.phoneNotificationsEnabled = enabled;
+    console.log(`Phone notifications ${enabled ? 'enabled' : 'disabled'}`);
+  }
+
+  // Test notification system
+  async testNotifications(phoneNumber = null) {
+    console.log('Testing notification system...');
+    
+    const testMedication = {
+      id: 'test',
+      name: 'Test Medication',
+      dosage: '500mg',
+      patient: 'Test Patient',
+      time: new Date().toLocaleTimeString()
+    };
+    
+    // Test SMS notification
+    if (this.phoneNotificationsEnabled) {
+      const smsResult = await phoneNotificationService.testSMS(phoneNumber);
+      console.log('SMS test result:', smsResult);
+      return smsResult;
+    }
+    
+    return { success: false, message: 'Phone notifications not enabled' };
   }
 
   clearAllReminders() {

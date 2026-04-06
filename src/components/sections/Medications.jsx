@@ -84,6 +84,20 @@ const Medications = ({ members, medications, setMedications }) => {
     setMeds(meds.filter(m => m.id !== id));
   };
 
+  const testPhoneNotification = async () => {
+    try {
+      const result = await medicationReminderSystem.testNotifications('9913390910');
+      if (result.success) {
+        alert('Test notification sent successfully to 9913390910! Check console for details.');
+      } else {
+        alert('Test notification failed. Check console for details.');
+      }
+    } catch (error) {
+      console.error('Test notification error:', error);
+      alert('Test notification failed. Check console for details.');
+    }
+  };
+
   const formatTime = (time) => {
     const [hours, minutes] = time.split(':');
     const hour = parseInt(hours);
@@ -119,6 +133,12 @@ const Medications = ({ members, medications, setMedications }) => {
             }`}
           >
             <Shield size={20} /> {showInteractions ? 'Hide' : 'Show'} Interactions
+          </button>
+          <button 
+            onClick={testPhoneNotification}
+            className="px-4 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+          >
+            📱 Test SMS
           </button>
           <button 
             onClick={() => setIsModalOpen(true)}
