@@ -68,7 +68,7 @@ const MedicationModal = ({ isOpen, onClose, onAddMedication, members }) => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[300] flex items-start justify-center pt-20 p-4">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -81,7 +81,7 @@ const MedicationModal = ({ isOpen, onClose, onAddMedication, members }) => {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative bg-white dark:bg-card-bg rounded-3xl shadow-2xl w-full max-w-md p-6"
+          className="relative bg-white dark:bg-card-bg rounded-3xl shadow-2xl w-full max-w-md p-6 max-h-[calc(100vh-6rem)] overflow-y-auto mt-4"
         >
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
