@@ -5,6 +5,7 @@ import { medicationReminderSystem } from '../../utils/medicationReminders';
 import { medicationHistory } from '../../utils/medicationHistory';
 import { refillMonitor } from '../../utils/refillMonitor';
 import { medicationInteractionChecker } from '../../utils/medicationInteractions';
+import { phoneNotificationService } from '../../utils/phoneNotifications';
 import MedicationModal from '../MedicationModal';
 import MedicationCompliance from '../MedicationCompliance';
 import MedicationInteractions from '../MedicationInteractions';
@@ -88,21 +89,28 @@ const Medications = ({ members, medications, setMedications }) => {
     try {
       console.log('🚀 Testing LIVE SMS notification to 9913390910...');
       
-      // Force production mode for this test
-      phoneNotificationService.enableProductionMode();
+      // Force production mode using the imported service
+      if (phoneNotificationService) {
+        phoneNotificationService.enableProductionMode();
+      }
       
       const result = await medicationReminderSystem.testNotifications('9913390910');
       
       if (result.success) {
-        alert('✅ LIVE SMS notification sent successfully to 9913390910! Check your phone.');
-        console.log('🎉 SUCCESS: Real SMS notification delivered to 9913390910');
+        if (result.testMode) {
+          alert('⚠️ Test mode active - SMS logged to console only');
+          console.log('📋 SMS logged in test mode:', result);
+        } else {
+          alert('✅ LIVE SMS notification sent successfully to 9913390910! Check your phone.');
+          console.log('🎉 SUCCESS: Real SMS notification delivered to 9913390910');
+        }
       } else {
         alert('❌ SMS notification failed. Check console for details.');
         console.error('❌ FAILED: SMS notification failed:', result);
       }
     } catch (error) {
       console.error('❌ Test notification error:', error);
-      alert('❌ Test notification failed. Check console for details.');
+      alert('❌ Test notification failed: ' + error.message);
     }
   };
 
