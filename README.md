@@ -542,7 +542,7 @@ Based on current implementation analysis:
 
 For issues, feature requests, or contributions:
 - Create an issue on GitHub
-- Contact: [your-email@example.com]
+- Contact: [priyanshu.nimavat45@gmail.com]
 
 ---
 
